@@ -9,12 +9,15 @@ RUN apk add --no-cache \
     git \
     curl
 
+# pnpm 설치
+RUN npm install -g pnpm@10.11.0
+
 # 패키지 파일들 복사
-COPY package*.json ./
+COPY package.json pnpm-lock.yaml* ./
 COPY .npmrc* ./
 
 # 의존성 설치
-RUN npm ci
+RUN pnpm install --frozen-lockfile
 
 # 소스 코드 복사 (볼륨 마운트로 덮어씌워질 예정)
 COPY . .
@@ -23,4 +26,4 @@ COPY . .
 EXPOSE 3000
 
 # 개발 서버 시작
-CMD ["npm", "run", "dev"]
+CMD ["pnpm", "run", "dev"]
