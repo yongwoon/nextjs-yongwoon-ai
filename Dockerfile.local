@@ -1,0 +1,26 @@
+FROM node:18-alpine
+
+# 작업 디렉토리 설정
+WORKDIR /app
+
+# 필요한 시스템 패키지 설치
+RUN apk add --no-cache \
+    libc6-compat \
+    git \
+    curl
+
+# 패키지 파일들 복사
+COPY package*.json ./
+COPY .npmrc* ./
+
+# 의존성 설치
+RUN npm ci
+
+# 소스 코드 복사 (볼륨 마운트로 덮어씌워질 예정)
+COPY . .
+
+# Next.js 포트 노출
+EXPOSE 3000
+
+# 개발 서버 시작
+CMD ["npm", "run", "dev"]
