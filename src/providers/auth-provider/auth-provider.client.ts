@@ -9,7 +9,7 @@ export const authProviderClient: AuthProvider = {
       {
         email,
         password,
-      }
+      },
     );
 
     if (error) {

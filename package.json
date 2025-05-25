@@ -29,16 +29,19 @@
     "react-dom": "^19.1.0"
   },
   "devDependencies": {
+    "@eslint/eslintrc": "^3.3.1",
+    "@eslint/js": "^9.27.0",
     "@tailwindcss/postcss": "^4.1.7",
     "@tailwindcss/vite": "^4.1.7",
     "@types/js-cookie": "^3.0.6",
     "@types/node": "^22.15.21",
     "@types/react": "^19.1.5",
     "@types/react-dom": "^19.1.5",
-    "@typescript-eslint/parser": "^7.18.0",
+    "@typescript-eslint/eslint-plugin": "^8.32.1",
+    "@typescript-eslint/parser": "^8.32.1",
     "autoprefixer": "^10.4.19",
     "cross-env": "^7.0.3",
-    "eslint": "^8",
+    "eslint": "^9.27.0",
     "eslint-config-next": "^15.3.2",
     "postcss": "^8.4.38",
     "tailwindcss": "^4.1.7",
@@ -46,5 +49,6 @@
   },
   "refine": {
     "projectId": "jIU8e4-1LjeAx-OvNUY1"
-  }
+  },
+  "type": "module"
 }
