@@ -57,9 +57,18 @@
 
 ### Code Quality
 
-- eslint (^8) - JavaScript/TypeScript 코드 린터
-- eslint-config-next (^14.1.0) - Next.js용 ESLint 설정
-- @typescript-eslint/parser (^6.21.0) - TypeScript용 ESLint 파서
+- eslint (^9.27.0) - JavaScript/TypeScript 코드 린터
+- eslint-config-next (^15.3.2) - Next.js용 ESLint 설정
+- @typescript-eslint/parser (^8.32.1) - TypeScript용 ESLint 파서
+- @typescript-eslint/eslint-plugin (^8.32.1) - TypeScript용 ESLint 플러그인
+- @eslint/js (^9.27.0) - ESLint JavaScript 기본 설정
+- @eslint/eslintrc (^3.3.1) - ESLint 설정 호환성 유틸리티
+
+### Code Formatting
+
+- prettier (^3.5.3) - 코드 포맷터 (일관된 코드 스타일 유지)
+- eslint-config-prettier (^10.1.5) - ESLint와 Prettier 충돌 방지 설정
+- eslint-plugin-prettier (^5.4.0) - ESLint에서 Prettier 규칙 사용
 
 ### Build & Development
 
@@ -75,11 +84,14 @@
 ## 🎯 주요 스크립트
 
 ```bash
-npm run dev     # 개발 서버 시작 (메모리 최적화 포함)
-npm run build   # 프로덕션 빌드
-npm run start   # 프로덕션 서버 시작
-npm run lint    # 코드 린팅
-npm run refine  # Refine CLI 실행
+npm run dev          # 개발 서버 시작 (메모리 최적화 포함)
+npm run build        # 프로덕션 빌드
+npm run start        # 프로덕션 서버 시작
+npm run lint         # 코드 린팅
+npm run lint:fix     # ESLint 자동 수정
+npm run format       # Prettier로 코드 포맷팅
+npm run format:check # 포맷팅 검사 (수정하지 않음)
+npm run refine       # Refine CLI 실행
 ```
 
 ## 📝 패키지 특징
@@ -95,3 +107,4 @@ npm run refine  # Refine CLI 실행
 - TypeScript: 타입 안전성으로 개발 생산성 향상
 - Tailwind CSS: 빠른 UI 개발을 위한 유틸리티 CSS
 - ESLint: 코드 품질 관리 및 일관성 유지
+- Prettier: 자동 코드 포맷팅으로 일관된 코드 스타일 유지

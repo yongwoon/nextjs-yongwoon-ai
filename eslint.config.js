@@ -47,12 +47,9 @@ const eslintConfig = [
       "prefer-const": "error",
       "no-var": "error",
 
-      // 코드 스타일 규칙 (일반적으로 선호되는 설정)
+      // 코드 스타일 규칙 (Prettier와 충돌하지 않는 것들만)
       eqeqeq: ["error", "always"],
       curly: ["error", "all"],
-      "comma-dangle": ["error", "always-multiline"],
-      quotes: ["error", "double", { avoidEscape: true }],
-      semi: ["error", "always"],
 
       // Next.js 특화 규칙
       "@next/next/no-img-element": "error",
