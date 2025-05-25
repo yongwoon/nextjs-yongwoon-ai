@@ -1,6 +1,6 @@
 "use client";
 
-import type { PropsWithChildren } from "react";
+import React, { type PropsWithChildren } from "react";
 import { Breadcrumb } from "../breadcrumb";
 import { Menu } from "../menu";
 

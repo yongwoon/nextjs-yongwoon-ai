@@ -1,8 +1,11 @@
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
+@import "tailwindcss";
 
-/* 
+/* Tailwind CSS v4 Configuration */
+@theme {
+  /* Content paths are now handled automatically by the build tool */
+}
+
+/*
 * These styles were added to improve the appearance of the example pages.
 * It is safe to delete them, and they are not intended to be used by Refine components.
 */
