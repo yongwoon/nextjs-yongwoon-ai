@@ -84,14 +84,24 @@
 ## 🎯 주요 스크립트
 
 ```bash
-npm run dev          # 개발 서버 시작 (메모리 최적화 포함)
-npm run build        # 프로덕션 빌드
-npm run start        # 프로덕션 서버 시작
-npm run lint         # 코드 린팅
-npm run lint:fix     # ESLint 자동 수정
-npm run format       # Prettier로 코드 포맷팅
-npm run format:check # 포맷팅 검사 (수정하지 않음)
-npm run refine       # Refine CLI 실행
+pnpm dev          # 개발 서버 시작 (메모리 최적화 포함)
+pnpm build        # 프로덕션 빌드
+pnpm start        # 프로덕션 서버 시작
+pnpm lint         # 코드 린팅
+pnpm lint:fix     # ESLint 자동 수정
+pnpm format       # Prettier로 코드 포맷팅
+pnpm format:check # 포맷팅 검사 (수정하지 않음)
+pnpm refine       # Refine CLI 실행
+```
+
+### 패키지 관리
+
+```bash
+pnpm add <package>     # 패키지 추가
+pnpm add -D <package>  # 개발 의존성 추가
+pnpm remove <package>  # 패키지 제거
+pnpm update           # 패키지 업데이트
+pnpm outdated         # 오래된 패키지 확인
 ```
 
 ## 📝 패키지 특징
