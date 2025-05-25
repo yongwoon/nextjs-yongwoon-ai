@@ -19,7 +19,7 @@
     "docker:dev": "docker compose up --build",
     "docker:down": "docker compose down",
     "docker:clean": "docker compose down -v --remove-orphans",
-    "db:migrate": "echo 'Run the SQL schema in docs/database-schema.sql in your Supabase dashboard'",
+    "db:migrate": "echo 'Run the SQL schema in docs/postgres/database-schema.sql in your Supabase dashboard'",
     "db:seed": "echo 'Seed data is included in the schema file'",
     "env:check": "node -e \"console.log('Environment check - implement validation script')\"",
     "ai:test": "echo 'Test AI connections - implement test script'",
