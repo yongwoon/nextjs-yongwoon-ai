@@ -3,3 +3,281 @@ description:
 globs:
 alwaysApply: false
 ---
+# Ubiquitous Language Naming Conventions
+
+**Follow the domain-specific terminology defined in [ubiquitous-language.md](mdc:docs/project/ubiquitous-language.md) for all code naming**
+
+## **Core Principles**
+
+- **Use domain terms consistently**: Variable and function names must reflect the business vocabulary defined in the ubiquitous language dictionary
+- **Avoid technical jargon**: Prefer business-meaningful names over implementation details
+- **Maintain naming consistency**: Use the exact English terms from the dictionary across the entire codebase
+- **Express intent clearly**: Names should communicate business purpose, not just technical functionality
+
+## **Naming Conventions by Code Element**
+
+### **✅ Classes and Interfaces**
+
+```typescript
+// ✅ DO: Use domain entities and aggregates
+class ChatAggregate {
+  private pageContext: PageContext
+  private aiProvider: AIProvider
+}
+
+interface StreamingResponse {
+  content: string
+  isComplete: boolean
+}
+
+class ContextAwareness {
+  extractPageContext(): PageContext
+}
+
+// ❌ DON'T: Use technical or generic names
+class Chatbot { }           // Use 'ConversationService' or 'AIAssistant'
+class DataProcessor { }     // Use specific domain service names
+class APIClient { }         // Use 'AIProvider' or specific provider name
+```
+
+### **✅ Functions and Methods**
+
+```typescript
+// ✅ DO: Use domain action verbs
+async generateContextualResponse(prompt: string): Promise<StreamingResponse>
+async extractPageContext(url: string): Promise<PageContext>
+async cachePromptResponse(prompt: string, response: string): Promise<void>
+async searchRelevantDocs(query: string): Promise<Embedding[]>
+
+// ❌ DON'T: Use generic or technical verbs
+async process() { }         // Use 'generateResponse', 'analyzeContent', etc.
+async getData() { }         // Use 'extractPageContext', 'fetchUserPreferences'
+async handleRequest() { }   // Use specific domain actions
+```
+
+### **✅ Variables and Properties**
+
+```typescript
+// ✅ DO: Use domain nouns and concepts
+const aiProvider: AIProvider = new OpenAIClient()
+const pageContext: PageContext = await extractPageContext()
+const vectorDatabase: VectorDatabase = new PineconeClient()
+const promptCaching: PromptCaching = new RedisCache()
+const contextWindow: number = 128000
+const embeddingVector: Embedding = await generateEmbedding(text)
+
+// ❌ DON'T: Use abbreviations or technical shortcuts
+const api = new Client()        // Use 'aiProvider'
+const ctx = getContext()        // Use 'pageContext'
+const db = new Database()       // Use 'vectorDatabase'
+const cache = new Redis()       // Use 'promptCaching'
+```
+
+### **✅ Constants and Enums**
+
+```typescript
+// ✅ DO: Use domain-specific constant names
+enum AIProviderType {
+  OPENAI = 'openai',
+  ANTHROPIC = 'anthropic',
+  GOOGLE = 'google'
+}
+
+const MAX_CONTEXT_WINDOW = 128000
+const PROMPT_CACHE_TTL = 3600
+const SIDEBAR_PANEL_WIDTH = 400
+
+// ❌ DON'T: Use generic or unclear names
+enum ProviderType { }       // Use 'AIProviderType'
+const MAX_TOKENS = 1000     // Use 'MAX_CONTEXT_WINDOW' or 'MAX_RESPONSE_TOKENS'
+```
+
+## **Domain-Specific Naming Patterns**
+
+### **🤖 AI & Machine Learning Domain**
+
+```typescript
+// Core AI concepts
+interface LLMResponse {
+  content: string
+  tokenCount: number
+  finishReason: string
+}
+
+class MultiAIModelManager {
+  private aiProviders: Map<string, AIProvider>
+
+  async generateResponse(provider: string, prompt: string): Promise<StreamingResponse>
+  async embedText(text: string): Promise<Embedding>
+  async searchSimilarDocuments(query: Embedding): Promise<RAGResult[]>
+}
+
+// Prompt and context handling
+class PromptEngineering {
+  generateContextualPrompt(pageContext: PageContext, userQuery: string): string
+  optimizeForTokenLimit(prompt: string, contextWindow: number): string
+}
+```
+
+### **🔧 Browser Extension Domain**
+
+```typescript
+// Extension-specific naming
+class ContentScript {
+  extractPageContext(): PageContext
+  injectSidebarPanel(): void
+  setupMessagePassing(): void
+}
+
+class ServiceWorker {
+  handleExtensionInstall(): void
+  manageBackgroundTasks(): void
+  setupAPIRouting(): void
+}
+
+interface ManifestV3Config {
+  permissions: string[]
+  contentSecurityPolicy: CSPSettings
+  serviceWorker: ServiceWorkerConfig
+}
+```
+
+### **🏗️ Architecture Domain**
+
+```typescript
+// Domain entities and aggregates
+class ChatAggregate {
+  private messages: DomainEntity<Message>[]
+  private sessionId: ValueObject<SessionId>
+
+  addMessage(content: string): void
+  getConversationHistory(): Message[]
+}
+
+// Repository pattern
+interface ChatRepository {
+  save(aggregate: ChatAggregate): Promise<void>
+  findBySessionId(sessionId: SessionId): Promise<ChatAggregate>
+}
+
+// Application services
+class ConversationApplicationService {
+  private chatRepository: ChatRepository
+  private aiProvider: AIProvider
+
+  async startNewConversation(pageContext: PageContext): Promise<SessionId>
+  async continueConversation(sessionId: SessionId, prompt: string): Promise<StreamingResponse>
+}
+```
+
+## **File and Directory Naming**
+
+### **✅ File Names**
+
+```
+// ✅ DO: Use domain terms in file names
+src/domains/chat/services/conversation-application.service.ts
+src/domains/ai/providers/openai.provider.ts
+src/infrastructure/vector-database/pinecone.client.ts
+src/presentation/components/sidebar-panel.component.tsx
+src/core/events/page-context-extracted.event.ts
+
+// ❌ DON'T: Use generic or abbreviated names
+src/services/api.service.ts          // Use specific provider names
+src/components/panel.component.tsx   // Use 'sidebar-panel.component.tsx'
+src/utils/helper.ts                  // Use specific utility purpose
+```
+
+### **✅ Directory Structure**
+
+```
+domains/
+├── chat/                    # Chat aggregate and related services
+├── ai-provider/            # AI provider management
+├── page-context/           # Page context analysis
+├── prompt-template/        # Template system
+└── browser-extension/      # Extension-specific logic
+
+infrastructure/
+├── ai-providers/           # External AI service integrations
+├── vector-database/        # Embedding storage and search
+├── prompt-caching/         # Caching implementation
+└── web-scraping/          # Page content extraction
+```
+
+## **Common Anti-Patterns to Avoid**
+
+### **❌ Technical Implementation Details**
+
+```typescript
+// ❌ DON'T: Expose implementation details
+class HTTPClient { }              // Use 'AIProvider' or specific provider
+class DatabaseConnection { }     // Use 'VectorDatabase' or 'UserRepository'
+class RedisCache { }             // Use 'PromptCaching' or 'SessionCache'
+
+// ❌ DON'T: Use generic utility names
+function processData() { }        // Use 'extractPageContext', 'generateEmbedding'
+function handleEvent() { }        // Use 'onPageContextChanged', 'onUserPrompt'
+```
+
+### **❌ Abbreviated or Unclear Names**
+
+```typescript
+// ❌ DON'T: Use abbreviations
+const ctx = getContext()          // Use 'pageContext'
+const cfg = loadConfig()          // Use 'aiProviderConfig'
+const resp = await api.call()     // Use 'streamingResponse'
+
+// ❌ DON'T: Use unclear prefixes/suffixes
+class AIManager { }               // Use 'MultiAIModelManager'
+class DataHelper { }              // Use specific domain service
+const userInfo = getUserData()    // Use 'userPreferences' or 'conversationHistory'
+```
+
+## **Testing and Mock Naming**
+
+```typescript
+// ✅ DO: Maintain domain language in tests
+describe('ConversationApplicationService', () => {
+  let mockAIProvider: jest.Mocked<AIProvider>
+  let mockChatRepository: jest.Mocked<ChatRepository>
+  let conversationService: ConversationApplicationService
+
+  it('should generate contextual response based on page context', async () => {
+    const pageContext: PageContext = createMockPageContext()
+    const expectedResponse: StreamingResponse = createMockStreamingResponse()
+
+    mockAIProvider.generateResponse.mockResolvedValue(expectedResponse)
+
+    const result = await conversationService.generateContextualResponse('test prompt', pageContext)
+
+    expect(result).toEqual(expectedResponse)
+  })
+})
+```
+
+## **Validation Checklist**
+
+Before committing code, verify:
+
+- [ ] **Class names** use domain entities, aggregates, or services from the dictionary
+- [ ] **Method names** express business actions using domain verbs
+- [ ] **Variable names** use domain nouns and concepts consistently
+- [ ] **Interface names** reflect domain contracts and boundaries
+- [ ] **File names** follow domain terminology conventions
+- [ ] **No abbreviations** or technical jargon that obscures business meaning
+- [ ] **Consistent terminology** across related components and services
+- [ ] **Test names** describe business scenarios using domain language
+
+## **Quick Reference**
+
+**Use This** → **Not This**
+- `aiProvider` → `apiClient`, `gptClient`
+- `pageContext` → `ctx`, `context`, `data`
+- `streamingResponse` → `response`, `result`, `output`
+- `conversationHistory` → `messages`, `chatData`, `history`
+- `vectorDatabase` → `db`, `database`, `store`
+- `promptCaching` → `cache`, `redis`, `storage`
+- `contextAwareness` → `analyzer`, `processor`, `handler`
+
+**Remember**: The code should read like a conversation between domain experts, not a technical implementation guide.
