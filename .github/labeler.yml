@@ -1,0 +1,101 @@
+# Branch-based labels
+hotfix:
+  - head-branch: ["^hotfix-", "hotfix", "^hotfix/"]
+
+refactor:
+  - head-branch: ["^refactor-", "refactor", "^refactor/"]
+
+feature:
+  - head-branch: ["^feature-", "feature", "^feature/", "^feat/"]
+
+bugfix:
+  - head-branch: ["^bugfix-", "bugfix", "^bugfix/", "^fix/"]
+
+# File-based labels
+documentation:
+  - changed-files:
+      - any-glob-to-any-file:
+          - "**/*.md"
+          - docs/**
+          - README*
+          - CHANGELOG*
+          - TESTING.md
+
+frontend:
+  - changed-files:
+      - any-glob-to-any-file:
+          - src/app/**
+          - src/components/**
+          - src/styles/**
+          - "**/*.tsx"
+          - "**/*.jsx"
+
+backend:
+  - changed-files:
+      - any-glob-to-any-file:
+          - src/lib/**
+          - src/providers/**
+          - src/middleware.ts
+          - src/utils/**
+
+testing:
+  - changed-files:
+      - any-glob-to-any-file:
+          - src/test/**
+          - "**/*.test.*"
+          - "**/*.spec.*"
+          - vitest.config.*
+          - jest.config.*
+          - TESTING.md
+          - coverage/**
+
+config:
+  - changed-files:
+      - any-glob-to-any-file:
+          - "*.config.*"
+          - "*.json"
+          - "*.yml"
+          - "*.yaml"
+          - .github/**
+          - Dockerfile*
+          - docker-compose*
+          - compose.yml
+          - .env*
+          - .eslintrc*
+          - .prettierrc*
+          - .gitignore
+          - .dockerignore
+
+dependencies:
+  - changed-files:
+      - any-glob-to-any-file:
+          - package.json
+          - pnpm-lock.yaml
+          - yarn.lock
+          - package-lock.json
+
+scripts:
+  - changed-files:
+      - any-glob-to-any-file:
+          - scripts/**
+          - "*.sh"
+
+ci-cd:
+  - changed-files:
+      - any-glob-to-any-file:
+          - .github/workflows/**
+          - .github/actions/**
+
+taskmaster:
+  - changed-files:
+      - any-glob-to-any-file:
+          - tasks/**
+          - .taskmasterconfig
+
+ai:
+  - changed-files:
+      - any-glob-to-any-file:
+          - src/lib/ai/**
+          - "**/*ai*"
+          - "**/*openai*"
+          - "**/*anthropic*"
