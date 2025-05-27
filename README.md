@@ -143,11 +143,27 @@ BLOB_READ_WRITE_TOKEN=your_vercel_blob_token
 
 ## 📚 문서
 
-- [📁 디렉토리 아키텍처](docs/DIRECTORY_ARCHITECTURE.md)
-- [🏗️ AI 서비스 아키텍처](docs/AI_SERVICE_ARCHITECTURE.md)
-- [🔧 환경 변수 설정](docs/ENVIRONMENT_SETUP.md)
-- [🗄️ 데이터베이스 스키마](docs/database-schema.sql)
-- [📦 설치된 패키지](docs/installed-packages.md)
+### 시작하기
+- [🚀 시작 가이드](docs/setup/getting-started.md)
+- [🔧 환경 설정](docs/setup/environment-setup.md)
+- [🐳 Docker 설정](docs/setup/docker-setup.md)
+- [🗄️ 데이터베이스 스키마](docs/setup/database-schema.sql)
+
+### 아키텍처
+- [📁 디렉토리 아키텍처](docs/architecture/directory-architecture.md)
+- [🏗️ AI 서비스 아키텍처](docs/architecture/ai-service-architecture.md)
+
+### Rules 시스템
+- [📋 Rules 시스템 개요](docs/rules/overview.md)
+- [🎯 Cursor Rules 가이드](docs/rules/cursor-rules-guide.md)
+- [🔄 개발 워크플로우 가이드](docs/rules/dev-workflow-guide.md)
+- [🚀 Task Master 사용법](docs/rules/taskmaster-guide.md)
+- [🔧 자동 개선 프로세스 가이드](docs/rules/self-improvement-guide.md)
+
+### 프로젝트 관리
+- [🗺️ 구현 로드맵](docs/project/implementation-roadmap.md)
+- [📦 설치된 패키지](docs/project/installed-packages.md)
+- [🤖 Task Master AI](docs/project/taskmaster-ai.md)
 
 ## 🎯 로드맵
 
