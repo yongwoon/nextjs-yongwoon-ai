@@ -191,6 +191,23 @@ BLOB_READ_WRITE_TOKEN=your_vercel_blob_token
 - [ ] 테스트 코드
 - [ ] 배포 자동화
 
+## task-master 사용법
+
+- show task list
+
+```bash
+task-master list
+```
+
+- task-master model(`.taskmasterconfig` 에서 직접 수정 가능하다.)
+
+```bash
+# model list
+task-master models
+# set model
+task-master models --set-main claude-opus-4-20250514
+```
+
 ## 🤝 기여하기
 
 1. Fork the Project
