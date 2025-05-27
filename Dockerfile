@@ -33,6 +33,10 @@ FROM base AS runner
 
 ENV NODE_ENV production
 
+RUN apk add --no-cache \
+    curl \
+    bash
+
 COPY --from=builder /app/public ./public
 
 RUN mkdir .next

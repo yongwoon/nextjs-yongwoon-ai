@@ -7,7 +7,8 @@ WORKDIR /app
 RUN apk add --no-cache \
     libc6-compat \
     git \
-    curl
+    curl \
+    bash
 
 # pnpm 설치
 RUN npm install -g pnpm@10.11.0
