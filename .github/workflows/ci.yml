@@ -3,8 +3,26 @@ name: CI
 on:
   push:
     branches: [main, develop]
+    paths-ignore:
+      - "**.md"
+      - "**.MD"
+      - "**.txt"
+      - "docs/**"
+      - "README"
+      - "README.*"
+      - "LICENSE"
+      - ".github/ISSUE_TEMPLATE/**"
   pull_request:
     branches: [main, develop]
+    paths-ignore:
+      - "**.md"
+      - "**.MD"
+      - "**.txt"
+      - "docs/**"
+      - "README"
+      - "README.*"
+      - "LICENSE"
+      - ".github/ISSUE_TEMPLATE/**"
 
 # Cancel in-progress jobs when a new commit is pushed
 concurrency:
