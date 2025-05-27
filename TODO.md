@@ -10,4 +10,4 @@
 
 ## postpone
 
-- [ ] msw, tanstank 도입?
+- [ ] msw, tanstank 도입
