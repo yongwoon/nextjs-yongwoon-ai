@@ -36,9 +36,9 @@ vi.mock("next/navigation", () => ({
 // Mock environment variables
 Object.defineProperty(process, "env", {
   value: {
+    ...process.env,
     NODE_ENV: "test",
     NEXT_PUBLIC_SUPABASE_URL: "http://localhost:54321",
     NEXT_PUBLIC_SUPABASE_ANON_KEY: "test-key",
-    ...process.env,
   },
 });
