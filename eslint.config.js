@@ -11,6 +11,8 @@ const compat = new FlatCompat({
 });
 
 const eslintConfig = [
+  { ignores: ["src/components/ui/**"] },
+
   // JavaScript 기본 권장 설정
   js.configs.recommended,
 

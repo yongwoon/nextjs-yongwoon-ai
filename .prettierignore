@@ -110,3 +110,6 @@ pnpm-lock.yaml
 *.config.js
 *.config.ts
 *.config.mjs
+
+# Exclude src/components/ui directory
+src/components/ui/
