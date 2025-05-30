@@ -444,3 +444,9 @@ GRANT SELECT ON public.prompt_templates TO anon;
 -- 서비스 역할에게 모든 권한 부여 (서버 사이드 작업용)
 GRANT ALL ON ALL TABLES IN SCHEMA public TO service_role;
 GRANT ALL ON ALL SEQUENCES IN SCHEMA public TO service_role;
+
+-- down
+DROP TABLE IF EXISTS public.document_conversation_links;
+DROP TABLE IF EXISTS public.documents;
+DROP TABLE IF EXISTS public.messages;
+DROP TABLE IF EXISTS public.conversations;
