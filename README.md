@@ -58,11 +58,29 @@ cp .env.example .env.local
 # .env.local 파일을 편집하여 API 키들을 설정하세요
 ```
 
-### 2. 데이터베이스 설정
+### 2. Supabase 프로젝트 설정
 
+#### 2.1 새 Supabase 프로젝트 생성
+1. [Supabase Dashboard](https://app.supabase.com)에서 새 프로젝트 생성
+2. Project Name, Database Password 설정
+3. Region 선택 (가까운 지역 권장)
+
+#### 2.2 Supabase CLI 연결
 ```bash
-# Supabase 프로젝트 생성 후 SQL 스키마 실행
-# docs/database-schema.sql 파일의 내용을 Supabase SQL Editor에서 실행
+# 프로젝트 연결 (Reference ID와 DB Password 필요)
+supabase link --project-ref YOUR_PROJECT_REF
+
+# 연결 확인
+supabase status
+```
+
+#### 2.3 데이터베이스 스키마 적용
+```bash
+# 마이그레이션 적용 (AI 서비스용 테이블 생성)
+supabase db push
+
+# 테이블 생성 확인
+# Supabase Dashboard > Table Editor에서 확인
 ```
 
 ### 3. 개발 서버 실행
@@ -75,22 +93,44 @@ pnpm run docker:dev
 pnpm run dev
 ```
 
-## Supabase
+## 📊 Supabase 데이터베이스
 
-### 마이그레이션 파일로 DB 변경 관리
+### 테이블 구조
+현재 AI 서비스를 위한 다음 테이블들이 구성되어 있습니다:
 
-- SQL 스키마 변경 시, 아래 명령어로 마이그레이션 파일을 생성합니다.
+- **user_profiles**: 사용자 프로필 및 구독 정보
+- **conversations**: AI 대화 세션 관리
+- **messages**: 대화 메시지 저장
+- **documents**: 업로드된 문서 관리
+- **document_chunks**: RAG를 위한 문서 청크 (벡터 임베딩 포함)
+- **document_conversation_links**: 문서-대화 연결 관계
+- **prompt_templates**: 재사용 가능한 프롬프트 템플릿
+- **api_usage_logs**: API 사용량 추적
+- **prompt_cache**: 프롬프트 캐싱
+- **message_feedback**: 메시지 피드백
+
+자세한 테이블 설계는 [`docs/setup/table-design-specification.md`](docs/setup/table-design-specification.md)를 참조하세요.
+
+### 마이그레이션 관리
+
+**중요**: 모든 데이터베이스 변경은 마이그레이션 파일로 관리합니다.
 
 ```bash
-  supabase migration new <migration-name>
-```
+# 새 마이그레이션 생성
+supabase migration new <migration-name>
 
-- 생성된 마이그레이션 파일에 SQL을 작성하고,
-- 아래 명령어로 적용합니다.
-
-```bash
+# 마이그레이션 적용
 supabase db push
+
+# 마이그레이션 상태 확인
+supabase migration list
 ```
+
+### Row Level Security (RLS)
+모든 테이블에 RLS 정책이 적용되어 사용자별 데이터 격리가 보장됩니다:
+- 사용자는 자신의 데이터만 접근 가능
+- 대화, 문서, 메시지 등 모든 리소스가 소유권 기반으로 보호
+- 공개 프롬프트 템플릿은 모든 사용자가 조회 가능
 
 ## 📋 사용 가능한 스크립트
 
@@ -195,8 +235,10 @@ BLOB_READ_WRITE_TOKEN=your_vercel_blob_token
 ### Phase 1: 기본 구조 ✅
 - [x] 디렉토리 아키텍처 설계
 - [x] AI 패키지 설치
-- [x] 데이터베이스 스키마 설계
+- [x] 데이터베이스 스키마 설계 및 구현
+- [x] RLS 보안 정책 구현
 - [x] 환경 설정 가이드
+- [x] 테이블 설계서 작성
 
 ### Phase 2: 핵심 기능 (진행 중)
 - [ ] AI 모델 통합
