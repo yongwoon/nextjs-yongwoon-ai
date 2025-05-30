@@ -1,0 +1,49 @@
+---
+description:
+globs:
+alwaysApply: false
+---
+- **Supabase 및 DB 마이그레이션 관리**
+  - Supabase CLI를 사용하여 데이터베이스 마이그레이션을 생성, 적용, 관리한다.
+    - 마이그레이션 생성:
+      ```bash
+      supabase migration new <name>
+      ```
+    - 마이그레이션 적용:
+      ```bash
+      supabase db push
+      ```
+  - **모든 마이그레이션 파일은 반드시 Git에 커밋한다.**
+    - DB 변경 이력은 코드로 관리하며, 변경 사항은 항상 버전 관리 시스템에 남긴다.
+    - 예시:
+      `supabase/migrations/20240610_create_conversations.sql`
+  - **환경 변수 파일(.env.local 등)은 절대 커밋하지 않는다.**
+    - 환경 변수 파일은 `.gitignore`에 반드시 포함한다.
+    - Service Role Key 등 민감 정보는 서버 환경에서만 사용하고, 클라이언트에 노출하지 않는다.
+  - Supabase 프로젝트 연결 및 환경 변수 설정은 공식 문서와 내부 가이드에 따라 진행한다.
+    - Supabase 대시보드에서 Project URL, anon key, service role key, DB URL을 복사해 환경 변수에 입력한다.
+    - 신규 팀원은 환경설정 문서 순서대로 세팅한다.
+  - **DB 변경 및 마이그레이션은 반드시 코드로 관리하고, 수동으로 대시보드에서 직접 변경하지 않는다.**
+    - 변경 이력 추적 및 협업을 위해 모든 스키마 변경은 마이그레이션 파일로 작성한다.
+
+---
+
+- **DO:**
+  ```bash
+  # 마이그레이션 생성 및 커밋
+  supabase migration new add_messages_table
+  # ... SQL 작성 ...
+  git add supabase/migrations/20240610_add_messages_table.sql
+  git commit -m "feat(db): Add messages table migration"
+  ```
+
+- **DON'T:**
+  - Supabase 대시보드에서 직접 테이블을 생성하고, 마이그레이션 파일을 남기지 않음
+  - .env.local 등 환경 변수 파일을 Git에 커밋
+
+---
+
+**Cross-reference:**
+- 환경 변수 관리 및 보안: [environment-setup.mdc](mdc:.cursor/rules/environment-setup.mdc)
+- 마이그레이션 및 DB 변경 정책: [dev_workflow.mdc](mdc:.cursor/rules/dev_workflow.mdc)
+- 커밋/버전 관리 정책: [cursor_rules.mdc](mdc:.cursor/rules/cursor_rules.mdc)

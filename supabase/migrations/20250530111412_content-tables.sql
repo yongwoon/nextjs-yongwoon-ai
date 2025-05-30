@@ -445,9 +445,6 @@ GRANT SELECT ON public.prompt_templates TO anon;
 GRANT ALL ON ALL TABLES IN SCHEMA public TO service_role;
 GRANT ALL ON ALL SEQUENCES IN SCHEMA public TO service_role;
 
--- 예시: 마이그레이션 롤백 SQL (rollback)
--- 아래와 같이 -- down 섹션에 작성
---
 -- down
 DROP TABLE IF EXISTS public.document_conversation_links;
 DROP TABLE IF EXISTS public.documents;
