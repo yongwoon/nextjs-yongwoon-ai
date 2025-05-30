@@ -22,6 +22,7 @@ docs/
 - **[environment-setup.md](setup/environment-setup.md)** - 환경 변수 설정 및 개발 환경 구성
 - **[docker-setup.md](setup/docker-setup.md)** - Docker를 사용한 개발 환경 설정
 - **[database-schema.sql](setup/database-schema.sql)** - 데이터베이스 스키마 정의
+- **[table-design-specification.md](setup/table-design-specification.md)** - 데이터베이스 테이블 설계서
 
 ### 🏗️ Architecture (아키텍처)
 시스템의 전체적인 구조와 설계에 대한 문서입니다.

@@ -281,12 +281,44 @@ DATABASE_URL=your_supabase_database_url
 
 ## 3. DB 마이그레이션 관리
 
+### 기본 설정
 - Supabase CLI 설치: `brew install supabase/tap/supabase`
-- 프로젝트 초기화: `supabase init`
-- 프로젝트 연결: `supabase link --project-ref <project-id>`
-- 마이그레이션 생성: `supabase migration new <name>`
-- 마이그레이션 적용: `supabase db push`
-- 마이그레이션 파일은 반드시 Git에 커밋
+- 프로젝트 초기화: `supabase init` (이미 완료됨)
+- 프로젝트 연결: `supabase link --project-ref <project-ref>`
+
+### 마이그레이션 워크플로우
+```bash
+# 새 마이그레이션 생성
+supabase migration new <migration-name>
+
+# 마이그레이션 적용
+supabase db push
+
+# 마이그레이션 상태 확인
+supabase migration list
+
+# 현재 DB와 로컬 스키마 차이 확인
+supabase db diff
+```
+
+### 현재 적용된 마이그레이션
+- `20250530121549_create-tables-only.sql`: AI 서비스용 테이블 생성
+  - user_profiles, conversations, messages
+  - documents, document_chunks (RAG용)
+  - prompt_templates, api_usage_logs
+  - RLS 정책 및 보안 함수 포함
+
+### 마이그레이션 작성 규칙
+1. **파일 명명**: 날짜_기능명.sql 형식 (자동 생성됨)
+2. **순차 실행**: 파일명 순서대로 실행됨
+3. **롤백 없음**: PostgreSQL은 기본적으로 forward-only
+4. **테스트**: 로컬에서 먼저 테스트 후 원격 적용
+5. **커밋 필수**: 마이그레이션 파일은 반드시 Git에 커밋
+
+### 주의사항
+- 마이그레이션 파일 수정 금지 (이미 적용된 것)
+- 데이터 손실 위험한 작업 시 백업 필수
+- 프로덕션 적용 전 스테이징 환경에서 검증
 
 ## 4. CORS 설정
 
