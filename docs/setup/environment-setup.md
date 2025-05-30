@@ -256,3 +256,47 @@ pnpm run env:check
 - [Upstash Redis](https://docs.upstash.com/redis)
 
 이 가이드를 따라 환경 변수를 설정하면 AI 서비스를 위한 완전한 개발 환경을 구축할 수 있습니다.
+
+# 프로젝트 환경 및 설정 가이드
+
+## 1. 환경 변수 (.env.local 예시)
+
+```env
+NEXT_PUBLIC_SUPABASE_URL=your_supabase_url
+NEXT_PUBLIC_SUPABASE_ANON_KEY=your_supabase_anon_key
+SUPABASE_SERVICE_ROLE_KEY=your_supabase_service_role_key
+DATABASE_URL=your_supabase_database_url
+# 기타 API 키, Redis, Blob 등
+```
+
+- 각 값은 Supabase 대시보드 > Settings > API/Database에서 확인
+- Service Role Key는 서버 환경에서만 사용, 절대 노출 금지
+- 환경 변수 파일(.env.local)은 절대 커밋하지 마세요
+
+## 2. Supabase 프로젝트 생성 및 연결
+
+1. https://app.supabase.com/ 에서 새 프로젝트 생성
+2. Project URL, anon key, service role key, DB URL 복사
+3. Connection Pooling 탭에서 Pooler URL 확인 후 DATABASE_URL에 사용
+
+## 3. DB 마이그레이션 관리
+
+- Supabase CLI 설치: `brew install supabase/tap/supabase`
+- 프로젝트 초기화: `supabase init`
+- 프로젝트 연결: `supabase link --project-ref <project-id>`
+- 마이그레이션 생성: `supabase migration new <name>`
+- 마이그레이션 적용: `supabase db push`
+- 마이그레이션 파일은 반드시 Git에 커밋
+
+## 4. CORS 설정
+
+- Supabase 대시보드 > Settings > API > Allowed Origins에 프론트엔드 도메인 등록
+  - 예시: `http://localhost:3000,https://your-domain.com`
+
+## 5. 참고 및 팀 규칙
+
+- 환경 변수는 커밋 금지 (gitignore에 반드시 포함)
+- Service Role Key는 서버에서만 사용, 클라이언트에 노출 금지
+- 신규 팀원은 이 문서 순서대로 세팅
+- 공식 문서: [Supabase Docs](https://supabase.com/docs)
+- 마이그레이션 및 DB 변경은 반드시 코드로 관리하고, 변경 이력을 Git에 남길 것
