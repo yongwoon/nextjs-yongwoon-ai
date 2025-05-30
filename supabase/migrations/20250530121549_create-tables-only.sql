@@ -1,17 +1,13 @@
 -- =============================================================================
--- AI 서비스 데이터베이스 스키마
+-- AI 서비스 데이터베이스 스키마 (테이블 생성만)
 -- Supabase PostgreSQL 스키마 정의
 -- =============================================================================
 
--- -----------------------------------------------------------------------------
 -- 확장 기능 활성화
--- -----------------------------------------------------------------------------
 CREATE EXTENSION IF NOT EXISTS "uuid-ossp";
 CREATE EXTENSION IF NOT EXISTS "vector";
 
--- -----------------------------------------------------------------------------
 -- 사용자 프로필 테이블 (auth.users 확장)
--- -----------------------------------------------------------------------------
 CREATE TABLE public.user_profiles (
   id UUID REFERENCES auth.users(id) PRIMARY KEY,
   email TEXT,
@@ -25,13 +21,11 @@ CREATE TABLE public.user_profiles (
   updated_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
 );
 
--- -----------------------------------------------------------------------------
--- 채팅 세션 테이블
--- -----------------------------------------------------------------------------
-CREATE TABLE public.chat_sessions (
+-- 대화 세션 테이블
+CREATE TABLE public.conversations (
   id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
   user_id UUID REFERENCES auth.users(id) ON DELETE CASCADE,
-  title TEXT NOT NULL DEFAULT 'New Chat',
+  title TEXT NOT NULL DEFAULT 'New Conversation',
   model_name TEXT DEFAULT 'gpt-4',
   system_prompt TEXT,
   temperature DECIMAL(3,2) DEFAULT 0.7,
@@ -42,12 +36,10 @@ CREATE TABLE public.chat_sessions (
   updated_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
 );
 
--- -----------------------------------------------------------------------------
 -- 메시지 테이블
--- -----------------------------------------------------------------------------
 CREATE TABLE public.messages (
   id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
-  session_id UUID REFERENCES public.chat_sessions(id) ON DELETE CASCADE,
+  conversation_id UUID REFERENCES public.conversations(id) ON DELETE CASCADE,
   role TEXT NOT NULL CHECK (role IN ('user', 'assistant', 'system')),
   content TEXT NOT NULL,
   token_count INTEGER,
@@ -57,9 +49,7 @@ CREATE TABLE public.messages (
   created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
 );
 
--- -----------------------------------------------------------------------------
 -- 문서 테이블
--- -----------------------------------------------------------------------------
 CREATE TABLE public.documents (
   id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
   user_id UUID REFERENCES auth.users(id) ON DELETE CASCADE,
@@ -78,9 +68,7 @@ CREATE TABLE public.documents (
   updated_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
 );
 
--- -----------------------------------------------------------------------------
 -- 문서 청크 테이블 (RAG용)
--- -----------------------------------------------------------------------------
 CREATE TABLE public.document_chunks (
   id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
   document_id UUID REFERENCES public.documents(id) ON DELETE CASCADE,
@@ -92,9 +80,15 @@ CREATE TABLE public.document_chunks (
   created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
 );
 
--- -----------------------------------------------------------------------------
+-- 문서-대화 연결 테이블 (N:N 관계)
+CREATE TABLE public.document_conversation_links (
+  document_id UUID REFERENCES public.documents(id) ON DELETE CASCADE,
+  conversation_id UUID REFERENCES public.conversations(id) ON DELETE CASCADE,
+  linked_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
+  PRIMARY KEY (document_id, conversation_id)
+);
+
 -- 프롬프트 템플릿 테이블
--- -----------------------------------------------------------------------------
 CREATE TABLE public.prompt_templates (
   id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
   user_id UUID REFERENCES auth.users(id) ON DELETE CASCADE,
@@ -110,13 +104,11 @@ CREATE TABLE public.prompt_templates (
   updated_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
 );
 
--- -----------------------------------------------------------------------------
 -- API 사용량 로그 테이블
--- -----------------------------------------------------------------------------
 CREATE TABLE public.api_usage_logs (
   id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
   user_id UUID REFERENCES auth.users(id) ON DELETE CASCADE,
-  session_id UUID REFERENCES public.chat_sessions(id) ON DELETE SET NULL,
+  conversation_id UUID REFERENCES public.conversations(id) ON DELETE SET NULL,
   endpoint TEXT NOT NULL,
   model_name TEXT,
   input_tokens INTEGER DEFAULT 0,
@@ -130,9 +122,7 @@ CREATE TABLE public.api_usage_logs (
   created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
 );
 
--- -----------------------------------------------------------------------------
 -- 캐시 테이블 (프롬프트 캐싱용)
--- -----------------------------------------------------------------------------
 CREATE TABLE public.prompt_cache (
   id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
   cache_key TEXT UNIQUE NOT NULL,
@@ -146,9 +136,7 @@ CREATE TABLE public.prompt_cache (
   updated_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
 );
 
--- -----------------------------------------------------------------------------
 -- 피드백 테이블
--- -----------------------------------------------------------------------------
 CREATE TABLE public.message_feedback (
   id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
   message_id UUID REFERENCES public.messages(id) ON DELETE CASCADE,
@@ -159,90 +147,70 @@ CREATE TABLE public.message_feedback (
   created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
 );
 
--- -----------------------------------------------------------------------------
 -- 인덱스 생성
--- -----------------------------------------------------------------------------
-
--- 채팅 세션 인덱스
-CREATE INDEX idx_chat_sessions_user_id ON public.chat_sessions(user_id);
-CREATE INDEX idx_chat_sessions_created_at ON public.chat_sessions(created_at DESC);
-CREATE INDEX idx_chat_sessions_updated_at ON public.chat_sessions(updated_at DESC);
-
--- 메시지 인덱스
-CREATE INDEX idx_messages_session_id ON public.messages(session_id);
+CREATE INDEX idx_user_profiles_email ON public.user_profiles(email);
+CREATE INDEX idx_user_profiles_subscription_tier ON public.user_profiles(subscription_tier);
+CREATE INDEX idx_conversations_user_id ON public.conversations(user_id);
+CREATE INDEX idx_conversations_created_at ON public.conversations(created_at DESC);
+CREATE INDEX idx_conversations_updated_at ON public.conversations(updated_at DESC);
+CREATE INDEX idx_conversations_is_archived ON public.conversations(is_archived);
+CREATE INDEX idx_messages_conversation_id ON public.messages(conversation_id);
 CREATE INDEX idx_messages_created_at ON public.messages(created_at DESC);
 CREATE INDEX idx_messages_role ON public.messages(role);
-
--- 문서 인덱스
 CREATE INDEX idx_documents_user_id ON public.documents(user_id);
 CREATE INDEX idx_documents_processing_status ON public.documents(processing_status);
 CREATE INDEX idx_documents_embedding_status ON public.documents(embedding_status);
 CREATE INDEX idx_documents_created_at ON public.documents(created_at DESC);
-
--- 문서 청크 인덱스
 CREATE INDEX idx_document_chunks_document_id ON public.document_chunks(document_id);
 CREATE INDEX idx_document_chunks_embedding ON public.document_chunks USING ivfflat (embedding vector_cosine_ops);
-
--- 프롬프트 템플릿 인덱스
+CREATE INDEX idx_document_conversation_links_document_id ON public.document_conversation_links(document_id);
+CREATE INDEX idx_document_conversation_links_conversation_id ON public.document_conversation_links(conversation_id);
 CREATE INDEX idx_prompt_templates_user_id ON public.prompt_templates(user_id);
 CREATE INDEX idx_prompt_templates_category ON public.prompt_templates(category);
 CREATE INDEX idx_prompt_templates_is_public ON public.prompt_templates(is_public);
 CREATE INDEX idx_prompt_templates_tags ON public.prompt_templates USING GIN(tags);
-
--- API 사용량 로그 인덱스
 CREATE INDEX idx_api_usage_logs_user_id ON public.api_usage_logs(user_id);
 CREATE INDEX idx_api_usage_logs_created_at ON public.api_usage_logs(created_at DESC);
 CREATE INDEX idx_api_usage_logs_endpoint ON public.api_usage_logs(endpoint);
-
--- 캐시 인덱스
 CREATE INDEX idx_prompt_cache_cache_key ON public.prompt_cache(cache_key);
 CREATE INDEX idx_prompt_cache_expires_at ON public.prompt_cache(expires_at);
 CREATE INDEX idx_prompt_cache_prompt_hash ON public.prompt_cache(prompt_hash);
-
--- 피드백 인덱스
 CREATE INDEX idx_message_feedback_message_id ON public.message_feedback(message_id);
 CREATE INDEX idx_message_feedback_user_id ON public.message_feedback(user_id);
 
--- -----------------------------------------------------------------------------
 -- RLS (Row Level Security) 정책
--- -----------------------------------------------------------------------------
-
--- 사용자 프로필 RLS
 ALTER TABLE public.user_profiles ENABLE ROW LEVEL SECURITY;
 CREATE POLICY "Users can view own profile" ON public.user_profiles
   FOR SELECT USING (auth.uid() = id);
 CREATE POLICY "Users can update own profile" ON public.user_profiles
   FOR UPDATE USING (auth.uid() = id);
 
--- 채팅 세션 RLS
-ALTER TABLE public.chat_sessions ENABLE ROW LEVEL SECURITY;
-CREATE POLICY "Users can view own chat sessions" ON public.chat_sessions
+ALTER TABLE public.conversations ENABLE ROW LEVEL SECURITY;
+CREATE POLICY "Users can view own conversations" ON public.conversations
   FOR SELECT USING (auth.uid() = user_id);
-CREATE POLICY "Users can insert own chat sessions" ON public.chat_sessions
+CREATE POLICY "Users can insert own conversations" ON public.conversations
   FOR INSERT WITH CHECK (auth.uid() = user_id);
-CREATE POLICY "Users can update own chat sessions" ON public.chat_sessions
+CREATE POLICY "Users can update own conversations" ON public.conversations
   FOR UPDATE USING (auth.uid() = user_id);
-CREATE POLICY "Users can delete own chat sessions" ON public.chat_sessions
+CREATE POLICY "Users can delete own conversations" ON public.conversations
   FOR DELETE USING (auth.uid() = user_id);
 
--- 메시지 RLS
 ALTER TABLE public.messages ENABLE ROW LEVEL SECURITY;
-CREATE POLICY "Users can view messages from own sessions" ON public.messages
+CREATE POLICY "Users can view messages from own conversations" ON public.messages
   FOR SELECT USING (
     EXISTS (
-      SELECT 1 FROM public.chat_sessions
-      WHERE id = messages.session_id AND user_id = auth.uid()
+      SELECT 1 FROM public.conversations
+      WHERE id = messages.conversation_id AND user_id = auth.uid()
     )
   );
-CREATE POLICY "Users can insert messages to own sessions" ON public.messages
+CREATE POLICY "Users can insert messages to own conversations" ON public.messages
   FOR INSERT WITH CHECK (
     EXISTS (
-      SELECT 1 FROM public.chat_sessions
-      WHERE id = messages.session_id AND user_id = auth.uid()
+      SELECT 1 FROM public.conversations
+      WHERE id = messages.conversation_id AND user_id = auth.uid()
     )
   );
 
--- 문서 RLS
 ALTER TABLE public.documents ENABLE ROW LEVEL SECURITY;
 CREATE POLICY "Users can view own documents" ON public.documents
   FOR SELECT USING (auth.uid() = user_id);
@@ -253,7 +221,6 @@ CREATE POLICY "Users can update own documents" ON public.documents
 CREATE POLICY "Users can delete own documents" ON public.documents
   FOR DELETE USING (auth.uid() = user_id);
 
--- 문서 청크 RLS
 ALTER TABLE public.document_chunks ENABLE ROW LEVEL SECURITY;
 CREATE POLICY "Users can view chunks from own documents" ON public.document_chunks
   FOR SELECT USING (
@@ -270,7 +237,44 @@ CREATE POLICY "Users can insert chunks to own documents" ON public.document_chun
     )
   );
 
--- 프롬프트 템플릿 RLS
+ALTER TABLE public.document_conversation_links ENABLE ROW LEVEL SECURITY;
+CREATE POLICY "Users can view links for their conversations or documents" ON public.document_conversation_links
+  FOR SELECT USING (
+    EXISTS (
+      SELECT 1 FROM public.conversations
+      WHERE id = document_conversation_links.conversation_id AND user_id = auth.uid()
+    )
+    OR
+    EXISTS (
+      SELECT 1 FROM public.documents
+      WHERE id = document_conversation_links.document_id AND user_id = auth.uid()
+    )
+  );
+CREATE POLICY "Users can insert links for their conversations and documents" ON public.document_conversation_links
+  FOR INSERT WITH CHECK (
+    EXISTS (
+      SELECT 1 FROM public.conversations
+      WHERE id = document_conversation_links.conversation_id AND user_id = auth.uid()
+    )
+    AND
+    EXISTS (
+      SELECT 1 FROM public.documents
+      WHERE id = document_conversation_links.document_id AND user_id = auth.uid()
+    )
+  );
+CREATE POLICY "Users can delete links for their conversations and documents" ON public.document_conversation_links
+  FOR DELETE USING (
+    EXISTS (
+      SELECT 1 FROM public.conversations
+      WHERE id = document_conversation_links.conversation_id AND user_id = auth.uid()
+    )
+    OR
+    EXISTS (
+      SELECT 1 FROM public.documents
+      WHERE id = document_conversation_links.document_id AND user_id = auth.uid()
+    )
+  );
+
 ALTER TABLE public.prompt_templates ENABLE ROW LEVEL SECURITY;
 CREATE POLICY "Users can view own and public templates" ON public.prompt_templates
   FOR SELECT USING (auth.uid() = user_id OR is_public = true);
@@ -281,14 +285,12 @@ CREATE POLICY "Users can update own templates" ON public.prompt_templates
 CREATE POLICY "Users can delete own templates" ON public.prompt_templates
   FOR DELETE USING (auth.uid() = user_id);
 
--- API 사용량 로그 RLS
 ALTER TABLE public.api_usage_logs ENABLE ROW LEVEL SECURITY;
 CREATE POLICY "Users can view own usage logs" ON public.api_usage_logs
   FOR SELECT USING (auth.uid() = user_id);
 CREATE POLICY "Service can insert usage logs" ON public.api_usage_logs
-  FOR INSERT WITH CHECK (true); -- 서비스 레벨에서 삽입
+  FOR INSERT WITH CHECK (true);
 
--- 피드백 RLS
 ALTER TABLE public.message_feedback ENABLE ROW LEVEL SECURITY;
 CREATE POLICY "Users can view own feedback" ON public.message_feedback
   FOR SELECT USING (auth.uid() = user_id);
@@ -297,11 +299,7 @@ CREATE POLICY "Users can insert own feedback" ON public.message_feedback
 CREATE POLICY "Users can update own feedback" ON public.message_feedback
   FOR UPDATE USING (auth.uid() = user_id);
 
--- -----------------------------------------------------------------------------
 -- 트리거 함수
--- -----------------------------------------------------------------------------
-
--- updated_at 자동 업데이트 함수
 CREATE OR REPLACE FUNCTION update_updated_at_column()
 RETURNS TRIGGER AS $$
 BEGIN
@@ -315,8 +313,8 @@ CREATE TRIGGER update_user_profiles_updated_at
   BEFORE UPDATE ON public.user_profiles
   FOR EACH ROW EXECUTE FUNCTION update_updated_at_column();
 
-CREATE TRIGGER update_chat_sessions_updated_at
-  BEFORE UPDATE ON public.chat_sessions
+CREATE TRIGGER update_conversations_updated_at
+  BEFORE UPDATE ON public.conversations
   FOR EACH ROW EXECUTE FUNCTION update_updated_at_column();
 
 CREATE TRIGGER update_documents_updated_at
@@ -353,10 +351,6 @@ BEGIN
   DELETE FROM public.prompt_cache WHERE expires_at < NOW();
 END;
 $$ language 'plpgsql';
-
--- -----------------------------------------------------------------------------
--- 유틸리티 함수
--- -----------------------------------------------------------------------------
 
 -- 벡터 유사도 검색 함수
 CREATE OR REPLACE FUNCTION public.search_similar_chunks(
@@ -416,10 +410,6 @@ BEGIN
 END;
 $$ language 'plpgsql';
 
--- -----------------------------------------------------------------------------
--- 초기 데이터 삽입
--- -----------------------------------------------------------------------------
-
 -- 기본 프롬프트 템플릿
 INSERT INTO public.prompt_templates (name, description, template, category, is_public, variables) VALUES
 ('일반 어시스턴트', '일반적인 AI 어시스턴트 역할', '당신은 도움이 되는 AI 어시스턴트입니다. 사용자의 질문에 정확하고 유용한 답변을 제공해주세요.', 'general', true, '[]'),
@@ -427,26 +417,9 @@ INSERT INTO public.prompt_templates (name, description, template, category, is_p
 ('번역가', '다국어 번역 서비스', '당신은 전문 번역가입니다. {{source_lang}}에서 {{target_lang}}로 정확하게 번역해주세요.', 'translation', true, '[{"name": "source_lang", "type": "string", "description": "원본 언어"}, {"name": "target_lang", "type": "string", "description": "번역할 언어"}]'),
 ('문서 요약', '긴 문서의 핵심 내용 요약', '다음 문서의 핵심 내용을 {{length}} 형태로 요약해주세요. 중요한 포인트를 놓치지 마세요.', 'analysis', true, '[{"name": "length", "type": "string", "description": "요약 길이 (짧게/보통/자세히)"}]');
 
--- 스케줄러 설정 (pg_cron 확장이 있는 경우)
--- SELECT cron.schedule('cleanup-cache', '0 2 * * *', 'SELECT public.cleanup_expired_cache();');
-
--- -----------------------------------------------------------------------------
 -- 권한 설정
--- -----------------------------------------------------------------------------
-
--- 인증된 사용자에게 테이블 접근 권한 부여
 GRANT SELECT, INSERT, UPDATE, DELETE ON ALL TABLES IN SCHEMA public TO authenticated;
 GRANT USAGE ON ALL SEQUENCES IN SCHEMA public TO authenticated;
-
--- 익명 사용자는 공개 프롬프트 템플릿만 조회 가능
 GRANT SELECT ON public.prompt_templates TO anon;
-
--- 서비스 역할에게 모든 권한 부여 (서버 사이드 작업용)
 GRANT ALL ON ALL TABLES IN SCHEMA public TO service_role;
 GRANT ALL ON ALL SEQUENCES IN SCHEMA public TO service_role;
-
--- down
-DROP TABLE IF EXISTS public.document_conversation_links;
-DROP TABLE IF EXISTS public.documents;
-DROP TABLE IF EXISTS public.messages;
-DROP TABLE IF EXISTS public.conversations;
