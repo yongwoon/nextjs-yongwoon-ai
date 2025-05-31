@@ -21,8 +21,10 @@ export function useLoginForm() {
     resolver: zodResolver(loginSchema),
   });
 
-  const onSubmit = async (data: LoginFormValues) => {
-    console.log("로그인 데이터:", data);
+  const onSubmit = async (_data: LoginFormValues) => {
+    // TODO: Supabase 인증 로직 구현 예정
+    // Magic Link 기반 인증으로 변경될 예정
+    await new Promise((resolve) => setTimeout(resolve, 1000)); // 임시 로딩 시뮬레이션
     reset();
   };
 
