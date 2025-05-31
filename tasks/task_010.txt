@@ -1,81 +1,11 @@
 # Task ID: 10
-# Title: RAG System Implementation
+# Title: Conversation Management System
 # Status: pending
-# Dependencies: 4, 9
+# Dependencies: 9
 # Priority: high
-# Description: Develop a complete Retrieval-Augmented Generation (RAG) system that combines document knowledge with AI capabilities for accurate, context-aware responses.
+# Description: Implement conversation sessions with save, load, and management capabilities
 # Details:
-1. Install LangChain dependencies: `npm install langchain @langchain/openai`
-2. Implement RAG pipeline components:
-   - Document retriever using vector database
-   - Context builder with relevance filtering
-   - Prompt construction with retrieved context
-   - Response generation with AI models
-3. Create advanced retrieval strategies:
-   - Multi-query retrieval for complex questions
-   - Hybrid retrieval (vector + keyword)
-   - Re-ranking of retrieved documents
-4. Implement context management:
-   - Dynamic context window sizing
-   - Token budget management
-   - Context prioritization algorithms
-5. Add RAG-specific prompting techniques:
-   - Few-shot examples for better grounding
-   - Source attribution instructions
-   - Confidence scoring
-6. Create evaluation and feedback loop:
-   - Answer quality assessment
-   - Retrieval precision metrics
-   - User feedback collection
-7. Implement advanced RAG features:
-   - Multi-step reasoning
-   - Query decomposition for complex questions
-   - Self-correction mechanisms
+Create conversation service for CRUD operations on conversations and messages tables. Implement conversation sidebar with search and filtering. Add conversation metadata: title auto-generation, last_message_at, message_count. Create conversation sharing functionality with public URLs. Implement conversation export (JSON, markdown). Add conversation templates and quick actions. Use React 19's concurrent features for smooth list rendering.
 
 # Test Strategy:
-1. Test RAG accuracy with known-answer questions
-2. Evaluate retrieval precision and recall
-3. Test with various document types and content
-4. Benchmark end-to-end response time
-5. Validate source attribution accuracy
-6. Test with complex, multi-part questions
-7. Evaluate context relevance
-8. Test with edge cases (no relevant context, ambiguous questions)
-
-# Subtasks:
-## 1. Document Retrieval System [pending]
-### Dependencies: None
-### Description: Design and implement the retrieval component using a vector database and embedding models to efficiently fetch relevant documents from the knowledge base.
-### Details:
-Include dense retrieval techniques, indexing strategies, and support for both keyword and semantic search. Define accuracy metrics such as retrieval precision, recall, and latency. Test scenarios: simple fact lookup, ambiguous queries, and retrieval under high load.
-
-## 2. Context Building and Relevance Filtering [pending]
-### Dependencies: 10.1
-### Description: Develop mechanisms to build query context and filter retrieved documents for relevance before passing them to the generation model.
-### Details:
-Implement context windowing, reranking, and relevance scoring. Use metrics like context relevance score and context window hit rate. Test scenarios: multi-part queries, context drift, and irrelevant document filtering.
-
-## 3. Dynamic Prompt Construction [pending]
-### Dependencies: 10.2
-### Description: Create dynamic prompts for the language model by integrating filtered context and user queries, optimizing for clarity and completeness.
-### Details:
-Engineer prompts to maximize model performance and minimize hallucinations. Metrics: prompt completeness, prompt clarity, and prompt-induced error rate. Test scenarios: prompt length limits, ambiguous context, and prompt injection attempts.
-
-## 4. Response Generation with Source Attribution [pending]
-### Dependencies: 10.3
-### Description: Generate coherent responses using the language model, ensuring each answer includes accurate source attribution for transparency.
-### Details:
-Integrate mechanisms for inline citation and source linking. Metrics: attribution accuracy, response fluency, and citation coverage. Test scenarios: multi-source answers, missing sources, and conflicting source information.
-
-## 5. Multi-Step Reasoning for Complex Queries [pending]
-### Dependencies: 10.4
-### Description: Implement multi-step reasoning and query decomposition to handle complex or multi-part user queries, coordinating across retrieval and generation agents.
-### Details:
-Enable agent orchestration for subtask division and iterative reasoning. Metrics: reasoning accuracy, decomposition success rate, and stepwise consistency. Test scenarios: multi-hop questions, chained reasoning, and self-correction.
-
-## 6. Evaluation and Feedback Mechanisms [pending]
-### Dependencies: 10.5
-### Description: Establish evaluation pipelines and feedback loops to monitor system performance, collect user feedback, and iteratively improve accuracy.
-### Details:
-Implement automated and human-in-the-loop evaluation, user feedback collection, and continuous retraining. Metrics: end-to-end accuracy, user satisfaction, and error reduction rate. Test scenarios: regression testing, adversarial queries, and feedback-driven improvement.
-
+Test conversation creation, saving, loading, search functionality, sharing, and export features

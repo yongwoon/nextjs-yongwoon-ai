@@ -1,43 +1,11 @@
 # Task ID: 6
-# Title: Basic Chat Interface
+# Title: JWT Session Management
 # Status: pending
-# Dependencies: 3, 4
-# Priority: medium
-# Description: Develop a responsive chat interface with message history, typing indicators, and basic conversation management.
+# Dependencies: 5
+# Priority: high
+# Description: Implement JWT token-based session management with automatic renewal
 # Details:
-1. Create React components for chat interface:
-   - ChatContainer (main wrapper)
-   - MessageList (conversation history)
-   - MessageItem (individual messages)
-   - ChatInput (user input with submit)
-   - TypingIndicator (AI response loading)
-2. Implement chat state management:
-   - Use React 19 useTransition for smooth UI
-   - Message history with pagination
-   - Conversation context management
-3. Add real-time message streaming:
-   - Implement using Server-Sent Events
-   - Progressive message rendering
-   - Typing indicator during streaming
-4. Create conversation persistence:
-   - Save to Supabase database
-   - Load conversation history
-   - Delete/archive conversations
-5. Implement responsive design:
-   - Mobile-first approach
-   - Tailwind CSS for styling
-   - Accessibility features (ARIA roles, keyboard navigation)
-6. Add basic conversation features:
-   - New conversation button
-   - Conversation title generation
-   - Message timestamps
+Use Supabase built-in JWT handling with custom session management. Create session service for token refresh using supabase.auth.getSession(). Implement automatic token renewal 5 minutes before expiration. Add session validation middleware for protected routes. Create auth context provider using React 19's use() hook for session state. Implement secure logout with token invalidation.
 
 # Test Strategy:
-1. Test chat interface on multiple devices and screen sizes
-2. Verify message sending and receiving
-3. Test real-time streaming functionality
-4. Validate conversation persistence
-5. Test accessibility with screen readers
-6. Verify keyboard navigation
-7. Test conversation management features
-8. Validate UI performance with large message history
+Test token generation, automatic renewal, session persistence, logout functionality, and expired token handling

@@ -1,41 +1,11 @@
 # Task ID: 9
-# Title: Vector Database Integration
+# Title: Real-time Chat Interface
 # Status: pending
 # Dependencies: 8
-# Priority: medium
-# Description: Integrate a vector database (Pinecone/Qdrant) for storing and retrieving document embeddings for the RAG system.
+# Priority: high
+# Description: Build Claude.ai-style chat interface with real-time streaming responses
 # Details:
-1. Set up vector database:
-   - Install dependencies: `npm install @pinecone-database/pinecone` or `npm install @qdrant/js-client-rest`
-   - Configure environment variables for API access
-   - Create index with appropriate dimensions (1536 for OpenAI embeddings)
-2. Implement embedding generation:
-   - Use OpenAI's text-embedding-3-small model
-   - Batch processing for efficiency
-   - Caching to prevent duplicate embedding generation
-3. Create vector storage service:
-   - Upsert embeddings to vector DB
-   - Query similar vectors with metadata filtering
-   - Delete and update operations
-4. Implement namespace management:
-   - User-based namespaces for data isolation
-   - Document-based collections
-   - Metadata filtering capabilities
-5. Add vector search functionality:
-   - Semantic search implementation
-   - Hybrid search (semantic + keyword)
-   - Relevance scoring and filtering
-6. Create backup and synchronization:
-   - Regular backup of vector indices
-   - Consistency checking with source documents
-   - Reindexing capabilities
+Create chat components: ChatContainer, MessageList, MessageInput, StreamingMessage. Implement Server-Sent Events for real-time streaming using AI SDK's streamText. Add message state management with React 19's useOptimistic for instant UI updates. Create typing indicators and message status (sending, sent, error). Implement message formatting with markdown support using react-markdown@^9.0. Add copy message, regenerate response functionality.
 
 # Test Strategy:
-1. Test embedding generation accuracy
-2. Benchmark vector insertion performance
-3. Test query performance with various vector counts
-4. Validate semantic search accuracy
-5. Test namespace isolation
-6. Verify backup and restore functionality
-7. Test concurrent vector operations
-8. Validate consistency between documents and vectors
+Test real-time streaming, message persistence, UI responsiveness, markdown rendering, and error states

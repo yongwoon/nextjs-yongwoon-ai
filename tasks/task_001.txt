@@ -1,86 +1,11 @@
 # Task ID: 1
-# Title: Project Setup and Docker Configuration
+# Title: Project Setup and Environment Configuration
 # Status: done
 # Dependencies: None
 # Priority: high
-# Description: Initialize the Next.js 15 project with React 19, TypeScript, and Tailwind CSS. Set up Docker development environment with necessary configurations.
+# Description: Initialize Next.js 15 project with React 19, TypeScript, and essential development tools
 # Details:
-1. Create a new Next.js 15 project with App Router: `npx create-next-app@latest yongwoon-ai --typescript --tailwind --eslint --app`
-2. Configure TypeScript (tsconfig.json) with strict mode enabled
-3. Set up Docker development environment with:
-   - Node.js 18+ base image (node:18-alpine)
-   - Multi-stage build for development and production
-   - Docker Compose for local development with Redis and other services
-   - Volume mapping for hot reloading
-4. Configure environment variables (.env.local, .env.example)
-5. Set up project structure following Next.js 15 best practices:
-   - app/ (for App Router)
-   - components/ (for UI components)
-   - lib/ (for utilities)
-   - types/ (for TypeScript types)
-   - public/ (for static assets)
-6. Install core dependencies:
-   - next@15.x
-   - react@19.x
-   - react-dom@19.x
-   - tailwindcss@3.x
-   - typescript@5.x
-   - @vercel/ai@latest
+Create Next.js 15 project using `npx create-next-app@latest --typescript --tailwind --app`. Install dependencies: @types/node@^20, typescript@^5.3, tailwindcss@^3.4, @tailwindcss/forms, @tailwindcss/typography. Setup Docker development environment with docker-compose.yml including Redis container. Configure .env.local with Supabase, OpenAI, Anthropic API keys. Setup ESLint, Prettier, and Husky for code quality.
 
 # Test Strategy:
-1. Verify Docker container builds successfully
-2. Ensure Next.js development server runs in Docker environment
-3. Validate hot reloading functionality
-4. Check TypeScript configuration with sample components
-5. Verify Tailwind CSS is working correctly
-6. Test environment variable loading
-
-# Subtasks:
-## 1. Initialize Next.js 15 project with React 19 [done]
-### Dependencies: None
-### Description: Create a new Next.js 15 project with React 19 as the foundation for the application
-### Details:
-- Use `create-next-app` with appropriate flags to specify Next.js 15 and React 19
-- Configure the project with App Router architecture
-- Set up basic folder structure (app, components, lib, etc.)
-- Ensure the development server runs correctly
-- Create a simple home page to verify the setup
-- Document the initialization process for team reference
-
-## 2. Configure TypeScript and project structure [done]
-### Dependencies: 1.1
-### Description: Set up TypeScript configuration and establish a robust project structure following best practices
-### Details:
-- Configure tsconfig.json with strict type checking
-- Set up path aliases for cleaner imports
-- Create type definitions for common data structures
-- Establish consistent naming conventions
-- Configure ESLint and Prettier for TypeScript
-- Set up unit testing framework with TypeScript support
-- Document the TypeScript configuration for the team
-
-## 3. Set up Docker environment [done]
-### Dependencies: 1.1, 1.2
-### Description: Create Docker configuration for development, testing, and production environments
-### Details:
-- Create Dockerfile for the Next.js application
-- Set up docker-compose.yml for local development
-- Configure multi-stage builds for optimized production images
-- Set up volume mapping for hot reloading during development
-- Configure networking between containers if needed
-- Document Docker commands for common operations
-- Ensure Docker builds are optimized for CI/CD pipeline
-
-## 4. Manage environment variables and dependencies [done]
-### Dependencies: 1.3
-### Description: Establish a system for managing environment variables and project dependencies across different environments
-### Details:
-- Create .env.example file with required variables
-- Set up .env.local, .env.development, and .env.production
-- Configure Next.js to use the appropriate environment variables
-- Document required environment variables
-- Set up dependency management strategy (npm/yarn/pnpm)
-- Configure package.json with appropriate scripts
-- Implement a strategy for secret management in production
-- Document the process for updating dependencies
-
+Verify project builds successfully, Docker containers start properly, and all environment variables are loaded correctly

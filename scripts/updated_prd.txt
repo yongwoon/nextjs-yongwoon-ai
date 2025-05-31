@@ -1,0 +1,185 @@
+# Yongwoon AI - 업데이트된 제품 요구사항 문서 (PRD)
+
+## 프로젝트 개요
+
+Next.js 15 + React 19 기반의 AI 서비스 플랫폼으로, Claude.ai와 유사한 사용자 경험을 제공하는 고급 AI 채팅 서비스입니다. Magic Link 기반 통합 인증 시스템과 크로스 브라우저 보안 기능을 포함합니다.
+
+## 핵심 기능
+
+### 1. 인증 시스템 (Magic Link 기반)
+- **통합 인증**: 회원가입/로그인 구분 없는 이메일 기반 인증
+- **Magic Link**: 이메일을 통한 원클릭 로그인
+- **크로스 브라우저 보안**: 다른 브라우저에서 접근 시 verification code 제공
+- **세션 관리**: JWT 토큰 기반 세션 관리 및 자동 갱신
+- **보안 모니터링**: 인증 시도 로그 및 이상 접근 감지
+
+### 2. AI 채팅 시스템
+- **다중 AI 모델**: OpenAI, Anthropic, Google AI 지원
+- **실시간 스트리밍**: Server-Sent Events 기반 실시간 응답
+- **대화 관리**: 대화 세션 저장 및 관리
+- **프롬프트 캐싱**: Redis 기반 응답 캐싱
+
+### 3. 문서 처리 및 RAG
+- **파일 업로드**: PDF, Word, 텍스트 파일 지원
+- **문서 파싱**: 자동 텍스트 추출 및 청킹
+- **벡터 검색**: 문서 기반 컨텍스트 생성
+- **RAG 시스템**: 문서 기반 질의응답
+
+### 4. 사용자 인터페이스
+- **Claude.ai 스타일 디자인**: 오렌지 그라데이션 로고, 미니멀한 UI
+- **반응형 디자인**: 모바일/데스크톱 최적화
+- **다크/라이트 모드**: 사용자 선택 가능
+- **접근성**: WCAG 2.1 AA 준수
+
+## 기술 스택
+
+### Frontend
+- **Next.js 15**: App Router, React 19
+- **TypeScript**: 타입 안전성
+- **Tailwind CSS**: 유틸리티 기반 스타일링
+- **React Hook Form + Zod**: 폼 검증
+
+### Backend & Database
+- **Supabase**: PostgreSQL + 인증 + 실시간 기능
+- **Row Level Security**: 사용자별 데이터 격리
+- **Edge Functions**: 서버리스 함수
+
+### AI & Processing
+- **AI SDK**: 다중 AI 모델 통합
+- **LangChain**: 문서 처리 및 RAG
+- **Vector Database**: 임베딩 저장 및 검색
+
+### Infrastructure
+- **Docker**: 컨테이너화된 개발 환경
+- **Redis**: 캐싱 및 세션 관리
+- **Vercel**: 배포 및 호스팅
+
+## 데이터베이스 스키마
+
+### 기존 테이블
+- `user_profiles`: 사용자 프로필 및 구독 정보
+- `conversations`: AI 대화 세션
+- `messages`: 대화 메시지
+- `documents`: 업로드된 문서
+- `document_chunks`: RAG용 문서 청크
+- `prompt_templates`: 재사용 가능한 프롬프트
+- `api_usage_logs`: API 사용량 추적
+
+### 새로 추가된 인증 테이블
+- `auth_tokens`: Magic Link 토큰 관리
+- `verification_codes`: 크로스 브라우저 인증용 6자리 코드
+- `auth_sessions`: 브라우저 세션 추적
+- `auth_attempt_logs`: 보안 모니터링 로그
+
+## 인증 Flow 상세
+
+### 1. 통합 인증 프로세스
+1. 사용자가 이메일 입력 (회원가입/로그인 구분 없음)
+2. Magic Link 이메일 발송
+3. 사용자가 Magic Link 클릭
+4. 자동 로그인 완료
+
+### 2. 크로스 브라우저 처리
+1. 다른 브라우저에서 Magic Link 클릭 감지
+2. 6자리 verification code 생성 및 표시
+3. 원래 브라우저에서 코드 입력
+4. 인증 완료
+
+### 3. 보안 기능
+- 브라우저 fingerprinting
+- IP 주소 추적
+- 토큰 만료 관리 (Magic Link: 15분, Verification Code: 5분)
+- 시도 횟수 제한
+- 보안 로그 기록
+
+## 사용자 경험 (UX)
+
+### 1. 인증 페이지
+- **EmailInputPage**: 이메일 입력 (Claude.ai 스타일)
+- **EmailSentPage**: 이메일 발송 확인
+- **VerificationPage**: Verification code 입력
+- **CrossBrowserVerificationPage**: 다른 브라우저용 코드 표시
+
+### 2. 메인 인터페이스
+- **랜딩 페이지**: Claude.ai 스타일 소개 페이지
+- **채팅 인터페이스**: 실시간 AI 대화
+- **문서 관리**: 파일 업로드 및 관리
+- **설정 페이지**: 사용자 프로필 및 환경설정
+
+## 성능 요구사항
+
+### 1. 응답 시간
+- 페이지 로드: 2초 이내
+- AI 응답 시작: 1초 이내
+- Magic Link 발송: 3초 이내
+
+### 2. 확장성
+- 동시 사용자: 1,000명
+- 일일 API 호출: 100,000회
+- 파일 업로드: 최대 10MB
+
+### 3. 보안
+- HTTPS 강제
+- JWT 토큰 보안
+- Rate Limiting
+- CSRF 보호
+
+## 배포 및 운영
+
+### 1. 환경 구성
+- **Development**: Docker Compose
+- **Staging**: Vercel Preview
+- **Production**: Vercel + Supabase
+
+### 2. 모니터링
+- 에러 추적: Sentry
+- 성능 모니터링: Vercel Analytics
+- 사용량 추적: Supabase Dashboard
+
+### 3. 백업 및 복구
+- 데이터베이스 자동 백업
+- 파일 저장소 백업
+- 재해 복구 계획
+
+## 개발 우선순위
+
+### Phase 1: 인증 시스템 (높음)
+1. Magic Link 기반 인증 구현
+2. 크로스 브라우저 보안 기능
+3. 세션 관리 및 JWT 토큰
+4. 보안 모니터링
+
+### Phase 2: 기본 AI 채팅 (높음)
+1. AI 모델 통합
+2. 기본 채팅 인터페이스
+3. 대화 저장 및 관리
+4. 실시간 스트리밍
+
+### Phase 3: 고급 기능 (중간)
+1. 문서 업로드 및 처리
+2. RAG 시스템 구현
+3. 프롬프트 캐싱
+4. 사용자 대시보드
+
+### Phase 4: 최적화 및 배포 (중간)
+1. 성능 최적화
+2. 테스트 코드 작성
+3. CI/CD 파이프라인
+4. 프로덕션 배포
+
+## 성공 지표
+
+### 1. 기술적 지표
+- 시스템 가용성: 99.9%
+- 평균 응답 시간: 1초 이내
+- 에러율: 0.1% 이하
+
+### 2. 사용자 지표
+- 인증 완료율: 95% 이상
+- 일일 활성 사용자 증가율: 10%
+- 사용자 만족도: 4.5/5.0 이상
+
+### 3. 보안 지표
+- 보안 사고: 0건
+- 인증 실패율: 1% 이하
+- 이상 접근 감지 정확도: 95% 이상
