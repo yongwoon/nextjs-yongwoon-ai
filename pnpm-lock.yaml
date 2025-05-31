@@ -54,7 +54,7 @@ importers:
         specifier: ^0.5.2
         version: 0.5.2(@supabase/supabase-js@2.49.8)
       '@supabase/supabase-js':
-        specifier: ^2.49.8
+        specifier: ^2.38
         version: 2.49.8
       '@t3-oss/env-nextjs':
         specifier: ^0.13.6

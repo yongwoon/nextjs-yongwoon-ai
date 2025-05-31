@@ -65,6 +65,8 @@
 
 ### Supabase & Environment
 
+- **@supabase/supabase-js** (^2.38) - Supabase 공식 JS/TS 클라이언트 라이브러리
+- **@supabase/auth-helpers-nextjs** (^0.10.0) - Next.js에서 Supabase 인증을 쉽게 처리할 수 있는 헬퍼 패키지
 - **@supabase/ssr** (^0.5.2) - Supabase의 Server-Side Rendering 지원 패키지로 Next.js와 함께 안전한 서버사이드 인증과 데이터 페칭을 제공
 - **@t3-oss/env-nextjs** (^0.13.6) - TypeScript로 환경 변수의 런타임 유효성 검사와 타입 안전성을 보장하는 스키마 기반 환경 변수 관리 도구
 
@@ -120,7 +122,7 @@
 
 ### Form Handling & Validation
 
-- **react-hook-form** (^7.54.2) - 최소한의 리렌더링으로 고성능 폼을 구축하기 위한 React 라이브러리
+- **react-hook-form** (^7.56.4) - 최소한의 리렌더링으로 고성능 폼을 구축하기 위한 React 라이브러리
 - **@hookform/resolvers** (^5.0.1) - React Hook Form과 다양한 스키마 검증 라이브러리(Zod, Yup, Joi 등)를 연결하는 어댑터
 
 ## 🛠️ Development Tools
@@ -144,9 +146,6 @@
 - **@typescript-eslint/eslint-plugin** (^8.32.1) - TypeScript 특화 ESLint 규칙들을 제공하는 플러그인
 - **@eslint/js** (^9.27.0) - ESLint의 기본 JavaScript 규칙 세트
 - **@eslint/eslintrc** (^3.3.1) - 레거시 ESLint 설정 파일(.eslintrc) 형식과의 호환성을 제공하는 유틸리티
-
-### Code Formatting
-
 - **prettier** (^3.5.3) - 일관된 코드 스타일을 자동으로 적용하는 opinionated 코드 포맷터
 - **eslint-config-prettier** (^10.1.5) - ESLint와 Prettier 간의 규칙 충돌을 방지하고 Prettier가 처리할 규칙들을 비활성화하는 설정
 - **eslint-plugin-prettier** (^5.4.0) - Prettier를 ESLint 규칙으로 실행하여 포맷팅 이슈를 ESLint 오류로 표시하는 플러그인
