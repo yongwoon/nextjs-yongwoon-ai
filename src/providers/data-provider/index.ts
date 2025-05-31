@@ -1,6 +1,3 @@
 "use client";
 
-import { dataProvider as dataProviderSupabase } from "@refinedev/supabase";
-import { supabaseBrowserClient } from "@utils/supabase/client";
-
-export const dataProvider = dataProviderSupabase(supabaseBrowserClient);
+// refine 관련 코드 전체 삭제

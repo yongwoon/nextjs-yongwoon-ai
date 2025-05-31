@@ -35,7 +35,7 @@
 8. Validate error handling and user feedback
 
 # Subtasks:
-## 1. Authentication UI Components and Forms [pending]
+## 1. Authentication UI Components and Forms [in-progress]
 ### Dependencies: None
 ### Description: Develop responsive authentication UI components for signup, login, password reset, and email verification
 ### Details:

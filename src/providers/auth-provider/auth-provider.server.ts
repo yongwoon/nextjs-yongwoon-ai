@@ -1,7 +1,8 @@
-import type { AuthProvider } from "@refinedev/core";
+// refine 관련 코드 전체 삭제
+
 import { createSupabaseServerClient } from "@utils/supabase/server";
 
-export const authProviderServer: Pick<AuthProvider, "check"> = {
+export const authProviderServer = {
   check: async () => {
     const supabase = await createSupabaseServerClient();
     const { data, error } = await supabase.auth.getUser();
