@@ -1,45 +1,11 @@
 # Task ID: 8
-# Title: Document Upload and Processing System
+# Title: AI SDK Integration and Model Configuration
 # Status: pending
-# Dependencies: 2
-# Priority: medium
-# Description: Create a system for uploading, parsing, and processing various document types (PDF, Word, text) for the RAG system.
+# Dependencies: 3
+# Priority: high
+# Description: Setup AI SDK with multiple providers (OpenAI, Anthropic, Google AI)
 # Details:
-1. Implement file upload functionality:
-   - Create drag-and-drop interface
-   - Set up Vercel Blob Storage integration
-   - Add file type validation and size limits
-2. Implement document parsing:
-   - Install dependencies: `npm install pdf-parse mammoth`
-   - PDF parsing with pdf-parse
-   - Word document parsing with mammoth
-   - Plain text and markdown handling
-3. Create document processing pipeline:
-   - File upload to temporary storage
-   - Document parsing and text extraction
-   - Metadata extraction (title, author, date)
-   - Chunking text into manageable segments
-   - Storing processed documents in Supabase
-4. Add document management UI:
-   - Document list view
-   - Document details page
-   - Processing status indicators
-   - Delete/archive functionality
-5. Implement background processing:
-   - Queue system for large documents
-   - Progress tracking and reporting
-   - Error handling and retry logic
-6. Add support for additional file types:
-   - CSV/Excel with xlsx package
-   - HTML parsing
-   - Code files with syntax awareness
+Install ai@^3.0 (Vercel AI SDK). Configure providers: @ai-sdk/openai@^0.0.42, @ai-sdk/anthropic@^0.0.27, @ai-sdk/google@^0.0.31. Create AI service with model switching capability. Implement streaming responses using streamText(). Add model-specific configurations: temperature, max_tokens, top_p. Create AI provider abstraction layer for easy model switching. Setup fallback mechanisms for provider failures.
 
 # Test Strategy:
-1. Test upload functionality with various file types and sizes
-2. Verify parsing accuracy for different document formats
-3. Test chunking algorithm with various content types
-4. Validate metadata extraction
-5. Test concurrent uploads and processing
-6. Verify error handling for corrupt files
-7. Test large document processing performance
-8. Validate document management UI functionality
+Test each AI provider connection, streaming responses, model switching, error handling, and fallback mechanisms

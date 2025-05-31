@@ -1,40 +1,11 @@
 # Task ID: 5
-# Title: Redis Caching System
+# Title: Cross-Browser Security System
 # Status: pending
 # Dependencies: 4
-# Priority: medium
-# Description: Implement a Redis-based caching system for AI responses to optimize performance, reduce duplicate requests, and manage rate limiting.
+# Priority: high
+# Description: Implement browser fingerprinting and verification code system for cross-browser access
 # Details:
-1. Set up Redis connection:
-   - Install dependencies: `npm install redis ioredis`
-   - Configure connection with TLS for production
-   - Create connection pool for high availability
-2. Implement prompt caching:
-   - Hash generation for prompts
-   - TTL-based cache expiration
-   - Metadata storage with responses
-3. Create middleware for request deduplication:
-   - In-flight request tracking
-   - Request coalescing for identical prompts
-4. Implement rate limiting:
-   - User-based rate limits
-   - Sliding window algorithm
-   - Quota management
-5. Add cache invalidation strategies:
-   - Manual invalidation
-   - Automatic expiration
-   - Selective purging
-6. Implement cache analytics:
-   - Hit/miss ratio tracking
-   - Cache efficiency metrics
-7. Create Redis Pub/Sub for real-time cache updates across instances
+Install @fingerprintjs/fingerprintjs@^4.2 for browser fingerprinting. Create browser detection service using navigator.userAgent, screen resolution, timezone. Implement 6-digit verification code generation and storage in verification_codes table. Create CrossBrowserVerificationPage and VerificationPage components. Add IP tracking using headers['x-forwarded-for']. Implement session tracking in auth_sessions table with browser_fingerprint field.
 
 # Test Strategy:
-1. Benchmark response times with and without caching
-2. Test cache hit/miss scenarios
-3. Verify rate limiting functionality
-4. Test concurrent identical requests for deduplication
-5. Validate cache invalidation strategies
-6. Measure memory usage under load
-7. Test Redis connection failure recovery
-8. Verify analytics data accuracy
+Test cross-browser detection, verification code generation/validation, session tracking, and security logging

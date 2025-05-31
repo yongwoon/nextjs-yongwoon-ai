@@ -1,43 +1,11 @@
 # Task ID: 13
-# Title: Admin Panel with Refine Framework
+# Title: Document Parsing and Text Extraction
 # Status: pending
-# Dependencies: 2, 3, 12
-# Priority: low
-# Description: Develop an admin panel using Refine Framework for system monitoring, user management, and API usage statistics.
+# Dependencies: 12
+# Priority: medium
+# Description: Implement automatic text extraction and document chunking for RAG
 # Details:
-1. Set up Refine Framework:
-   - Install dependencies: `npm install @refinedev/core @refinedev/supabase`
-   - Configure data providers for Supabase
-   - Set up authentication provider
-2. Create admin layout and navigation:
-   - Sidebar with section navigation
-   - Header with admin actions
-   - Dashboard overview
-3. Implement user management:
-   - User list with filtering and search
-   - User details and edit forms
-   - Role management
-   - Account actions (suspend, delete)
-4. Add API usage monitoring:
-   - Usage charts and graphs
-   - Cost analysis
-   - Quota management
-   - Anomaly detection
-5. Create system monitoring:
-   - Service health status
-   - Error logs and tracking
-   - Performance metrics
-6. Implement settings management:
-   - Global system settings
-   - Model configurations
-   - Pricing and quota settings
+Create document processing service with text extraction for PDF (pdf-parse), Word (mammoth), and plain text. Implement intelligent chunking using LangChain's RecursiveCharacterTextSplitter with overlap. Add chunk size optimization (500-1000 tokens). Create document preprocessing: cleaning, normalization, metadata extraction. Store chunks in document_chunks table with vector embeddings. Implement async processing using Supabase Edge Functions.
 
 # Test Strategy:
-1. Test admin authentication and authorization
-2. Verify user management functionality
-3. Test data loading and filtering
-4. Validate chart and graph rendering
-5. Test settings changes and application
-6. Verify responsive design for admin panel
-7. Test with sample data for performance
-8. Validate admin actions and their effects
+Test text extraction accuracy, chunking quality, processing speed, and chunk storage for various document types

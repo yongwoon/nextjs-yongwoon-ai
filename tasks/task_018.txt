@@ -1,0 +1,11 @@
+# Task ID: 18
+# Title: User Dashboard and Settings
+# Status: pending
+# Dependencies: 10
+# Priority: medium
+# Description: Create user profile management and application settings interface
+# Details:
+Create user dashboard with profile management, usage statistics, and settings. Implement profile editing: name, avatar, preferences. Add usage tracking dashboard: API calls, document uploads, conversation count. Create settings panels: theme selection, notification preferences, AI model preferences. Implement data export functionality (GDPR compliance). Add account deletion with data cleanup.
+
+# Test Strategy:
+Test profile updates, settings persistence, usage statistics accuracy, data export functionality, and account deletion
