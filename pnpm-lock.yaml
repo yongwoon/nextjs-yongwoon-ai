@@ -53,6 +53,9 @@ importers:
       '@supabase/ssr':
         specifier: ^0.5.2
         version: 0.5.2(@supabase/supabase-js@2.49.8)
+      '@supabase/supabase-js':
+        specifier: ^2.49.8
+        version: 2.49.8
       '@t3-oss/env-nextjs':
         specifier: ^0.13.6
         version: 0.13.6(typescript@5.8.3)(zod@3.25.30)
@@ -9348,7 +9351,7 @@ snapshots:
       isstream: 0.1.2
       jsonwebtoken: 9.0.2
       mime-types: 2.1.35
-      retry-axios: 2.6.0(axios@1.9.0)
+      retry-axios: 2.6.0(axios@1.9.0(debug@4.4.1))
       tough-cookie: 4.1.4
     transitivePeerDependencies:
       - supports-color
@@ -10666,7 +10669,7 @@ snapshots:
       onetime: 5.1.2
       signal-exit: 3.0.7
 
-  retry-axios@2.6.0(axios@1.9.0):
+  retry-axios@2.6.0(axios@1.9.0(debug@4.4.1)):
     dependencies:
       axios: 1.9.0(debug@4.4.1)
 
