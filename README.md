@@ -60,12 +60,39 @@ cp .env.example .env.local
 
 ### 2. Supabase 프로젝트 설정
 
-#### 2.1 새 Supabase 프로젝트 생성
+#### 🚀 자동 설정 (권장)
+
+로컬 Supabase 환경을 빠르게 설정하려면 제공된 스크립트를 사용하세요:
+
+```bash
+# 스크립트 실행 권한 부여 (최초 1회)
+chmod +x scripts/supabase-local-setup.sh
+
+# 자동 설정 스크립트 실행
+./scripts/supabase-local-setup.sh
+```
+
+**스크립트가 수행하는 작업:**
+- ✅ 필수 도구 확인 (Docker, Node.js, npm)
+- 📦 Supabase CLI 설치/업데이트
+- 🧹 기존 Supabase 인스턴스 정리
+- 🚀 로컬 Supabase 환경 시작
+- 🗄️ 데이터베이스 마이그레이션 적용
+- 🌱 시드 데이터 로드 (선택사항)
+- 📊 개발 환경 정보 출력
+
+스크립트 실행 후 Supabase Studio(`http://localhost:54323`)에서 데이터베이스를 관리할 수 있습니다.
+
+#### 🔧 수동 설정
+
+자동 스크립트를 사용하지 않는 경우 아래 단계를 따라 수동으로 설정하세요:
+
+##### 1. 새 Supabase 프로젝트 생성
 1. [Supabase Dashboard](https://app.supabase.com)에서 새 프로젝트 생성
 2. Project Name, Database Password 설정
 3. Region 선택 (가까운 지역 권장)
 
-#### 2.2 Supabase CLI 연결
+##### 2. Supabase CLI 연결
 ```bash
 # 프로젝트 연결 (Reference ID와 DB Password 필요)
 supabase link --project-ref YOUR_PROJECT_REF
@@ -74,7 +101,7 @@ supabase link --project-ref YOUR_PROJECT_REF
 supabase status
 ```
 
-#### 2.3 데이터베이스 스키마 적용
+##### 3. 데이터베이스 스키마 적용
 ```bash
 # 마이그레이션 적용 (AI 서비스용 테이블 생성)
 supabase db push
@@ -82,18 +109,6 @@ supabase db push
 # 테이블 생성 확인
 # Supabase Dashboard > Table Editor에서 확인
 ```
-
-### 3. 개발 서버 실행
-
-```bash
-# Docker를 사용한 전체 스택 실행 (권장)
-pnpm run docker:dev
-
-# 또는 로컬 개발 서버만 실행
-pnpm run dev
-```
-
-## 📊 Supabase 데이터베이스
 
 ### 테이블 구조
 현재 AI 서비스를 위한 다음 테이블들이 구성되어 있습니다:
@@ -151,7 +166,8 @@ supabase migration list
 - `pnpm run docker:down` - Docker 서비스 중지
 - `pnpm run docker:clean` - Docker 볼륨 포함 완전 정리
 
-### 데이터베이스
+### Supabase & 데이터베이스
+- `./scripts/supabase-local-setup.sh` - 로컬 Supabase 환경 자동 설정
 - `pnpm run db:migrate` - 데이터베이스 마이그레이션 안내
 - `pnpm run db:seed` - 시드 데이터 안내
 
@@ -277,18 +293,3 @@ task-master models --set-main claude-opus-4-20250514
 
 ## 🤝 기여하기
 
-1. Fork the Project
-2. Create your Feature Branch (`git checkout -b feature/AmazingFeature`)
-3. Commit your Changes (`git commit -m 'Add some AmazingFeature'`)
-4. Push to the Branch (`git push origin feature/AmazingFeature`)
-5. Open a Pull Request
-
-## 📄 라이선스
-
-이 프로젝트는 MIT 라이선스 하에 배포됩니다. 자세한 내용은 [LICENSE](LICENSE) 파일을 참조하세요.
-
-## 🙏 감사의 말
-
-- [Refine](https://refine.dev) - 강력한 React 프레임워크
-- [Supabase](https://supabase.com) - 오픈소스 Firebase 대안
-- [Vercel AI SDK](https://sdk.vercel.ai) - AI 애플리케이션 구축 도구
