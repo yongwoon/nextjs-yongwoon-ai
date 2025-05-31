@@ -1,6 +1,6 @@
 "use client";
 
-import React, { type PropsWithChildren } from "react";₩
+import React, { type PropsWithChildren } from "react";
 
 export const Layout: React.FC<PropsWithChildren> = ({ children }) => {
   return (
