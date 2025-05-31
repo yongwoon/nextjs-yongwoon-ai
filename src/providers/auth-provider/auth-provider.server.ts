@@ -2,7 +2,7 @@
 
 import { createSupabaseServerClient } from "@utils/supabase/server";
 
-export const authProviderServer: Pick<AuthProvider, "check"> = {
+export const authProviderServer = {
   check: async () => {
     const supabase = await createSupabaseServerClient();
     const { data, error } = await supabase.auth.getUser();

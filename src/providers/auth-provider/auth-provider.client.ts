@@ -3,7 +3,7 @@
 import { supabaseBrowserClient } from "@utils/supabase/client";
 
 export const authProviderClient = {
-  login: async ({ email, password }) => {
+  login: async ({ email, password }: { email: string; password: string }) => {
     const { data, error } = await supabaseBrowserClient.auth.signInWithPassword(
       {
         email,
@@ -51,7 +51,9 @@ export const authProviderClient = {
       redirectTo: "/login",
     };
   },
-  register: async ({ email, password }) => {
+  register: async (
+    { email, password }: { email: string; password: string },
+  ) => {
     try {
       const { data, error } = await supabaseBrowserClient.auth.signUp({
         email,
@@ -130,7 +132,7 @@ export const authProviderClient = {
 
     return null;
   },
-  onError: async (error) => {
+  onError: async (error: any) => {
     if (error?.code === "PGRST301" || error?.code === 401) {
       return {
         logout: true,
