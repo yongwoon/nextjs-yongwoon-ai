@@ -1,16 +1,3 @@
 "use client";
 
-import {
-  DevtoolsPanel,
-  DevtoolsProvider as DevtoolsProviderBase,
-} from "@refinedev/devtools";
-import React from "react";
-
-export const DevtoolsProvider = (props: React.PropsWithChildren) => {
-  return (
-    <DevtoolsProviderBase>
-      {props.children}
-      <DevtoolsPanel />
-    </DevtoolsProviderBase>
-  );
-};
+// refine 관련 코드 전체 삭제

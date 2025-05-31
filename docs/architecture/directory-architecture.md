@@ -31,11 +31,10 @@
 nextjs-yongwoon-ai/
 ├── src/
 │   ├── app/                           # Next.js App Router
-│   │   ├── (auth)/                    # 인증 관련 페이지
-│   │   │   ├── login/
-│   │   │   │   ├── page.tsx
-│   │   │   │   └── loading.tsx
-│   │   │   └── register/
+│   │   ├── login/
+│   │   │   ├── page.tsx
+│   │   │   └── loading.tsx
+│   │   └── signup/
 │   │   ├── (dashboard)/               # 메인 대시보드
 │   │   │   ├── chat/
 │   │   │   ├── documents/

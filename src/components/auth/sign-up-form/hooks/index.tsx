@@ -1,6 +1,5 @@
-"use client";
-
-import { useForm } from "@refinedev/react-hook-form";
+// src/components/auth/sign-up-form/hooks/index.tsx
+import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 
@@ -30,6 +29,7 @@ export function useSignUpForm() {
   });
 
   const onSubmit = async (data: SignUpFormValues) => {
+    // 실제 회원가입 로직 구현
     console.log("회원가입 데이터:", data);
     reset();
   };

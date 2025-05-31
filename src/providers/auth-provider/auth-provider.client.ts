@@ -1,9 +1,8 @@
 "use client";
 
-import type { AuthProvider } from "@refinedev/core";
 import { supabaseBrowserClient } from "@utils/supabase/client";
 
-export const authProviderClient: AuthProvider = {
+export const authProviderClient = {
   login: async ({ email, password }) => {
     const { data, error } = await supabaseBrowserClient.auth.signInWithPassword(
       {

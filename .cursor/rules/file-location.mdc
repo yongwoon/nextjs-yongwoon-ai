@@ -1,0 +1,34 @@
+---
+description:
+globs:
+alwaysApply: false
+---
+- **페이지 파일(page/layout/route 등)은 반드시 `src/app` 하위에 위치**
+  - 예시: `src/app/auth/signup/page.tsx`, `src/app/dashboard/layout.tsx`
+  - 라우트별 폴더 구조를 따를 것
+
+- **재사용 가능한 컴포넌트/훅/비즈니스 로직은 반드시 `src/components` 하위에 위치**
+  - 예시: `src/components/auth/sign-up-form/index.tsx`, `src/components/common/button.tsx`
+  - UI/로직은 모두 components/에 두고, app/에는 page/layout/route 파일만 둘 것
+
+- **DO:**
+  ```typescript
+  // src/app/auth/signup/page.tsx
+  import { SignUpForm } from "@/components/auth/sign-up-form";
+  ```
+
+- **DON'T:**
+  ```typescript
+  // ❌ DON'T: app/ 하위에 컴포넌트 파일을 두거나, components/ 하위에 page.tsx를 두지 말 것
+  // src/app/auth/sign-up-form/index.tsx  (X)
+  // src/components/auth/signup/page.tsx   (X)
+  ```
+
+- **적용 대상:**
+  - 모든 Next.js App Router 기반 프로젝트
+  - page, layout, template, error, loading 등 라우트 파일
+  - 재사용 가능한 UI/로직 컴포넌트
+
+- **추가:**
+  - 폴더 구조가 어긋나면 반드시 리팩터링 권고
+  - 리뷰 시 위치 규칙 위반 여부 체크
