@@ -51,9 +51,13 @@ export const authProviderClient = {
       redirectTo: "/login",
     };
   },
-  register: async (
-    { email, password }: { email: string; password: string },
-  ) => {
+  register: async ({
+    email,
+    password,
+  }: {
+    email: string;
+    password: string;
+  }) => {
     try {
       const { data, error } = await supabaseBrowserClient.auth.signUp({
         email,

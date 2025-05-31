@@ -15,6 +15,7 @@
     "lint:fix": "next lint --fix",
     "format": "prettier --write .",
     "format:check": "prettier --check .",
+    "format:fix": "prettier --write . && eslint --fix .",
     "refine": "refine",
     "docker:dev": "docker compose up --build",
     "docker:down": "docker compose down",
