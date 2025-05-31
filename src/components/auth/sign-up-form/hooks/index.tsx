@@ -28,9 +28,10 @@ export function useSignUpForm() {
     resolver: zodResolver(signUpSchema),
   });
 
-  const onSubmit = async (data: SignUpFormValues) => {
-    // 실제 회원가입 로직 구현
-    console.log("회원가입 데이터:", data);
+  const onSubmit = async (_data: SignUpFormValues) => {
+    // TODO: Supabase Magic Link 인증 로직 구현 예정
+    // 현재는 비밀번호 기반이지만 Magic Link로 변경될 예정
+    await new Promise((resolve) => setTimeout(resolve, 1000)); // 임시 로딩 시뮬레이션
     reset();
   };
 
