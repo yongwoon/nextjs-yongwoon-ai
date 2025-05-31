@@ -1,0 +1,190 @@
+# Task ID: 2
+# Title: Supabase Integration and Database Schema
+# Status: done
+# Dependencies: 1
+# Priority: high
+# Description: Set up Supabase for authentication, database, and real-time features. Design and implement the database schema for users, conversations, documents, and API usage.
+# Details:
+1. Create a Supabase project and configure environment variables
+2. Install dependencies: `npm install @supabase/supabase-js @supabase/auth-helpers-nextjs`
+3. Implement database schema with the following tables:
+   - users: id, email, created_at, updated_at, role (user/admin)
+   - conversations: id, user_id, title, created_at, updated_at
+   - messages: id, conversation_id, role (user/assistant), content, created_at
+   - documents: id, user_id, title, description, file_path, status, created_at, updated_at
+   - document_chunks: id, document_id, content, embedding, metadata
+   - api_usage: id, user_id, model, tokens_used, created_at
+   - api_keys: id, user_id, key_hash, name, created_at, last_used_at
+4. Set up Row Level Security (RLS) policies for each table to ensure data isolation
+5. Configure Supabase Auth with email/password and OAuth providers
+6. Create database migration scripts for version control
+7. Set up Supabase Edge Functions for server-side operations
+
+# Test Strategy:
+1. Test database connection and CRUD operations for each table
+2. Verify RLS policies work correctly for different user roles
+3. Test authentication flow with email/password
+4. Validate foreign key constraints and cascading operations
+5. Benchmark query performance with sample data
+6. Verify real-time subscriptions work for relevant tables
+
+# Subtasks:
+## 1. Supabase Project Setup and Configuration [done]
+### Dependencies: None
+### Description: Initialize and configure the Supabase project with appropriate settings for the application
+### Details:
+1. Create a new Supabase project in the dashboard
+2. Configure project settings (region, pricing plan)
+3. Set up environment variables for API keys and URLs
+4. Configure CORS settings for frontend access
+5. Set up database connection pooling
+6. Initialize version control for database changes
+7. Document project configuration details for team reference
+
+## 2. User and Authentication Table Schema [done]
+### Dependencies: 2.1
+### Description: Design and implement the user authentication tables and related schemas
+### Details:
+1. Extend the default Supabase auth.users table with additional fields:
+```sql
+ALTER TABLE auth.users ADD COLUMN user_metadata JSONB;
+ALTER TABLE auth.users ADD COLUMN last_sign_in TIMESTAMP WITH TIME ZONE;
+```
+2. Create user profiles table:
+```sql
+CREATE TABLE public.profiles (
+  id UUID REFERENCES auth.users(id) PRIMARY KEY,
+  username TEXT UNIQUE NOT NULL,
+  full_name TEXT,
+  avatar_url TEXT,
+  created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
+  updated_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
+);
+```
+3. Create user settings table:
+```sql
+CREATE TABLE public.user_settings (
+  user_id UUID REFERENCES auth.users(id) PRIMARY KEY,
+  notification_preferences JSONB DEFAULT '{}'::JSONB,
+  theme TEXT DEFAULT 'light',
+  created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
+  updated_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
+);
+```
+4. Set up triggers for user creation/deletion
+
+## 3. Content Tables Schema Implementation [done]
+### Dependencies: 2.2
+### Description: Design and implement tables for conversations, messages, and documents
+### Details:
+1. Create conversations table:
+```sql
+CREATE TABLE public.conversations (
+  id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+  title TEXT NOT NULL,
+  owner_id UUID REFERENCES auth.users(id) NOT NULL,
+  is_archived BOOLEAN DEFAULT FALSE,
+  created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
+  updated_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
+);
+```
+2. Create messages table:
+```sql
+CREATE TABLE public.messages (
+  id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+  conversation_id UUID REFERENCES public.conversations(id) ON DELETE CASCADE,
+  sender_id UUID REFERENCES auth.users(id),
+  content TEXT NOT NULL,
+  is_ai BOOLEAN DEFAULT FALSE,
+  metadata JSONB DEFAULT '{}'::JSONB,
+  created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
+);
+```
+3. Create documents table:
+```sql
+CREATE TABLE public.documents (
+  id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+  owner_id UUID REFERENCES auth.users(id) NOT NULL,
+  title TEXT NOT NULL,
+  content TEXT,
+  file_path TEXT,
+  file_type TEXT,
+  file_size INTEGER,
+  is_archived BOOLEAN DEFAULT FALSE,
+  created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
+  updated_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
+);
+```
+4. Create document_conversation_links table:
+```sql
+CREATE TABLE public.document_conversation_links (
+  document_id UUID REFERENCES public.documents(id) ON DELETE CASCADE,
+  conversation_id UUID REFERENCES public.conversations(id) ON DELETE CASCADE,
+  created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
+  PRIMARY KEY (document_id, conversation_id)
+);
+```
+
+## 4. Security and RLS Policy Implementation [done]
+### Dependencies: 2.3
+### Description: Implement Row Level Security policies for all tables to ensure proper data access control
+### Details:
+1. Enable RLS on all tables:
+```sql
+ALTER TABLE public.profiles ENABLE ROW LEVEL SECURITY;
+ALTER TABLE public.user_settings ENABLE ROW LEVEL SECURITY;
+ALTER TABLE public.conversations ENABLE ROW LEVEL SECURITY;
+ALTER TABLE public.messages ENABLE ROW LEVEL SECURITY;
+ALTER TABLE public.documents ENABLE ROW LEVEL SECURITY;
+ALTER TABLE public.document_conversation_links ENABLE ROW LEVEL SECURITY;
+```
+2. Create policies for profiles table:
+```sql
+CREATE POLICY "Users can view their own profile" ON public.profiles
+  FOR SELECT USING (auth.uid() = id);
+CREATE POLICY "Users can update their own profile" ON public.profiles
+  FOR UPDATE USING (auth.uid() = id);
+```
+3. Create policies for conversations table:
+```sql
+CREATE POLICY "Users can view their own conversations" ON public.conversations
+  FOR SELECT USING (auth.uid() = owner_id);
+CREATE POLICY "Users can insert their own conversations" ON public.conversations
+  FOR INSERT WITH CHECK (auth.uid() = owner_id);
+CREATE POLICY "Users can update their own conversations" ON public.conversations
+  FOR UPDATE USING (auth.uid() = owner_id);
+CREATE POLICY "Users can delete their own conversations" ON public.conversations
+  FOR DELETE USING (auth.uid() = owner_id);
+```
+4. Create similar policies for messages, documents, and link tables
+5. Create function-based policies for shared resources
+
+## 5. Database Migration Scripts [done]
+### Dependencies: 2.4
+### Description: Create migration scripts for version control and deployment of the database schema
+### Details:
+1. Set up migration framework using Supabase CLI:
+```bash
+npx supabase init
+npx supabase migration new initial_schema
+```
+2. Create up migration script with all table definitions
+3. Create down migration script to revert changes:
+```sql
+-- This is the down.sql file
+DROP TABLE IF EXISTS public.document_conversation_links;
+DROP TABLE IF EXISTS public.messages;
+DROP TABLE IF EXISTS public.conversations;
+DROP TABLE IF EXISTS public.documents;
+DROP TABLE IF EXISTS public.user_settings;
+DROP TABLE IF EXISTS public.profiles;
+```
+4. Create seed data script for development:
+```sql
+INSERT INTO public.profiles (id, username, full_name)
+VALUES
+  ('00000000-0000-0000-0000-000000000000', 'testuser', 'Test User');
+```
+5. Document migration process for team members
+6. Set up CI/CD pipeline for automated migrations
+
