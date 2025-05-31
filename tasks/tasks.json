@@ -69,7 +69,7 @@
           "title": "Install Supabase Packages",
           "description": "Install @supabase/supabase-js and related packages",
           "details": "",
-          "status": "in-progress",
+          "status": "done",
           "dependencies": [],
           "parentTaskId": 3
         },
@@ -78,7 +78,7 @@
           "title": "Generate TypeScript Types",
           "description": "Generate TypeScript types from Supabase database schema",
           "details": "",
-          "status": "pending",
+          "status": "in-progress",
           "dependencies": [],
           "parentTaskId": 3
         },

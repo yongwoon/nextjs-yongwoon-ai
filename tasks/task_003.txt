@@ -11,13 +11,13 @@ Install @supabase/supabase-js@^2.38. Generate TypeScript types using `supabase g
 Verify Supabase client connects successfully, types are generated correctly, and auth state persists across page refreshes
 
 # Subtasks:
-## 1. Install Supabase Packages [in-progress]
+## 1. Install Supabase Packages [done]
 ### Dependencies: None
 ### Description: Install @supabase/supabase-js and related packages
 ### Details:
 
 
-## 2. Generate TypeScript Types [pending]
+## 2. Generate TypeScript Types [in-progress]
 ### Dependencies: None
 ### Description: Generate TypeScript types from Supabase database schema
 ### Details:
