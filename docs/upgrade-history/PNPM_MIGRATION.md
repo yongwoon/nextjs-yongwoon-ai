@@ -115,8 +115,10 @@ pnpm lint:fix
 pnpm format
 pnpm format:check
 
-# Refine CLI
-pnpm refine
+# Next.js CLI
+pnpm next dev
+pnpm next build
+pnpm next start
 ```
 
 ### 고급 명령어

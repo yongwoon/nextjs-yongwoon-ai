@@ -18,9 +18,7 @@
       "details": "Create Supabase project and implement schema: user_profiles, conversations, messages, documents, document_chunks, prompt_templates, api_usage_logs, auth_tokens, verification_codes, auth_sessions, auth_attempt_logs. Enable RLS on all tables. Create indexes for performance: conversations(user_id, created_at), messages(conversation_id, created_at), auth_tokens(email, expires_at). Setup database functions for cleanup expired tokens.",
       "testStrategy": "Run migration scripts, verify RLS policies work correctly, test database constraints and foreign key relationships",
       "priority": "high",
-      "dependencies": [
-        1
-      ],
+      "dependencies": [1],
       "status": "done",
       "subtasks": [
         {
@@ -59,11 +57,46 @@
       "details": "Install @supabase/supabase-js@^2.38. Generate TypeScript types using `supabase gen types typescript`. Create lib/supabase.ts with createClient configuration for both client and server components. Setup middleware.ts for auth state management. Configure Supabase Auth settings: disable email confirmation, enable magic links, set custom SMTP if needed.",
       "testStrategy": "Verify Supabase client connects successfully, types are generated correctly, and auth state persists across page refreshes",
       "priority": "high",
-      "dependencies": [
-        2
-      ],
-      "status": "pending",
-      "subtasks": []
+      "dependencies": [2],
+      "status": "in-progress",
+      "subtasks": [
+        {
+          "id": 1,
+          "title": "Install Supabase Packages",
+          "description": "Install @supabase/supabase-js and related packages",
+          "details": "",
+          "status": "done",
+          "dependencies": [],
+          "parentTaskId": 3
+        },
+        {
+          "id": 2,
+          "title": "Generate TypeScript Types",
+          "description": "Generate TypeScript types from Supabase database schema",
+          "details": "",
+          "status": "in-progress",
+          "dependencies": [],
+          "parentTaskId": 3
+        },
+        {
+          "id": 3,
+          "title": "Create Supabase Client Configuration",
+          "description": "Create lib/supabase.ts with client and server configurations",
+          "details": "",
+          "status": "pending",
+          "dependencies": [],
+          "parentTaskId": 3
+        },
+        {
+          "id": 4,
+          "title": "Setup Environment Variables",
+          "description": "Configure Supabase environment variables and connection settings",
+          "details": "",
+          "status": "pending",
+          "dependencies": [],
+          "parentTaskId": 3
+        }
+      ]
     },
     {
       "id": 4,
@@ -72,9 +105,7 @@
       "details": "Create auth service using Supabase Auth API. Implement signInWithOtp for magic links. Create auth/callback route handler for magic link processing. Build EmailInputPage component with email validation using react-hook-form@^7.48 + zod@^3.22. Implement token generation and storage in auth_tokens table. Add email rate limiting (max 3 attempts per 15 minutes). Create custom email templates matching Claude.ai styling.",
       "testStrategy": "Test magic link generation, email delivery, token validation, rate limiting, and successful authentication flow",
       "priority": "high",
-      "dependencies": [
-        3
-      ],
+      "dependencies": [3],
       "status": "pending",
       "subtasks": []
     },
@@ -85,9 +116,7 @@
       "details": "Install @fingerprintjs/fingerprintjs@^4.2 for browser fingerprinting. Create browser detection service using navigator.userAgent, screen resolution, timezone. Implement 6-digit verification code generation and storage in verification_codes table. Create CrossBrowserVerificationPage and VerificationPage components. Add IP tracking using headers['x-forwarded-for']. Implement session tracking in auth_sessions table with browser_fingerprint field.",
       "testStrategy": "Test cross-browser detection, verification code generation/validation, session tracking, and security logging",
       "priority": "high",
-      "dependencies": [
-        4
-      ],
+      "dependencies": [4],
       "status": "pending",
       "subtasks": []
     },
@@ -98,9 +127,7 @@
       "details": "Use Supabase built-in JWT handling with custom session management. Create session service for token refresh using supabase.auth.getSession(). Implement automatic token renewal 5 minutes before expiration. Add session validation middleware for protected routes. Create auth context provider using React 19's use() hook for session state. Implement secure logout with token invalidation.",
       "testStrategy": "Test token generation, automatic renewal, session persistence, logout functionality, and expired token handling",
       "priority": "high",
-      "dependencies": [
-        5
-      ],
+      "dependencies": [5],
       "status": "pending",
       "subtasks": []
     },
@@ -111,9 +138,7 @@
       "details": "Create logging service for auth_attempt_logs table capturing: IP, user_agent, attempt_type, success/failure, timestamp. Implement rate limiting using Redis with sliding window algorithm. Add suspicious activity detection: multiple failed attempts, unusual IP patterns, rapid successive logins. Create security dashboard component for admin users. Implement email alerts for security events using Supabase Edge Functions.",
       "testStrategy": "Test logging accuracy, rate limiting effectiveness, anomaly detection triggers, and alert system functionality",
       "priority": "medium",
-      "dependencies": [
-        6
-      ],
+      "dependencies": [6],
       "status": "pending",
       "subtasks": []
     },
@@ -124,9 +149,7 @@
       "details": "Install ai@^3.0 (Vercel AI SDK). Configure providers: @ai-sdk/openai@^0.0.42, @ai-sdk/anthropic@^0.0.27, @ai-sdk/google@^0.0.31. Create AI service with model switching capability. Implement streaming responses using streamText(). Add model-specific configurations: temperature, max_tokens, top_p. Create AI provider abstraction layer for easy model switching. Setup fallback mechanisms for provider failures.",
       "testStrategy": "Test each AI provider connection, streaming responses, model switching, error handling, and fallback mechanisms",
       "priority": "high",
-      "dependencies": [
-        3
-      ],
+      "dependencies": [3],
       "status": "pending",
       "subtasks": []
     },
@@ -137,9 +160,7 @@
       "details": "Create chat components: ChatContainer, MessageList, MessageInput, StreamingMessage. Implement Server-Sent Events for real-time streaming using AI SDK's streamText. Add message state management with React 19's useOptimistic for instant UI updates. Create typing indicators and message status (sending, sent, error). Implement message formatting with markdown support using react-markdown@^9.0. Add copy message, regenerate response functionality.",
       "testStrategy": "Test real-time streaming, message persistence, UI responsiveness, markdown rendering, and error states",
       "priority": "high",
-      "dependencies": [
-        8
-      ],
+      "dependencies": [8],
       "status": "pending",
       "subtasks": []
     },
@@ -150,9 +171,7 @@
       "details": "Create conversation service for CRUD operations on conversations and messages tables. Implement conversation sidebar with search and filtering. Add conversation metadata: title auto-generation, last_message_at, message_count. Create conversation sharing functionality with public URLs. Implement conversation export (JSON, markdown). Add conversation templates and quick actions. Use React 19's concurrent features for smooth list rendering.",
       "testStrategy": "Test conversation creation, saving, loading, search functionality, sharing, and export features",
       "priority": "high",
-      "dependencies": [
-        9
-      ],
+      "dependencies": [9],
       "status": "pending",
       "subtasks": []
     },
@@ -163,9 +182,7 @@
       "details": "Install redis@^4.6 and @types/redis. Create Redis client with connection pooling. Implement prompt caching with hash-based keys using crypto.createHash('sha256'). Add response caching with TTL (1 hour for similar prompts). Create cache invalidation strategies. Implement cache warming for popular prompts. Add cache hit/miss metrics. Use Redis Streams for real-time features if needed.",
       "testStrategy": "Test cache hit/miss rates, TTL expiration, invalidation strategies, and performance improvements",
       "priority": "medium",
-      "dependencies": [
-        8
-      ],
+      "dependencies": [8],
       "status": "pending",
       "subtasks": []
     },
@@ -176,9 +193,7 @@
       "details": "Setup Supabase Storage bucket with RLS policies. Install file processing libraries: pdf-parse@^1.1.1, mammoth@^1.6.0 for Word docs. Create upload component with drag-and-drop using react-dropzone@^14.2. Implement file validation: type checking, size limits (10MB), virus scanning. Add progress indicators and error handling. Create document metadata extraction and storage in documents table.",
       "testStrategy": "Test file upload, type validation, size limits, progress tracking, and metadata extraction for each supported format",
       "priority": "medium",
-      "dependencies": [
-        3
-      ],
+      "dependencies": [3],
       "status": "pending",
       "subtasks": []
     },
@@ -189,9 +204,7 @@
       "details": "Create document processing service with text extraction for PDF (pdf-parse), Word (mammoth), and plain text. Implement intelligent chunking using LangChain's RecursiveCharacterTextSplitter with overlap. Add chunk size optimization (500-1000 tokens). Create document preprocessing: cleaning, normalization, metadata extraction. Store chunks in document_chunks table with vector embeddings. Implement async processing using Supabase Edge Functions.",
       "testStrategy": "Test text extraction accuracy, chunking quality, processing speed, and chunk storage for various document types",
       "priority": "medium",
-      "dependencies": [
-        12
-      ],
+      "dependencies": [12],
       "status": "pending",
       "subtasks": []
     },
@@ -202,9 +215,7 @@
       "details": "Enable pgvector extension in Supabase. Install @supabase/vecs for vector operations. Create embedding service using OpenAI text-embedding-3-small model. Implement vector storage in document_chunks table with embedding column. Add similarity search using cosine similarity. Create vector indexing for performance (HNSW index). Implement semantic search with relevance scoring and filtering.",
       "testStrategy": "Test embedding generation, vector storage, similarity search accuracy, query performance, and relevance scoring",
       "priority": "medium",
-      "dependencies": [
-        13
-      ],
+      "dependencies": [13],
       "status": "pending",
       "subtasks": []
     },
@@ -215,9 +226,7 @@
       "details": "Create RAG service combining vector search with AI generation. Implement context retrieval: query embedding, similarity search, context ranking. Add context window management (max 4000 tokens). Create prompt templates for RAG with document citations. Implement relevance filtering and source attribution. Add multi-document querying and cross-referencing. Use LangChain for advanced RAG patterns.",
       "testStrategy": "Test retrieval accuracy, context relevance, citation quality, multi-document queries, and answer quality",
       "priority": "medium",
-      "dependencies": [
-        14
-      ],
+      "dependencies": [14],
       "status": "pending",
       "subtasks": []
     },
@@ -228,9 +237,7 @@
       "details": "Create design system with Claude.ai-inspired components. Implement orange gradient logo and color scheme. Build responsive layout components: Header, Sidebar, MainContent. Create form components with Tailwind CSS: Input, Button, Select, TextArea. Add loading states, animations, and micro-interactions. Implement dark/light mode toggle with system preference detection. Use CSS custom properties for theme switching.",
       "testStrategy": "Test responsive design across devices, theme switching, component accessibility, and visual consistency",
       "priority": "medium",
-      "dependencies": [
-        1
-      ],
+      "dependencies": [1],
       "status": "pending",
       "subtasks": []
     },
@@ -241,9 +248,7 @@
       "details": "Install @axe-core/react for accessibility testing. Implement ARIA labels, roles, and properties. Add keyboard navigation support for all interactive elements. Ensure color contrast ratios meet WCAG standards. Implement screen reader support with semantic HTML. Add focus management and skip links. Create accessible form validation with clear error messages. Test with screen readers (NVDA, JAWS).",
       "testStrategy": "Run automated accessibility tests, manual screen reader testing, keyboard navigation testing, and color contrast validation",
       "priority": "medium",
-      "dependencies": [
-        16
-      ],
+      "dependencies": [16],
       "status": "pending",
       "subtasks": []
     },
@@ -254,9 +259,7 @@
       "details": "Create user dashboard with profile management, usage statistics, and settings. Implement profile editing: name, avatar, preferences. Add usage tracking dashboard: API calls, document uploads, conversation count. Create settings panels: theme selection, notification preferences, AI model preferences. Implement data export functionality (GDPR compliance). Add account deletion with data cleanup.",
       "testStrategy": "Test profile updates, settings persistence, usage statistics accuracy, data export functionality, and account deletion",
       "priority": "medium",
-      "dependencies": [
-        10
-      ],
+      "dependencies": [10],
       "status": "pending",
       "subtasks": []
     },
@@ -267,9 +270,7 @@
       "details": "Implement Next.js 15 optimizations: dynamic imports, image optimization, font optimization. Add React 19 concurrent features: Suspense boundaries, useTransition for non-urgent updates. Implement virtual scrolling for long conversation lists using @tanstack/react-virtual@^3.0. Add service worker for offline functionality. Optimize bundle size with tree shaking and code splitting. Implement prefetching for critical resources.",
       "testStrategy": "Measure Core Web Vitals, test loading performance, verify offline functionality, and validate bundle size optimizations",
       "priority": "medium",
-      "dependencies": [
-        17
-      ],
+      "dependencies": [17],
       "status": "pending",
       "subtasks": []
     },
@@ -280,9 +281,7 @@
       "details": "Install @sentry/nextjs@^7.99 for error tracking. Create error boundary components with fallback UI. Implement global error handling for API routes and client-side errors. Add performance monitoring and user session replay. Create custom error pages (404, 500, offline). Implement retry mechanisms for failed API calls. Add user feedback collection for errors.",
       "testStrategy": "Test error boundary functionality, verify Sentry integration, validate error reporting, and test retry mechanisms",
       "priority": "medium",
-      "dependencies": [
-        19
-      ],
+      "dependencies": [19],
       "status": "pending",
       "subtasks": []
     },
@@ -293,9 +292,7 @@
       "details": "Setup testing framework: Jest@^29.7, @testing-library/react@^14.1, @testing-library/jest-dom@^6.1. Create unit tests for utilities, hooks, and components. Implement integration tests for API routes and database operations. Setup Playwright@^1.40 for E2E testing. Create test utilities and mocks for Supabase, AI providers. Add visual regression testing with Percy or Chromatic. Setup test coverage reporting.",
       "testStrategy": "Achieve 80%+ test coverage, validate all critical user flows, test cross-browser compatibility, and ensure CI/CD integration",
       "priority": "medium",
-      "dependencies": [
-        20
-      ],
+      "dependencies": [20],
       "status": "pending",
       "subtasks": []
     },
@@ -306,9 +303,7 @@
       "details": "Configure Vercel deployment with environment variables and domain setup. Create GitHub Actions workflow for CI/CD: test running, build verification, automated deployment. Setup staging environment with Vercel preview deployments. Configure production monitoring: Vercel Analytics, Supabase monitoring. Implement database migration strategy. Setup backup and disaster recovery procedures. Create deployment documentation and runbooks.",
       "testStrategy": "Test deployment pipeline, verify environment configurations, validate monitoring setup, and test rollback procedures",
       "priority": "low",
-      "dependencies": [
-        21
-      ],
+      "dependencies": [21],
       "status": "pending",
       "subtasks": []
     }

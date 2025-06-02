@@ -113,3 +113,5 @@ pnpm-lock.yaml
 
 # Exclude src/components/ui directory
 src/components/ui/
+
+tasks/
