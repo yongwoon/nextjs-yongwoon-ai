@@ -1,36 +1,32 @@
-# 설치된 패키지 목록
+# 📦 설치된 패키지 목록
 
-이 프로젝트에서 사용하는 패키지들을 카테고리별로 정리한 목록입니다.
+이 문서는 `yongwoon-ai` 프로젝트에 설치된 주요 패키지들과 그 역할을 설명합니다.
 
-## 🚀 Core Framework
+## 🚀 핵심 프레임워크
 
-### Next.js & React
+### Next.js Ecosystem
+- **next** (^15.3.2) - React 기반의 풀스택 웹 프레임워크로 서버사이드 렌더링, 정적 사이트 생성, API 라우트 등을 제공
 
-- **next** (^15.3.2) - React 기반의 풀스택 웹 프레임워크로 SSR/SSG, API Routes, 자동 코드 분할 등을 제공
-- **react** (^19.1.0) - 컴포넌트 기반 사용자 인터페이스 구축을 위한 JavaScript 라이브러리
-- **react-dom** (^19.1.0) - React 컴포넌트를 실제 DOM에 렌더링하는 라이브러리
+## 🤖 AI & 머신러닝
 
-## 🔧 Refine Framework
+### AI SDK 통합
+- **ai** (^4.3.16) - Vercel AI SDK의 핵심 패키지로 다양한 AI 모델과 스트리밍 인터페이스를 통합 제공
+- **@ai-sdk/openai** (^1.3.22) - OpenAI 모델들(GPT-4, GPT-3.5 등)과의 통합을 위한 어댑터 패키지
+- **@ai-sdk/anthropic** (^1.2.12) - Anthropic Claude 모델과의 통합을 위한 어댑터로 고품질 텍스트 생성 지원
+- **@ai-sdk/google** (^1.2.18) - Google AI 모델(Gemini 등)과의 통합을 위한 어댑터 패키지
 
-### Core Refine Packages
+### LangChain 생태계
+- **@langchain/core** (^0.3.57) - LangChain의 핵심 추상화 계층으로 LLM, 체인, 메모리 등 기본 구성 요소 제공
+- **@langchain/openai** (^0.5.11) - LangChain과 OpenAI 모델의 통합으로 체인 기반 워크플로우에서 OpenAI 활용 지원
+- **@langchain/community** (^0.3.44) - 커뮤니티에서 제공하는 다양한 LangChain 통합 및 도구들
 
-- **@refinedev/core** (^4.47.1) - Refine의 핵심 기능을 제공하는 패키지로 CRUD 작업, 인증, 라우팅 등 관리자 패널 구축에 필요한 모든 기본 기능을 포함
-- **@refinedev/cli** (^2.16.21) - Refine 프로젝트 생성, 설정, 코드 생성을 위한 명령줄 도구
-- **@refinedev/devtools** (^1.1.32) - 개발 과정에서 Refine 애플리케이션의 상태, 리소스, 훅 사용량을 시각적으로 모니터링할 수 있는 개발 도구
-
-### Refine Integrations
-
-- **@refinedev/nextjs-router** (^6.0.0) - Next.js App Router와 Pages Router를 Refine과 완전히 통합하여 라우팅을 자동으로 처리
-- **@refinedev/kbar** (^1.3.6) - 명령 팔레트 UI를 제공하여 사용자가 Cmd+K (또는 Ctrl+K)로 빠른 탐색과 액션 실행이 가능
-- **@refinedev/supabase** (^5.7.4) - Supabase 데이터베이스와의 완전한 통합을 제공하여 자동 CRUD 작업, 실시간 구독, 인증 등을 지원
-- **@refinedev/react-hook-form** (^4.8.14) - React Hook Form과 Refine을 통합하여 폼 상태 관리, 유효성 검사, 에러 처리를 자동화
-- **@refinedev/react-table** (^5.6.6) - React Table 라이브러리와 통합하여 정렬, 필터링, 페이지네이션 등 고급 테이블 기능을 제공
+### 벡터 데이터베이스
+- **@pinecone-database/pinecone** (^6.0.1) - 벡터 유사성 검색을 위한 관리형 벡터 데이터베이스 서비스
 
 ## 🤖 AI & Machine Learning
 
 ### AI SDK & Models
 
-- **ai** (^4.3.16) - Vercel AI SDK로 다양한 AI 모델과의 통합, 스트리밍 응답, 도구 호출 등 AI 애플리케이션 개발을 위한 통합 솔루션
 - **@ai-sdk/openai** (^1.3.22) - OpenAI GPT 모델(GPT-4, GPT-3.5-turbo 등)과의 통합을 제공하는 어댑터
 - **@ai-sdk/anthropic** (^1.2.12) - Anthropic Claude 모델(Claude-3 Sonnet, Haiku 등)과의 통합을 제공하는 어댑터
 - **@ai-sdk/google** (^1.2.18) - Google AI 모델(Gemini Pro, Gemini Flash 등)과의 통합을 제공하는 어댑터
@@ -163,7 +159,6 @@
 - **Node.js 요구사항**: >=18.0.0
 - **pnpm 요구사항**: >=8.0.0
 - **모듈 시스템**: ESM (ES Modules)
-- **Refine 프로젝트 ID**: jIU8e4-1LjeAx-OvNUY1
 
 ## 🚀 패키지 설치 가이드
 
@@ -218,10 +213,9 @@ pnpm add -D <package-name>
 
 ```bash
 pnpm dev          # 개발 서버 시작 (메모리 최적화 4GB 할당)
-pnpm build        # 프로덕션 빌드 (Refine 빌드 시스템 사용)
+pnpm build        # 프로덕션 빌드
 pnpm start        # 프로덕션 서버 시작
 pnpm type-check   # TypeScript 타입 검사 (컴파일 없이)
-pnpm refine       # Refine CLI 도구 실행
 ```
 
 ### 코드 품질 관리
@@ -276,14 +270,6 @@ pnpm cache:clear  # Redis 캐시 정리 (구현 예정)
 - **고성능 캐싱**: Redis 기반 지능형 캐싱으로 AI 응답 속도 최적화 및 API 비용 절감
 - **브라우저 확장**: WebExtension API 지원으로 크롬, 파이어폭스 등 다양한 브라우저 플랫폼 확장 가능
 - **웹 스크래핑**: Cheerio + Playwright를 통한 웹 페이지 컨텍스트 분석 및 자동화
-
-### 🎛️ Refine 기반 관리 시스템
-
-- **관리자 패널 특화**: CRUD 작업에 최적화된 React 프레임워크로 신속한 백오피스 구축
-- **다양한 백엔드 통합**: Supabase, REST API, GraphQL 등 여러 데이터 소스와의 원활한 연동
-- **풍부한 UI 컴포넌트**: 테이블, 폼, 차트, 명령 팔레트 등 관리자 패널 필수 컴포넌트 내장
-- **실시간 데이터 동기화**: Supabase 실시간 구독을 통한 즉시 데이터 업데이트
-- **고급 테이블 기능**: 정렬, 필터링, 페이지네이션, 그룹화가 내장된 테이블 컴포넌트
 
 ### 🎨 현대적 UI/UX 시스템
 

@@ -8,15 +8,14 @@
     "pnpm": ">=8.0.0"
   },
   "scripts": {
-    "dev": "cross-env NODE_OPTIONS=--max_old_space_size=4096 refine dev",
-    "build": "refine build",
-    "start": "refine start",
+    "dev": "cross-env NODE_OPTIONS=--max_old_space_size=4096 next dev",
+    "build": "next build",
+    "start": "next start",
     "lint": "next lint",
     "lint:fix": "next lint --fix",
     "format": "prettier --write .",
     "format:check": "prettier --check .",
     "format:fix": "prettier --write . && eslint --fix .",
-    "refine": "refine",
     "docker:dev": "docker compose up --build",
     "docker:down": "docker compose down",
     "docker:clean": "docker compose down -v --remove-orphans",
@@ -44,9 +43,7 @@
     "@radix-ui/react-dropdown-menu": "^2.1.15",
     "@radix-ui/react-label": "^2.1.7",
     "@radix-ui/react-slot": "^1.2.3",
-    "@refinedev/cli": "^2.16.21",
-    "@supabase/auth-helpers-nextjs": "^0.10.0",
-    "@supabase/ssr": "^0.5.2",
+    "@supabase/ssr": "^0.6.1",
     "@supabase/supabase-js": "^2.38",
     "@t3-oss/env-nextjs": "^0.13.6",
     "@tanstack/react-table": "^8.2.6",
@@ -107,9 +104,6 @@
     "typescript": "^5.4.2",
     "vite": "^6.0.7",
     "vitest": "^3.1.4"
-  },
-  "refine": {
-    "projectId": "jIU8e4-1LjeAx-OvNUY1"
   },
   "type": "module"
 }

@@ -294,14 +294,13 @@
     },
     {
       "id": 13,
-      "title": "Admin Panel with Refine Framework",
-      "description": "Develop an admin panel using Refine Framework for system monitoring, user management, and API usage statistics.",
-      "details": "1. Set up Refine Framework:\n   - Install dependencies: `npm install @refinedev/core @refinedev/supabase`\n   - Configure data providers for Supabase\n   - Set up authentication provider\n2. Create admin layout and navigation:\n   - Sidebar with section navigation\n   - Header with admin actions\n   - Dashboard overview\n3. Implement user management:\n   - User list with filtering and search\n   - User details and edit forms\n   - Role management\n   - Account actions (suspend, delete)\n4. Add API usage monitoring:\n   - Usage charts and graphs\n   - Cost analysis\n   - Quota management\n   - Anomaly detection\n5. Create system monitoring:\n   - Service health status\n   - Error logs and tracking\n   - Performance metrics\n6. Implement settings management:\n   - Global system settings\n   - Model configurations\n   - Pricing and quota settings",
-      "testStrategy": "1. Test admin authentication and authorization\n2. Verify user management functionality\n3. Test data loading and filtering\n4. Validate chart and graph rendering\n5. Test settings changes and application\n6. Verify responsive design for admin panel\n7. Test with sample data for performance\n8. Validate admin actions and their effects",
-      "priority": "low",
-      "dependencies": [2, 3, 12],
+      "title": "Next.js Admin Panel",
+      "description": "Develop an admin panel using Next.js for system monitoring, user management, and API usage statistics.",
+      "details": "1. Set up Next.js admin routes:\n   - Create admin layout with sidebar navigation\n   - Implement admin authentication middleware\n   - Set up data providers for Supabase\n2. Create admin layout and navigation:\n   - Sidebar with section navigation\n   - Header with admin user info\n   - Responsive design for mobile/desktop\n3. User Management:\n   - User list with search and filtering\n   - User detail view with profile information\n   - User role management and permissions\n   - Bulk operations (enable/disable users)\n4. API Usage Monitoring:\n   - Dashboard with usage statistics\n   - Charts for API calls, costs, and performance\n   - Real-time monitoring widgets\n   - Export functionality for reports\n5. System Settings:\n   - Configuration management interface\n   - Feature flag management\n   - System health monitoring\n   - Audit log viewer",
       "status": "pending",
-      "subtasks": []
+      "priority": "medium",
+      "dependencies": [1, 2, 3],
+      "testStrategy": "Test admin authentication, user management operations, data visualization accuracy, and responsive design across devices."
     },
     {
       "id": 14,

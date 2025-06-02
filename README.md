@@ -1,24 +1,19 @@
-# Yongwoon AI
+# 🤖 Yongwoon AI
 
-> 🤖 **Getmerlin과 같은 고급 AI 서비스를 구축할 수 있는 완전한 스택**
-
-Next.js 15 + React 19 기반의 AI 서비스 플랫폼으로, 프롬프트 캐싱, RAG(Retrieval-Augmented Generation), 실시간 스트리밍 등의 고급 기능을 제공합니다.
+개인 AI 어시스턴트를 위한 종합 플랫폼입니다. 최신 AI 모델들과 RAG(Retrieval-Augmented Generation) 시스템을 통합하여 개인화된 AI 서비스를 제공합니다.
 
 ## ✨ 주요 기능
 
-- 🧠 **다중 AI 모델 지원**: OpenAI, Anthropic, Google AI 통합
-- 📚 **RAG 시스템**: 문서 기반 컨텍스트 생성 및 벡터 검색
-- ⚡ **프롬프트 캐싱**: Redis 기반 고성능 캐싱
-- 🔄 **실시간 스트리밍**: Server-Sent Events 기반 실시간 응답
-- 📁 **파일 처리**: PDF, Word, 텍스트 파일 자동 파싱 및 임베딩
-- 🔐 **보안**: Row Level Security (RLS) 및 사용자별 데이터 격리
+- 🤖 **멀티 AI 모델**: OpenAI, Anthropic Claude, Google AI 지원
+- 📚 **RAG 시스템**: 문서 업로드 및 지능형 검색
+- 💬 **대화 관리**: 컨텍스트 유지 대화 시스템
+- 🔐 **사용자 인증**: Supabase 기반 보안 인증
 - 📊 **모니터링**: API 사용량 추적 및 성능 분석
 
 ## 🏗️ 기술 스택
 
 ### 프론트엔드
 - **Next.js 15** + **React 19**: 최신 웹 프레임워크
-- **Refine Framework**: 관리자 패널 및 CRUD 인터페이스
 - **Tailwind CSS**: 유틸리티 기반 스타일링
 - **TypeScript**: 타입 안전성
 

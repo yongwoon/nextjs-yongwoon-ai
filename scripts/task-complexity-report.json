@@ -106,12 +106,12 @@
       "reasoning": "API key management involves security-critical code for generation, hashing, and authentication. The usage tracking and rate limiting add algorithmic complexity. The security features like key rotation and suspicious usage detection require careful implementation to ensure system integrity."
     },
     {
-      "taskId": 13,
-      "taskTitle": "Admin Panel with Refine Framework",
-      "complexityScore": 6,
-      "recommendedSubtasks": 3,
-      "expansionPrompt": "Break down the Admin Panel task into 3 subtasks: 1) Refine Framework setup and admin layout, 2) User management and role administration features, and 3) System monitoring and settings management. Include authorization requirements and data visualization specifications.",
-      "reasoning": "While Refine Framework simplifies some aspects of admin panel development, the integration with Supabase and custom data visualization adds complexity. The user management, role administration, and system monitoring features require careful implementation to ensure proper authorization and data accuracy."
+      "taskId": 17,
+      "taskTitle": "Next.js Admin Panel",
+      "complexity": 7,
+      "expansionPrompt": "Break down the Admin Panel task into 3 subtasks: 1) Next.js admin layout and routing setup, 2) User management and role administration features, and 3) System monitoring and settings management. Include authorization requirements and data visualization",
+      "reasoning": "Building a custom admin panel with Next.js requires significant development effort for layout, authentication, user management, and monitoring features. The integration with Supabase and custom data visualization adds complexity.",
+      "shouldExpand": true
     },
     {
       "taskId": 14,

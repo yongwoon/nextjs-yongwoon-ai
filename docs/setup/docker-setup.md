@@ -1,6 +1,6 @@
 # Docker 개발 환경 설정 가이드
 
-이 프로젝트는 Next.js + Refine을 사용하며, Docker Compose를 통해 개발 환경을 구성할 수 있습니다.
+이 프로젝트는 Next.js를 사용하며, Docker Compose를 통해 개발 환경을 구성할 수 있습니다.
 
 ## 🚀 빠른 시작
 
@@ -25,7 +25,7 @@ docker-compose up -d --build
 
 ### 애플리케이션 서비스
 
-- **app**: Next.js + Refine 애플리케이션
+- **app**: Next.js 애플리케이션
   - 포트: `3000`
   - URL: http://localhost:3000
 
@@ -154,5 +154,7 @@ docker-compose build --no-cache
 ## 📚 추가 정보
 
 - [Next.js 문서](https://nextjs.org/docs)
-- [Refine 문서](https://refine.dev/docs)
-- [Docker Compose 문서](https://docs.docker.com/compose/)
+- [Docker 문서](https://docs.docker.com)
+- [PostgreSQL 문서](https://www.postgresql.org/docs)
+- [Redis 문서](https://redis.io/documentation)
+- [Qdrant 문서](https://qdrant.tech/documentation)
