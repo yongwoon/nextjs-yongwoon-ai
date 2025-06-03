@@ -153,9 +153,10 @@ export const realtime = {
   /**
    * 대화의 메시지 변경사항을 구독합니다
    */
+
   subscribeToConversationMessages(
     conversationId: string,
-    callback: (payload: any) => void,
+    _payload: (_payload: any) => void,
   ) {
     return supabaseClient
       .channel(`conversation-${conversationId}`)
@@ -167,7 +168,7 @@ export const realtime = {
           table: "messages",
           filter: `conversation_id=eq.${conversationId}`,
         },
-        callback,
+        _payload,
       )
       .subscribe();
   },
@@ -175,9 +176,10 @@ export const realtime = {
   /**
    * 사용자의 대화 변경사항을 구독합니다
    */
+
   subscribeToUserConversations(
     userId: string,
-    callback: (payload: any) => void,
+    _payload: (_payload: any) => void,
   ) {
     return supabaseClient
       .channel(`user-conversations-${userId}`)
@@ -189,7 +191,7 @@ export const realtime = {
           table: "conversations",
           filter: `user_id=eq.${userId}`,
         },
-        callback,
+        _payload,
       )
       .subscribe();
   },
@@ -197,7 +199,7 @@ export const realtime = {
 
 // 에러 처리 유틸리티
 export function handleSupabaseError(error: any): string {
-  if (!error) return "";
+  if (!error) {return "";}
 
   // PostgreSQL 에러 코드 매핑
   const errorCodeMessages: Record<string, string> = {
@@ -265,7 +267,7 @@ export async function checkDatabaseConnection(): Promise<
   { success: boolean; error?: string }
 > {
   try {
-    const { data, error } = await supabaseClient
+    const { data: _data, error } = await supabaseClient
       .from("profiles")
       .select("id")
       .limit(1);
@@ -297,7 +299,7 @@ export const rls = {
   ): Promise<boolean> {
     try {
       switch (resourceType) {
-        case "conversation":
+        case "conversation": {
           const conversationQuery = await supabaseClient
             .from("conversations")
             .select("id")
@@ -306,8 +308,8 @@ export const rls = {
             .single();
 
           return !conversationQuery.error && !!conversationQuery.data;
-
-        case "message":
+        }
+        case "message": {
           // 메시지의 경우 대화를 통해 사용자 소유권을 확인
           const messageQuery = await supabaseClient
             .from("messages")
@@ -321,8 +323,8 @@ export const rls = {
             .single();
 
           return !messageQuery.error && !!messageQuery.data;
-
-        case "document":
+        }
+        case "document": {
           const documentQuery = await supabaseClient
             .from("documents")
             .select("id")
@@ -331,7 +333,7 @@ export const rls = {
             .single();
 
           return !documentQuery.error && !!documentQuery.data;
-
+        }
         default:
           return false;
       }
