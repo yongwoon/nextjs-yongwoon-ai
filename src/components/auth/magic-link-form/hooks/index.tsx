@@ -1,14 +1,11 @@
 import { useForm } from "react-hook-form";
-import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { AuthService } from "@/domains/auth/services/auth.service";
 import { useState } from "react";
-
-const EmailSchema = z.object({
-  email: z.string().email("유효한 이메일을 입력하세요."),
-});
-
-type EmailFormValues = z.infer<typeof EmailSchema>;
+import {
+  MagicLinkRequest,
+  magicLinkRequestSchema,
+} from "@/domains/auth/entities/magicLink";
 
 export function useMagicLinkForm() {
   const [status, setStatus] = useState<
@@ -21,11 +18,11 @@ export function useMagicLinkForm() {
     handleSubmit,
     formState: { errors },
     reset,
-  } = useForm<EmailFormValues>({
-    resolver: zodResolver(EmailSchema),
+  } = useForm<MagicLinkRequest>({
+    resolver: zodResolver(magicLinkRequestSchema),
   });
 
-  const onSubmit = async (data: EmailFormValues) => {
+  const onSubmit = async (data: MagicLinkRequest) => {
     setStatus("loading");
     setErrorMsg(null);
     try {
@@ -43,6 +40,8 @@ export function useMagicLinkForm() {
     } catch (e) {
       setStatus("error");
       setErrorMsg("알 수 없는 오류가 발생했습니다.");
+
+      console.error(e);
     }
   };
 

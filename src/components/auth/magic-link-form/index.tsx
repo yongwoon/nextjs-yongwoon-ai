@@ -1,33 +1,16 @@
 "use client";
 
-import { useForm } from "react-hook-form";
-import { zodResolver } from "@hookform/resolvers/zod";
-import { z } from "zod";
-import { FcGoogle } from "react-icons/fc";
+import { useMagicLinkForm } from "./hooks";
 
-const schema = z.object({
-  email: z.string().email("유효한 이메일을 입력하세요."),
-});
-
-export default function MagicLinkForm({
-  onSubmit,
-  isLoading,
-}: {
-  onSubmit: (email: string) => void;
-  isLoading?: boolean;
-}) {
-  const {
-    register,
-    handleSubmit,
-    formState: { errors },
-  } = useForm({
-    resolver: zodResolver(schema),
-  });
+export default function MagicLinkForm({ isLoading }: { isLoading?: boolean }) {
+  const { register, handleSubmit, errors } = useMagicLinkForm();
 
   return (
     <form
       className="space-y-4 w-full mx-auto"
-      onSubmit={handleSubmit((data) => onSubmit(data.email))}
+      onSubmit={handleSubmit((data) => {
+        console.log(data.email);
+      })}
     >
       {/* 이메일 입력 + 버튼을 하나의 flex-col로 묶어서 너비 통일 */}
       <div className="flex flex-col gap-2 w-full">
