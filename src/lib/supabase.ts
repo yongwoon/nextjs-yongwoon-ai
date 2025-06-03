@@ -43,12 +43,12 @@ export function createSupabaseServerClient(accessToken?: string) {
     global: {
       headers: accessToken
         ? {
-          Authorization: `Bearer ${accessToken}`,
-          "X-Client-Info": "nextjs-yongwoon-ai-server",
-        }
+            Authorization: `Bearer ${accessToken}`,
+            "X-Client-Info": "nextjs-yongwoon-ai-server",
+          }
         : {
-          "X-Client-Info": "nextjs-yongwoon-ai-server",
-        },
+            "X-Client-Info": "nextjs-yongwoon-ai-server",
+          },
     },
   });
 }
@@ -98,7 +98,10 @@ export const auth = {
    * 현재 사용자 세션을 가져옵니다
    */
   async getCurrentUser() {
-    const { data: { user }, error } = await supabaseClient.auth.getUser();
+    const {
+      data: { user },
+      error,
+    } = await supabaseClient.auth.getUser();
     return { user, error };
   },
 
@@ -106,7 +109,10 @@ export const auth = {
    * 현재 사용자 세션을 가져옵니다
    */
   async getCurrentSession() {
-    const { data: { session }, error } = await supabaseClient.auth.getSession();
+    const {
+      data: { session },
+      error,
+    } = await supabaseClient.auth.getSession();
     return { session, error };
   },
 
@@ -199,7 +205,9 @@ export const realtime = {
 
 // 에러 처리 유틸리티
 export function handleSupabaseError(error: any): string {
-  if (!error) {return "";}
+  if (!error) {
+    return "";
+  }
 
   // PostgreSQL 에러 코드 매핑
   const errorCodeMessages: Record<string, string> = {
@@ -207,7 +215,7 @@ export function handleSupabaseError(error: any): string {
     "23503": "참조하는 데이터가 존재하지 않습니다.",
     "23514": "데이터 형식이 올바르지 않습니다.",
     "42501": "권한이 없습니다.",
-    "PGRST116": "요청한 리소스를 찾을 수 없습니다.",
+    PGRST116: "요청한 리소스를 찾을 수 없습니다.",
   };
 
   if (error.code && errorCodeMessages[error.code]) {
@@ -250,7 +258,10 @@ export const serverUtils = {
    */
   async getCurrentUserFromRequest(request: Request) {
     const client = this.createClientFromRequest(request);
-    const { data: { user }, error } = await client.auth.getUser();
+    const {
+      data: { user },
+      error,
+    } = await client.auth.getUser();
     return { user, error };
   },
 
@@ -263,9 +274,10 @@ export const serverUtils = {
 };
 
 // 데이터베이스 연결 상태 확인
-export async function checkDatabaseConnection(): Promise<
-  { success: boolean; error?: string }
-> {
+export async function checkDatabaseConnection(): Promise<{
+  success: boolean;
+  error?: string;
+}> {
   try {
     const { data: _data, error } = await supabaseClient
       .from("profiles")
@@ -280,9 +292,10 @@ export async function checkDatabaseConnection(): Promise<
   } catch (error) {
     return {
       success: false,
-      error: error instanceof Error
-        ? error.message
-        : "Unknown database connection error",
+      error:
+        error instanceof Error
+          ? error.message
+          : "Unknown database connection error",
     };
   }
 }
@@ -313,11 +326,13 @@ export const rls = {
           // 메시지의 경우 대화를 통해 사용자 소유권을 확인
           const messageQuery = await supabaseClient
             .from("messages")
-            .select(`
+            .select(
+              `
               id,
               conversation_id,
               conversations!inner(user_id)
-            `)
+            `,
+            )
             .eq("id", resourceId)
             .eq("conversations.user_id", userId)
             .single();
@@ -349,18 +364,14 @@ export const batch = {
    * 여러 메시지를 한 번에 삽입
    */
   async insertMessages(messages: TablesInsert<"messages">[]) {
-    return await supabaseClient
-      .from("messages")
-      .insert(messages);
+    return await supabaseClient.from("messages").insert(messages);
   },
 
   /**
    * 여러 문서를 한 번에 삽입
    */
   async insertDocuments(documents: TablesInsert<"documents">[]) {
-    return await supabaseClient
-      .from("documents")
-      .insert(documents);
+    return await supabaseClient.from("documents").insert(documents);
   },
 };
 
