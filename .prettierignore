@@ -115,3 +115,4 @@ pnpm-lock.yaml
 src/components/ui/
 
 tasks/
+.taskmaster/
