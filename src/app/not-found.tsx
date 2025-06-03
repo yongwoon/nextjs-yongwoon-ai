@@ -9,7 +9,7 @@ export default function NotFound() {
           <div className="w-8 h-8 bg-gradient-to-br from-orange-400 to-orange-600 rounded-lg flex items-center justify-center">
             <span className="text-white font-bold text-sm">C</span>
           </div>
-          <span className="text-xl font-semibold text-gray-900">Claude</span>
+          <span className="text-xl font-semibold text-gray-900">Gaemamusa</span>
         </div>
       </header>
 
@@ -36,7 +36,7 @@ export default function NotFound() {
       {/* Footer */}
       <footer className="px-6 py-4 border-t border-gray-200">
         <div className="text-center text-xs text-gray-500">
-          <p>© 2024 Anthropic. All rights reserved.</p>
+          <p>© 2024 Gaemamusa. All rights reserved.</p>
         </div>
       </footer>
     </div>
