@@ -17,7 +17,7 @@ Verify Supabase client connects successfully, types are generated correctly, and
 ### Details:
 
 
-## 2. Generate TypeScript Types [in-progress]
+## 2. Generate TypeScript Types [done]
 ### Dependencies: None
 ### Description: Generate TypeScript types from Supabase database schema
 ### Details:
