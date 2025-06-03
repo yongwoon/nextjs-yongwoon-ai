@@ -3,6 +3,40 @@ description: Guidelines for creating and maintaining Cursor rules to ensure cons
 globs: .cursor/rules/*.mdc
 alwaysApply: true
 ---
+---
+description: 파일 작성 및 디렉토리 구조 규칙 (컴포넌트/훅 분리, index.tsx 사용 등)
+globs: src/**/*, src/**/**/*
+alwaysApply: true
+---
+
+- **컴포넌트/훅 파일 작성 및 디렉토리 구조 규칙**
+  - **컴포넌트는 반드시 폴더 단위로 분리**
+    - 예: `email-input-form/index.tsx` (컴포넌트)
+    - 관련 훅/로직은 `email-input-form/hooks/index.tsx` 등 하위 폴더에 분리
+  - **index.tsx 패턴 사용**
+    - 폴더 내 대표 컴포넌트는 `index.tsx`로 작성
+    - import 시 경로가 간결해짐: `import { EmailInputForm } from "@/presentation/components/auth/email-input-form";`
+  - **훅/비즈니스 로직 분리**
+    - 컴포넌트 내부에서 사용하는 커스텀 훅/로직은 `hooks/` 폴더에 별도 파일로 작성
+    - 예: `email-input-form/hooks/index.tsx` 또는 `email-input-form/hooks/useEmailInputForm.ts`
+  - **디렉토리 구조 예시**
+    ```
+    src/presentation/components/auth/email-input-form/
+      ├── index.tsx         # 컴포넌트
+      └── hooks/
+          └── index.tsx    # 훅/로직
+    ```
+  - **실제 구현 예시**
+    ```tsx
+    // email-input-form/index.tsx
+    import { useEmailInputForm } from "./hooks";
+    export function EmailInputForm() { /* ... */ }
+    ```
+    ```tsx
+    // email-input-form/hooks/index.tsx
+    export function useEmailInputForm() { /* ... */ }
+    ```
+  - **이 규칙은 모든 presentation/components, domains/components, shared/components에 적용**
 
 - **Required Rule Structure:**
   ```markdown
@@ -27,7 +61,7 @@ alwaysApply: true
   ```typescript
   // ✅ DO: Show good examples
   const goodExample = true;
-  
+
   // ❌ DON'T: Show anti-patterns
   const badExample = false;
   ```
@@ -50,4 +84,4 @@ alwaysApply: true
   - Keep descriptions concise
   - Include both DO and DON'T examples
   - Reference actual code over theoretical examples
-  - Use consistent formatting across rules 
+  - Use consistent formatting across rules

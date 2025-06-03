@@ -3,3 +3,171 @@ description:
 globs:
 alwaysApply: false
 ---
+# Package Management with Docker & pnpm
+
+이 프로젝트는 Docker 컨테이너 환경에서 pnpm 패키지 매니저를 사용합니다.
+
+## **Docker 환경에서 패키지 설치**
+
+### 기본 패키지 관리
+
+```bash
+# Docker 컨테이너 확인
+docker ps
+
+# 기본 패키지 설치
+docker exec -it nextjs-yongwoon-ai-app-1 pnpm install
+
+# 새 패키지 추가 (runtime dependency)
+docker exec -it nextjs-yongwoon-ai-app-1 pnpm add <package-name>
+
+# 개발 의존성 추가
+docker exec -it nextjs-yongwoon-ai-app-1 pnpm add -D <package-name>
+
+# 특정 버전 설치
+docker exec -it nextjs-yongwoon-ai-app-1 pnpm add <package-name>@<version>
+
+# 패키지 제거
+docker exec -it nextjs-yongwoon-ai-app-1 pnpm remove <package-name>
+```
+
+### 일반적인 패키지 설치 예시
+
+```bash
+# ✅ DO: Authentication 관련 패키지
+docker exec -it nextjs-yongwoon-ai-app-1 pnpm add react-hook-form @hookform/resolvers zod
+
+# ✅ DO: UI 컴포넌트 패키지
+docker exec -it nextjs-yongwoon-ai-app-1 pnpm add @radix-ui/react-dialog @radix-ui/react-form
+
+# ✅ DO: AI SDK 패키지
+docker exec -it nextjs-yongwoon-ai-app-1 pnpm add @ai-sdk/anthropic @ai-sdk/openai
+
+# ✅ DO: 개발 의존성
+docker exec -it nextjs-yongwoon-ai-app-1 pnpm add -D @types/package-name
+```
+
+## **Chat에서 패키지 설치 요청 시**
+
+- **항상 Docker 컨테이너 내부에서 pnpm 명령어를 실행할 것**
+- 로컬 환경에서 직접 pnpm 실행하지 말 것
+- 패키지 설치 후 반드시 `docs/project/installed-packages.md` 업데이트 고려
+
+### 명령어 형식
+
+```bash
+# ❌ DON'T: 로컬에서 직접 실행
+pnpm add package-name
+
+# ✅ DO: Docker 컨테이너에서 실행
+docker exec -it nextjs-yongwoon-ai-app-1 pnpm add package-name
+```
+
+## **패키지 설치 후 확인사항**
+
+- `package.json`의 dependencies/devDependencies 섹션 확인
+- Peer dependency 경고 검토
+- `docs/project/installed-packages.md` 문서 업데이트 필요 여부 확인
+- 새로운 패키지 타입 정의 확인 (`@types/` 패키지 필요성)
+
+## **특별한 고려사항**
+
+### React 19 호환성
+
+- React 19를 사용하므로 일부 패키지에서 peer dependency 경고가 발생할 수 있음
+- 대부분 정상 작동하지만 경고 메시지 확인 필요
+
+### Deprecated 패키지
+
+```bash
+# ❌ DON'T: 더 이상 사용하지 않는 패키지
+@supabase/auth-helpers-nextjs
+
+# ✅ DO: 새로운 권장 패키지
+@supabase/ssr
+```
+
+### 자주 사용하는 패키지 조합
+
+```bash
+# Form 관리
+docker exec -it nextjs-yongwoon-ai-app-1 pnpm add react-hook-form @hookform/resolvers zod
+
+# UI 컴포넌트
+docker exec -it nextjs-yongwoon-ai-app-1 pnpm add @radix-ui/react-dialog @radix-ui/react-dropdown-menu @radix-ui/react-form
+
+# 스타일링
+docker exec -it nextjs-yongwoon-ai-app-1 pnpm add clsx tailwind-merge class-variance-authority
+
+# AI/ML
+docker exec -it nextjs-yongwoon-ai-app-1 pnpm add ai @ai-sdk/anthropic @ai-sdk/openai @ai-sdk/google
+```
+
+## **패키지 업데이트 및 관리**
+
+```bash
+# 패키지 업데이트 확인
+docker exec -it nextjs-yongwoon-ai-app-1 pnpm outdated
+
+# 패키지 업데이트
+docker exec -it nextjs-yongwoon-ai-app-1 pnpm update
+
+# Lock 파일 정리
+docker exec -it nextjs-yongwoon-ai-app-1 pnpm install --frozen-lockfile
+
+# 사용하지 않는 의존성 정리
+docker exec -it nextjs-yongwoon-ai-app-1 pnpm prune
+```
+
+## **문제 해결**
+
+### Docker 컨테이너가 실행되지 않는 경우
+
+```bash
+# Docker 컨테이너 상태 확인
+docker ps -a
+
+# Docker 컨테이너 시작
+docker-compose up -d
+
+# 특정 서비스만 시작
+docker-compose up -d app
+```
+
+### 패키지 설치 실패 시
+
+```bash
+# 캐시 정리
+docker exec -it nextjs-yongwoon-ai-app-1 pnpm store prune
+
+# node_modules 완전 재설치
+docker exec -it nextjs-yongwoon-ai-app-1 rm -rf node_modules pnpm-lock.yaml
+docker exec -it nextjs-yongwoon-ai-app-1 pnpm install
+```
+
+## **참고 문서**
+
+- [Package List Documentation](mdc:docs/project/installed-packages.md)
+- [Docker Compose Configuration](mdc:docker-compose.yml)
+- [Package.json](mdc:package.json)
+
+## **모든 패키지 설치/업데이트는 반드시 Docker 컨테이너 내부에서 pnpm으로만 진행한다**
+
+- **로컬 환경에서 직접 npm/yarn/pnpm 명령어 사용 금지**
+- **예시**: `docker compose exec app pnpm add <패키지명>`
+- **설치/업데이트 내역은 installed-packages.md에 기록**
+
+- **DO**
+  ```sh
+  # ✅ 올바른 예시
+  docker compose exec app pnpm add zod
+  docker compose exec app pnpm install
+  ```
+
+- **DON'T**
+  ```sh
+  # ❌ 잘못된 예시
+  pnpm add zod
+  npm install zod
+  yarn add zod
+  ```
