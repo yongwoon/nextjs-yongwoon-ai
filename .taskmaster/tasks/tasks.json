@@ -62,7 +62,7 @@
       "dependencies": [
         2
       ],
-      "status": "in-progress",
+      "status": "done",
       "subtasks": [
         {
           "id": 1,
@@ -87,7 +87,7 @@
           "title": "Create Supabase Client Configuration",
           "description": "Create lib/supabase.ts with client and server configurations",
           "details": "",
-          "status": "pending",
+          "status": "done",
           "dependencies": [],
           "parentTaskId": 3
         },
@@ -96,7 +96,7 @@
           "title": "Setup Environment Variables",
           "description": "Configure Supabase environment variables and connection settings",
           "details": "",
-          "status": "pending",
+          "status": "done",
           "dependencies": [],
           "parentTaskId": 3
         }
