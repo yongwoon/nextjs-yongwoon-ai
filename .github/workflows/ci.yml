@@ -32,6 +32,9 @@ concurrency:
 jobs:
   ci:
     runs-on: ubuntu-latest
+    env:
+      NEXT_PUBLIC_SUPABASE_URL: "https://fake.supabase.io"
+      NEXT_PUBLIC_SUPABASE_ANON_KEY: "fake-anon-key"
 
     steps:
       - name: Checkout code
