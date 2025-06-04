@@ -1,8 +1,11 @@
 "use client";
 
 import Link from "next/link";
+import { useTranslations } from "next-intl";
 
 export default function IndexPage() {
+  const t = useTranslations();
+
   return (
     <div className="min-h-screen bg-white flex flex-col">
       {/* Header */}
@@ -19,13 +22,13 @@ export default function IndexPage() {
             href="/login"
             className="text-gray-600 hover:text-gray-900 font-medium"
           >
-            Sign in
+            {t("signIn")}
           </Link>
           <Link
             href="/signup"
             className="bg-orange-600 hover:bg-orange-700 text-white px-4 py-2 rounded-lg font-medium transition-colors"
           >
-            Sign up
+            {t("signUp")}
           </Link>
         </div>
       </header>
@@ -34,24 +37,22 @@ export default function IndexPage() {
       <main className="flex-1 flex items-center justify-center px-6 py-12">
         <div className="text-center max-w-2xl">
           <h1 className="text-4xl font-bold text-gray-900 mb-6">
-            Welcome to Gaemamusa
+            {t("title")}
           </h1>
-          <p className="text-xl text-gray-600 mb-8">
-            Your AI assistant for thoughtful conversations and helpful insights.
-          </p>
+          <p className="text-xl text-gray-600 mb-8">{t("description")}</p>
 
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
             <Link
               href="/signup"
               className="bg-orange-600 hover:bg-orange-700 text-white px-8 py-3 rounded-lg font-medium transition-colors"
             >
-              Get started
+              {t("getStarted")}
             </Link>
             <Link
               href="/login"
               className="border border-gray-300 hover:bg-gray-50 text-gray-700 px-8 py-3 rounded-lg font-medium transition-colors"
             >
-              Sign in
+              {t("signIn")}
             </Link>
           </div>
         </div>
@@ -60,7 +61,7 @@ export default function IndexPage() {
       {/* Footer */}
       <footer className="px-6 py-4 border-t border-gray-200">
         <div className="text-center text-xs text-gray-500">
-          <p>© 2024 Gaemamusa. All rights reserved.</p>
+          <p>{t("copyright")}</p>
         </div>
       </footer>
     </div>
