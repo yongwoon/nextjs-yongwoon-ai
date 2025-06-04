@@ -9,3 +9,35 @@ Create auth service using Supabase Auth API. Implement signInWithOtp for magic l
 
 # Test Strategy:
 Test magic link generation, email delivery, token validation, rate limiting, and successful authentication flow
+
+# Subtasks:
+## 1. Setup Supabase Auth API Integration [pending]
+### Dependencies: None
+### Description: Initialize and configure Supabase client with Auth API for magic link authentication
+### Details:
+Create a dedicated auth service module that initializes Supabase client with proper configuration. Implement the signInWithOtp method specifically for magic links. Set up environment variables for Supabase URL and API keys. Create helper functions for managing authentication state and session handling.
+
+## 2. Implement Email Input Component with Validation [pending]
+### Dependencies: None
+### Description: Create the EmailInputPage component with proper validation using react-hook-form and zod
+### Details:
+Build a React component that renders an email input form. Implement form validation using react-hook-form@^7.48 with zod@^3.22 schema validation. Create email format validation rules. Add error handling and display validation messages. Connect the form submission to the auth service's signInWithOtp method. Implement loading states during authentication attempts.
+
+## 3. Develop Auth Callback Route Handler [pending]
+### Dependencies: None
+### Description: Create the route handler to process magic link tokens and authenticate users
+### Details:
+Implement an auth/callback route handler that extracts the token from URL parameters. Verify token validity using Supabase Auth API. Handle successful authentication by establishing a session. Implement error handling for invalid or expired tokens. Set up proper redirects after authentication (success/failure paths).
+
+## 4. Implement Token Storage and Rate Limiting [pending]
+### Dependencies: None
+### Description: Create token generation, storage in auth_tokens table, and implement rate limiting
+### Details:
+Design and create the auth_tokens table schema in Supabase. Implement token generation with appropriate expiration times. Create functions to store and validate tokens. Implement rate limiting logic to restrict users to maximum 3 email attempts per 15 minutes. Add timestamp tracking for rate limiting enforcement. Create error messages for rate-limited users.
+
+## 5. Create Custom Email Templates [pending]
+### Dependencies: 4.4
+### Description: Design and implement custom email templates for magic link authentication matching Claude.ai styling
+### Details:
+Design HTML email templates matching Claude.ai brand styling. Implement dynamic content insertion for magic links and user information. Configure Supabase to use custom email templates. Test email rendering across different email clients. Ensure proper handling of template variables for personalization. Implement both plain text and HTML versions of emails for compatibility.
+

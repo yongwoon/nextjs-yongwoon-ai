@@ -3,32 +3,99 @@ description:
 globs:
 alwaysApply: false
 ---
-- **페이지 파일(page/layout/route 등)은 반드시 `src/app` 하위에 위치**
-  - 예시: `src/app/auth/signup/page.tsx`, `src/app/dashboard/layout.tsx`
-  - 라우트별 폴더 구조를 따를 것
+# 파일 및 디렉토리 위치 규칙 (최신)
 
-- **재사용 가능한 컴포넌트/훅/비즈니스 로직은 반드시 `src/components` 하위에 위치**
-  - 예시: `src/components/auth/sign-up-form/index.tsx`, `src/components/common/button.tsx`
-  - UI/로직은 모두 components/에 두고, app/에는 page/layout/route 파일만 둘 것
+- 이 규칙은 docs/architecture/directory-architecture.md의 최신 구조와 네이밍 컨벤션을 따른다.
 
-- **DO:**
-  ```typescript
-  // src/app/auth/signup/page.tsx
-  import { SignUpForm } from "@/components/auth/sign-up-form";
-  ```
+## 1. 최상위 구조
 
-- **DON'T:**
-  ```typescript
-  // ❌ DON'T: app/ 하위에 컴포넌트 파일을 두거나, components/ 하위에 page.tsx를 두지 말 것
-  // src/app/auth/sign-up-form/index.tsx  (X)
-  // src/components/auth/signup/page.tsx   (X)
-  ```
+- src/
+  - app/                # Next.js App Router (페이지, 라우트)
+  - components/         # UI 컴포넌트(공통)
+  - hooks/              # 공통 React 훅
+  - providers/          # Context Provider
+  - styles/             # 스타일시트
+  - utils/              # UI 유틸리티
+  - lib/                # 공통 라이브러리
+  - domains/            # 도메인 레이어(DDD)
+  - infrastructure/     # 인프라 레이어(외부 연동)
+  - core/               # 앱 전역(이벤트, DI, config 등)
 
-- **적용 대상:**
-  - 모든 Next.js App Router 기반 프로젝트
-  - page, layout, template, error, loading 등 라우트 파일
-  - 재사용 가능한 UI/로직 컴포넌트
+- docs/                 # 문서
+- tests/                # 전역 테스트
+- scripts/              # 빌드/배포 스크립트
+- public/               # 정적 자산
+- prisma/               # DB 스키마
 
-- **추가:**
-  - 폴더 구조가 어긋나면 반드시 리팩터링 권고
-  - 리뷰 시 위치 규칙 위반 여부 체크
+## 2. 도메인 레이어 구조 (domains/)
+
+domains/[domain-name]/
+  - models/
+    - entities/           # 엔티티
+    - value-objects/      # 값 객체
+    - aggregates/         # 집합체
+  - services/
+    - domain-services/    # 도메인 서비스
+    - application-services/ # 애플리케이션 서비스
+    - workflows/          # 워크플로우
+  - repositories/
+    - interfaces/         # 리포지토리 인터페이스
+    - implementations/    # 리포지토리 구현체
+  - events/
+    - definitions/        # 이벤트 정의
+    - handlers/           # 이벤트 핸들러
+    - publishers/         # 이벤트 발행자
+  - hooks/                # 도메인 전용 훅
+  - components/           # 도메인 전용 컴포넌트
+  - types/                # 타입 정의
+  - errors/               # 도메인 에러
+  - config/               # 도메인 설정
+  - tests/                # 도메인 테스트
+  - README.md             # 도메인 문서
+
+## 3. Presentation Layer (src/presentation/)
+- components/
+  - ui/                   # shadcn/ui 등 공통 UI
+  - layout/               # 레이아웃 컴포넌트
+  - shared/               # 공통 재사용 컴포넌트
+  - domain-specific/      # 도메인별 컴포넌트
+- hooks/
+  - ui/                   # UI 관련 훅
+  - data/                 # 데이터 훅
+  - effects/              # 이펙트 훅
+- providers/
+- styles/
+- utils/
+
+## 4. Infrastructure Layer (src/infrastructure/)
+- ai-providers/
+- database/
+- storage/
+- email/
+- monitoring/
+- cache/
+
+## 5. Core Layer (src/core/)
+- events/
+- di/
+- config/
+- security/
+- monitoring/
+- cache/
+- errors/
+- types/
+
+## 6. 네이밍 규칙
+- 폴더: kebab-case, 컬렉션은 복수형, 역할 명확히
+- 파일: 역할+타입 (user.entity.ts, password-policy.service.ts 등)
+- 컴포넌트: PascalCase (LoginForm.tsx)
+- 도메인/레이어별 위치를 반드시 지킨다
+
+## 7. 예시
+- 인증 도메인 서비스: src/domains/auth/services/domain-services/auth.service.ts
+- 공통 UI 버튼: src/presentation/components/ui/Button.tsx
+- AI provider 연동: src/infrastructure/ai-providers/anthropic/client.ts
+- 전역 에러: src/core/errors/app-error.ts
+
+---
+이 규칙은 directory-architecture.md와 반드시 동기화되어야 하며, 구조 변경 시 즉시 갱신한다.

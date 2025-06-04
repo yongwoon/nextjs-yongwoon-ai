@@ -1,51 +1,92 @@
-import React from "react";
-import { LoginForm } from "@/components/auth/login-form";
+"use client";
+
+import DefaultFooter from "@/components/layout/default-footer";
+import MagicLinkForm from "@/components/auth/magic-link-form";
+import SocialLogin from "@/components/auth/social-login";
+import OrDivider from "@/components/common/or-divider";
+import DefaultHeader from "@/components/layout/default-hader";
 
 export default function LoginPage() {
   return (
-    <div className="min-h-screen bg-white flex flex-col">
+    <div className="min-h-screen flex flex-col bg-background">
       {/* Header */}
-      <header className="flex items-center justify-between px-6 py-4 border-b border-gray-200">
-        <div className="flex items-center space-x-2">
-          <div className="w-8 h-8 bg-gradient-to-br from-orange-400 to-orange-600 rounded-lg flex items-center justify-center">
-            <span className="text-white font-bold text-sm">C</span>
-          </div>
-          <span className="text-xl font-semibold text-gray-900">Claude</span>
-        </div>
-      </header>
+      <DefaultHeader />
 
       {/* Main Content */}
-      <main className="flex-1 flex items-center justify-center px-6 py-12">
-        <div className="w-full max-w-sm">
-          <div className="text-center mb-8">
-            <h1 className="text-2xl font-semibold text-gray-900 mb-2">
-              Welcome back
-            </h1>
-            <p className="text-gray-600">Sign in to your account to continue</p>
+      <main className="flex-1 flex flex-col items-center justify-center px-4">
+        <div className="w-full max-w-md bg-card rounded-xl shadow-none flex flex-col items-center py-12">
+          <h1 className="text-3xl font-bold text-center mb-2 text-foreground">
+            Build with Gaemamusa
+          </h1>
+          <p className="text-center text-muted-foreground mb-8">
+            Sign in or create a developer account to build with the Gaemamusa
+            API
+          </p>
+
+          {/* Google Login Button */}
+          <SocialLogin />
+
+          {/* OR Divider */}
+
+          <OrDivider />
+
+          {/* Email Input Form */}
+          <div className="w-full mt-2">
+            <MagicLinkForm isLoading={false} />
           </div>
 
-          <LoginForm />
-
-          <div className="mt-6 text-center">
-            <p className="text-sm text-gray-600">
-              Don&apos;t have an account?{" "}
-              <a
-                href="/signup"
-                className="text-orange-600 hover:text-orange-700 font-medium"
-              >
-                Sign up
+          {/* 약관/정책 안내 */}
+          <div className="w-full">
+            <p className="text-xs text-muted-foreground mt-6 text-center">
+              By continuing, you agree to Gaemamusa&apos;s{" "}
+              <a href="#" className="underline">
+                Commercial Terms
+              </a>{" "}
+              and{" "}
+              <a href="#" className="underline">
+                Usage Policy
               </a>
+              ,<br />
+              and acknowledge our{" "}
+              <a href="#" className="underline">
+                Privacy Policy
+              </a>
+              .
             </p>
           </div>
         </div>
       </main>
 
-      {/* Footer */}
-      <footer className="px-6 py-4 border-t border-gray-200">
-        <div className="text-center text-xs text-gray-500">
-          <p>© 2024 Anthropic. All rights reserved.</p>
+      {/* 하단 카드형 링크 */}
+      <section className="w-full flex justify-center gap-4 px-4 mt-12 mb-4">
+        <div className="bg-card rounded-lg border border-border px-6 py-4 text-center text-sm">
+          <div className="font-medium mb-1 text-foreground">Developer Docs</div>
+          <div className="text-muted-foreground">
+            Get started with Gaemamusa&apos;s API and Gaemamusa
+          </div>
         </div>
-      </footer>
+        <div className="bg-card rounded-lg border border-border px-6 py-4 text-center text-sm">
+          <div className="font-medium mb-1 text-foreground">API Reference</div>
+          <div className="text-muted-foreground">
+            Integrate and scale using Gaemamusa&apos;s API
+          </div>
+        </div>
+        <div className="bg-card rounded-lg border border-border px-6 py-4 text-center text-sm">
+          <div className="font-medium mb-1 text-foreground">Cookbooks</div>
+          <div className="text-muted-foreground">
+            Practical code examples and best practices
+          </div>
+        </div>
+        <div className="bg-card rounded-lg border border-border px-6 py-4 text-center text-sm">
+          <div className="font-medium mb-1 text-foreground">Quickstarts</div>
+          <div className="text-muted-foreground">
+            Sample apps built with Gaemamusa&apos;s API
+          </div>
+        </div>
+      </section>
+
+      {/* Footer */}
+      <DefaultFooter />
     </div>
   );
 }

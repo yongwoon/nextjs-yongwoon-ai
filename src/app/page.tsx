@@ -11,7 +11,7 @@ export default function IndexPage() {
           <div className="w-8 h-8 bg-gradient-to-br from-orange-400 to-orange-600 rounded-lg flex items-center justify-center">
             <span className="text-white font-bold text-sm">C</span>
           </div>
-          <span className="text-xl font-semibold text-gray-900">Claude</span>
+          <span className="text-xl font-semibold text-gray-900">Gaemamusa</span>
         </div>
 
         <div className="flex items-center space-x-4">
@@ -34,7 +34,7 @@ export default function IndexPage() {
       <main className="flex-1 flex items-center justify-center px-6 py-12">
         <div className="text-center max-w-2xl">
           <h1 className="text-4xl font-bold text-gray-900 mb-6">
-            Welcome to Claude
+            Welcome to Gaemamusa
           </h1>
           <p className="text-xl text-gray-600 mb-8">
             Your AI assistant for thoughtful conversations and helpful insights.
@@ -60,7 +60,7 @@ export default function IndexPage() {
       {/* Footer */}
       <footer className="px-6 py-4 border-t border-gray-200">
         <div className="text-center text-xs text-gray-500">
-          <p>© 2024 Anthropic. All rights reserved.</p>
+          <p>© 2024 Gaemamusa. All rights reserved.</p>
         </div>
       </footer>
     </div>
