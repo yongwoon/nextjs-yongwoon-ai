@@ -11,7 +11,7 @@ Create auth service using Supabase Auth API. Implement signInWithOtp for magic l
 Test magic link generation, email delivery, token validation, rate limiting, and successful authentication flow
 
 # Subtasks:
-## 1. Setup Supabase Auth API Integration [pending]
+## 1. Setup Supabase Auth API Integration [done]
 ### Dependencies: None
 ### Description: Initialize and configure Supabase client with Auth API for magic link authentication
 ### Details:
