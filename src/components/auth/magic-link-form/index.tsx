@@ -1,9 +1,11 @@
 "use client";
 
 import { useMagicLinkForm } from "./hooks";
+import { useTranslations } from "next-intl";
 
 export default function MagicLinkForm({ isLoading }: { isLoading?: boolean }) {
   const { register, handleSubmit, errors } = useMagicLinkForm();
+  const t = useTranslations();
 
   return (
     <form
@@ -28,7 +30,7 @@ export default function MagicLinkForm({ isLoading }: { isLoading?: boolean }) {
             transition
             ${errors.email ? "border-red-500" : ""}
           `}
-          placeholder="user@email.com"
+          placeholder={t("authComponent.magicLinkForm.placeholder")}
           disabled={isLoading}
         />
         {errors.email && (
@@ -47,7 +49,9 @@ export default function MagicLinkForm({ isLoading }: { isLoading?: boolean }) {
             mt-2
           `}
         >
-          {isLoading ? "전송 중..." : "매직 링크 받기"}
+          {isLoading
+            ? t("authComponent.magicLinkForm.sending")
+            : t("authComponent.magicLinkForm.submit")}
         </button>
       </div>
     </form>

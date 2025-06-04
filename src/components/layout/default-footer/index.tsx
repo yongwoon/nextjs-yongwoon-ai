@@ -1,25 +1,31 @@
+"use client";
+
+import { useTranslations } from "next-intl";
+
 export default function DefaultFooter() {
+  const t = useTranslations();
+
   return (
     <footer className="w-full px-8 py-6 border-t border-border flex flex-col md:flex-row items-center justify-between text-xs text-muted-foreground bg-background">
       <span className="font-bold tracking-tight text-foreground">A\\</span>
       <div className="flex gap-4 mt-2 md:mt-0">
         <a href="#" className="hover:underline">
-          Product
+          {t("product")}
         </a>
         <a href="#" className="hover:underline">
-          Research
+          {t("research")}
         </a>
         <a href="#" className="hover:underline">
-          Careers
+          {t("careers")}
         </a>
         <a href="#" className="hover:underline">
-          Commercial Terms
+          {t("commercialTerms")}
         </a>
         <a href="#" className="hover:underline">
-          Privacy Policy
+          {t("privacyPolicy")}
         </a>
         <a href="#" className="hover:underline">
-          Your privacy choices
+          {t("yourPrivacyChoices")}
         </a>
       </div>
     </footer>
