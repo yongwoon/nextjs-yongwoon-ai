@@ -116,3 +116,8 @@ src/components/ui/
 
 tasks/
 .taskmaster/
+
+
+messages/en.d.json.ts
+messages/ja.d.json.ts
+messages/ko.d.json.ts
