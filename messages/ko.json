@@ -1,0 +1,38 @@
+{
+  "title": "개마무사에 오신 것을 환영합니다",
+  "description": "생각이 깊은 대화와 유용한 인사이트를 위한 AI 어시스턴트입니다.",
+  "signIn": "로그인",
+  "signUp": "회원가입",
+  "getStarted": "시작하기",
+  "copyright": "© 2024 개마무사. 모든 권리 보유.",
+  "product": "제품",
+  "research": "연구",
+  "careers": "채용",
+  "commercialTerms": "상업적 약관",
+  "privacyPolicy": "개인정보 처리방침",
+  "yourPrivacyChoices": "개인정보 선택",
+  "loginPage": {
+    "title": "개마무사로 시작하세요",
+    "subtitle": "개마무사 API로 개발하려면 로그인하거나 개발자 계정을 생성하세요.",
+    "agreePrefix": "계속 진행하면 개마무사의",
+    "and": "및",
+    "usagePolicy": "이용 정책",
+    "acknowledge": "그리고 다음을 확인합니다:",
+    "developerDocs": "개발자 문서",
+    "developerDocsDesc": "개마무사 API와 함께 시작해보세요.",
+    "apiReference": "API 레퍼런스",
+    "apiReferenceDesc": "개마무사 API를 통합하고 확장하세요.",
+    "cookbooks": "쿡북",
+    "cookbooksDesc": "실용적인 코드 예제와 베스트 프랙티스",
+    "quickstarts": "빠른 시작",
+    "quickstartsDesc": "개마무사 API로 만든 샘플 앱"
+  },
+  "authComponent": {
+    "socialLogin": { "google": "Google로 계속하기" },
+    "magicLinkForm": {
+      "submit": "매직 링크 받기",
+      "sending": "전송 중...",
+      "placeholder": "user@email.com"
+    }
+  }
+}

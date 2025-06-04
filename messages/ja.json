@@ -1,0 +1,38 @@
+{
+  "title": "Gaemamusaへようこそ",
+  "description": "思慮深い会話と役立つ洞察のためのAIアシスタントです。",
+  "signIn": "サインイン",
+  "signUp": "サインアップ",
+  "getStarted": "始める",
+  "copyright": "© 2024 Gaemamusa. All rights reserved.",
+  "product": "製品",
+  "research": "リサーチ",
+  "careers": "採用情報",
+  "commercialTerms": "商業条件",
+  "privacyPolicy": "プライバシーポリシー",
+  "yourPrivacyChoices": "プライバシーの選択",
+  "loginPage": {
+    "title": "Gaemamusaで始めましょう",
+    "subtitle": "Gaemamusa APIで開発するには、サインインまたは開発者アカウントを作成してください。",
+    "agreePrefix": "続行することで、Gaemamusaの",
+    "and": "および",
+    "usagePolicy": "利用ポリシー",
+    "acknowledge": "また、次を確認します:",
+    "developerDocs": "開発者ドキュメント",
+    "developerDocsDesc": "Gaemamusa APIで始めましょう。",
+    "apiReference": "APIリファレンス",
+    "apiReferenceDesc": "Gaemamusa APIを統合して拡張しましょう。",
+    "cookbooks": "クックブック",
+    "cookbooksDesc": "実用的なコード例とベストプラクティス",
+    "quickstarts": "クイックスタート",
+    "quickstartsDesc": "Gaemamusa APIで作られたサンプルアプリ"
+  },
+  "authComponent": {
+    "socialLogin": { "google": "Googleで続行" },
+    "magicLinkForm": {
+      "submit": "マジックリンクを受け取る",
+      "sending": "送信中...",
+      "placeholder": "user@email.com"
+    }
+  }
+}

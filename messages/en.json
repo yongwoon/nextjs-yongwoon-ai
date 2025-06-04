@@ -1,0 +1,38 @@
+{
+  "title": "Welcome to Gaemamusa",
+  "description": "Your AI assistant for thoughtful conversations and helpful insights.",
+  "signIn": "Sign in",
+  "signUp": "Sign up",
+  "getStarted": "Get started",
+  "copyright": "© 2024 Gaemamusa. All rights reserved.",
+  "product": "Product",
+  "research": "Research",
+  "careers": "Careers",
+  "commercialTerms": "Commercial Terms",
+  "privacyPolicy": "Privacy Policy",
+  "yourPrivacyChoices": "Your privacy choices",
+  "loginPage": {
+    "title": "Build with Gaemamusa",
+    "subtitle": "Sign in or create a developer account to build with the Gaemamusa API",
+    "agreePrefix": "By continuing, you agree to Gaemamusa's",
+    "and": "and",
+    "usagePolicy": "Usage Policy",
+    "acknowledge": "and acknowledge our",
+    "developerDocs": "Developer Docs",
+    "developerDocsDesc": "Get started with Gaemamusa's API and Gaemamusa",
+    "apiReference": "API Reference",
+    "apiReferenceDesc": "Integrate and scale using Gaemamusa's API",
+    "cookbooks": "Cookbooks",
+    "cookbooksDesc": "Practical code examples and best practices",
+    "quickstarts": "Quickstarts",
+    "quickstartsDesc": "Sample apps built with Gaemamusa's API"
+  },
+  "authComponent": {
+    "socialLogin": { "google": "Continue with Google" },
+    "magicLinkForm": {
+      "submit": "Get Magic Link",
+      "sending": "Sending...",
+      "placeholder": "user@email.com"
+    }
+  }
+}
