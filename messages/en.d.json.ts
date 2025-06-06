@@ -37,6 +37,15 @@ declare const messages: {
       "sending": "Sending...",
       "placeholder": "user@email.com"
     }
+  },
+  "emailSentPage": {
+    "title": "Check your email",
+    "subtitle": "We've sent a magic link to",
+    "note": "Check your email and click the magic link to sign in automatically",
+    "resendLink": "Resend link",
+    "resending": "Sending...",
+    "resendTimer": "Resend in {seconds}s",
+    "changeEmail": "Use a different email address"
   }
 };
 export default messages;

@@ -34,5 +34,14 @@
       "sending": "전송 중...",
       "placeholder": "user@email.com"
     }
+  },
+  "emailSentPage": {
+    "title": "이메일을 확인해 주세요",
+    "subtitle": "매직 링크를 다음 주소로 발송했습니다:",
+    "note": "이메일을 확인하고 매직 링크를 클릭하면 자동으로 로그인됩니다",
+    "resendLink": "링크 재발송",
+    "resending": "발송 중...",
+    "resendTimer": "{seconds}초 후 재발송 가능",
+    "changeEmail": "다른 이메일 주소 사용"
   }
 }

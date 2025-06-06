@@ -16,13 +16,13 @@
    ↓
 [SendMagicLink]
    ↓
+발송 완료 페이지
+   ↓
 이메일 수신
    ↓
-Magic Link 클릭
-   ↓
-[VerifyToken]
-   ↓
-자동 로그인 완료
+┌─ Magic Link 클릭 ──→ [VerifyToken] ──→ 자동 로그인 완료
+│
+└─ 6자리 코드 입력 ──→ [VerifyOTP] ──→ 로그인 완료
    ↓
 홈페이지
 ```
@@ -38,9 +38,25 @@ Magic Link 클릭
   - 사용자가 이메일 주소를 입력합니다
   - Frontend에서 SendMagicLink RPC를 호출합니다
   - Backend는 이메일이 기존 사용자인지 신규 사용자인지 확인합니다
-  - 보안 토큰을 생성하고 magic link가 포함된 이메일을 발송합니다
+  - 보안 토큰을 생성하고 magic link와 6자리 코드가 포함된 이메일을 발송합니다
   - **Magic Link URL**: `http://localhost:5001/mago.user.v1.AuthService/VerifyToken?token={token}`
+  - **6자리 인증 코드**: 예) `123456`
   - Frontend는 이메일 발송 확인 메시지를 표시합니다
+
+#### 1-1. 발송 완료 페이지 이동
+
+- **Frontend Page**: `EmailSentPage`
+- **사용자 동작**: 이메일 발송 후 자동 전환
+- **페이지 구성**:
+  - 이메일 발송 완료 메시지 표시
+  - Magic Link와 코드 입력 두 가지 옵션 안내
+  - 6자리 인증 코드 입력 폼 제공
+  - 이메일 재발송 버튼
+  - 다른 이메일로 시도하기 버튼
+- **처리 과정**:
+  - Magic Link 발송 성공 후 자동으로 EmailSentPage로 이동
+  - 사용자는 이메일을 확인하여 Magic Link를 클릭하거나
+  - 페이지에서 직접 6자리 코드를 입력할 수 있음
 
 #### 2. Magic Link 인증 및 자동 로그인
 
@@ -56,20 +72,36 @@ Magic Link 클릭
   - 성공 시 frontend로 리디렉션하며 JWT 토큰을 전달합니다
   - 사용자는 자동으로 로그인 상태가 되어 홈페이지로 이동합니다
 
-#### 2-1. 검증 코드를 통한 대체 인증 방법
+#### 2-1. 6자리 코드를 통한 직접 인증
 
-- **Frontend Page**: `EmailSentPage` → `VerificationPage`
-- **사용자 동작**: `VerificationPage`에서 `verification code` 입력
-- **호출되는 RPC**: `VerifyVerificationCode`
+- **Frontend Page**: `EmailSentPage`
+- **사용자 동작**: 발송 완료 페이지에서 6자리 코드 입력
+- **호출되는 RPC**: `VerifyOTP`
 - **처리 과정**:
-  - 사용자가 이메일의 `verification code`를 확인합니다
-  - 사용자가 `VerificationPage`에서 `verification code`를 입력합니다
-  - Frontend는 `VerifyVerificationCode` RPC를 호출합니다
-  - Backend는 code를 검증하고 사용자 계정을 확인/생성합니다
+  - 사용자가 이메일에서 6자리 인증 코드를 확인합니다
+  - 사용자가 `EmailSentPage`에서 6자리 코드를 입력합니다
+  - Frontend는 `VerifyOTP` RPC를 호출합니다 (이메일 주소와 코드 전송)
+  - Backend는 코드를 검증하고 사용자 계정을 확인/생성합니다
+  - **신규 사용자인 경우**: 자동으로 계정을 생성합니다
+  - **기존 사용자인 경우**: 기존 계정으로 인증합니다
   - Backend는 JWT 토큰을 반환합니다
   - Frontend는 토큰을 저장하고 사용자를 홈페이지로 리디렉션합니다
+  - 사용자는 자동으로 로그인 상태가 되어 홈페이지로 이동합니다
 
-#### 2-2. 다른 브라우저에서 Magic Link 접근 시 처리
+#### 2-2. 코드 재발송 기능
+
+- **Frontend Page**: `EmailSentPage`
+- **사용자 동작**: "코드 재발송" 버튼 클릭
+- **호출되는 RPC**: `ResendOTP`
+- **처리 과정**:
+  - 사용자가 코드를 받지 못했거나 만료된 경우 재발송 요청
+  - Frontend는 `ResendOTP` RPC를 호출합니다
+  - Backend는 새로운 6자리 코드를 생성하고 이메일로 발송합니다
+  - 기존 코드는 무효화되고 새 코드만 유효합니다
+  - 재발송 제한 (예: 1분 간격)을 적용하여 스팸 방지
+  - Frontend는 재발송 완료 메시지를 표시합니다
+
+#### 2-3. 다른 브라우저에서 Magic Link 접근 시 처리
 
 - **시나리오**: 사용자가 Chrome에서 이메일을 입력했지만, Safari나 시크릿 모드에서 Magic Link를 클릭한 경우
 - **Frontend Page**: `CrossBrowserVerificationPage`
@@ -79,6 +111,7 @@ Magic Link 클릭
   - 원래 요청과 다른 브라우저/환경임을 감지합니다
   - Backend는 토큰을 검증하고 6자리 verification code를 생성합니다
   - **CrossBrowserVerificationPage**를 표시합니다:
+
     ```text
     "다른 브라우저에서 접근하신 것 같습니다"
     "보안을 위해 아래 코드를 복사하여
@@ -88,6 +121,7 @@ Magic Link 클릭
 
     "원래 브라우저로 돌아가서 코드를 입력하세요"
     ```
+
   - 사용자는 코드를 복사하고 원래 브라우저로 돌아갑니다
   - 원래 브라우저의 `VerificationPage`에서 코드를 입력합니다
   - Frontend는 `VerifyVerificationCode` RPC를 호출합니다
