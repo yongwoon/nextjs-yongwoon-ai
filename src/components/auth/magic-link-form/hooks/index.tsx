@@ -34,7 +34,7 @@ export function useMagicLinkForm() {
       );
       if (error) {
         setStatus("error");
-        setErrorMsg(error.message || "인증 방법 발송에 실패했습니다.");
+        setErrorMsg(error || "인증 방법 발송에 실패했습니다.");
       } else {
         setStatus("success");
         reset();

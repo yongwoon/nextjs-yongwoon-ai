@@ -34,7 +34,7 @@ export function useEmailSent(email: string) {
       );
 
       if (error) {
-        setError(error.message || "매직 링크 재발송에 실패했습니다.");
+        setError(error || "매직 링크 재발송에 실패했습니다.");
       } else {
         setResendTimer(60); // 60초 재발송 제한
       }
