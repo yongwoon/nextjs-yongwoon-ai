@@ -147,7 +147,7 @@
           "description": "Create token generation, storage in auth_tokens table, and implement rate limiting",
           "dependencies": [],
           "details": "Design and create the auth_tokens table schema in Supabase. Implement token generation with appropriate expiration times. Create functions to store and validate tokens. Implement rate limiting logic to restrict users to maximum 3 email attempts per 15 minutes. Add timestamp tracking for rate limiting enforcement. Create error messages for rate-limited users.",
-          "status": "pending",
+          "status": "done",
           "testStrategy": "Test token generation, storage and retrieval. Verify rate limiting by simulating multiple authentication attempts within the time window."
         },
         {

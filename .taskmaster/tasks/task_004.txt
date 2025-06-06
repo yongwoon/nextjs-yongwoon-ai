@@ -64,7 +64,7 @@ Implement an auth/callback route handler that extracts the token from URL parame
 **다음 단계:** 실제 매직 링크 플로우 테스트 필요
 </info added on 2025-06-06T10:08:29.277Z>
 
-## 4. Implement Token Storage and Rate Limiting [pending]
+## 4. Implement Token Storage and Rate Limiting [done]
 ### Dependencies: None
 ### Description: Create token generation, storage in auth_tokens table, and implement rate limiting
 ### Details:
