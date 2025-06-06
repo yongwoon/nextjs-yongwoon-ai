@@ -28,13 +28,13 @@ export function useMagicLinkForm() {
     setStatus("loading");
     setErrorMsg(null);
     try {
-      const { error } = await AuthService.sendBothAuthMethods(
+      const result = await AuthService.sendMagicLink(
         data.email,
         window.location.origin + "/auth/callback",
       );
-      if (error) {
+      if (!result.success) {
         setStatus("error");
-        setErrorMsg(error || "인증 방법 발송에 실패했습니다.");
+        setErrorMsg(result.error || "인증 방법 발송에 실패했습니다.");
       } else {
         setStatus("success");
         reset();

@@ -128,14 +128,6 @@ export const AuthService = {
   },
 
   /**
-   * Magic Link 발송
-   * Supabase의 기본 동작으로 Magic Link만 발송됩니다.
-   */
-  async sendBothAuthMethods(email: string, redirectTo?: string) {
-    return this.sendMagicLink(email, redirectTo);
-  },
-
-  /**
    * 현재 세션 확인
    */
   async getSession() {

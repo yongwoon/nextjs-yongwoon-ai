@@ -28,13 +28,13 @@ export function useEmailSent(email: string) {
     setError(null);
 
     try {
-      const { error } = await AuthService.sendBothAuthMethods(
+      const result = await AuthService.sendMagicLink(
         email,
         window.location.origin + "/auth/callback",
       );
 
-      if (error) {
-        setError(error || "매직 링크 재발송에 실패했습니다.");
+      if (!result.success) {
+        setError(result.error || "매직 링크 재발송에 실패했습니다.");
       } else {
         setResendTimer(60); // 60초 재발송 제한
       }
