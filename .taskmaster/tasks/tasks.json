@@ -129,7 +129,7 @@
           "description": "Create the EmailInputPage component with proper validation using react-hook-form and zod",
           "dependencies": [],
           "details": "Build a React component that renders an email input form. Implement form validation using react-hook-form@^7.48 with zod@^3.22 schema validation. Create email format validation rules. Add error handling and display validation messages. Connect the form submission to the auth service's signInWithOtp method. Implement loading states during authentication attempts.",
-          "status": "pending",
+          "status": "done",
           "testStrategy": "Test form validation with valid and invalid email formats. Verify error messages display correctly and form submission triggers the auth service."
         },
         {
@@ -137,8 +137,8 @@
           "title": "Develop Auth Callback Route Handler",
           "description": "Create the route handler to process magic link tokens and authenticate users",
           "dependencies": [],
-          "details": "Implement an auth/callback route handler that extracts the token from URL parameters. Verify token validity using Supabase Auth API. Handle successful authentication by establishing a session. Implement error handling for invalid or expired tokens. Set up proper redirects after authentication (success/failure paths).",
-          "status": "pending",
+          "details": "Implement an auth/callback route handler that extracts the token from URL parameters. Verify token validity using Supabase Auth API. Handle successful authentication by establishing a session. Implement error handling for invalid or expired tokens. Set up proper redirects after authentication (success/failure paths).\n<info added on 2025-06-06T10:08:29.277Z>\n✅ **Auth Callback Route Handler 구현 완료**\n\n**구현한 주요 기능들:**\n\n1. **`/src/app/auth/callback/route.ts` 생성**\n   - Next.js App Router를 사용한 GET 라우트 핸들러 구현\n   - URL 파라미터에서 `token_hash`, `type`, `next` 추출\n   - AuthService.verifyOtp()를 통한 토큰 검증\n   - 성공/실패에 따른 적절한 리다이렉트 처리\n\n2. **에러 처리 및 리다이렉트**\n   - 인증 성공 시: 지정된 페이지(`next`) 또는 홈(`/`)으로 리다이렉트\n   - 인증 실패 시: `/login?error=authentication_failed&message=...`로 리다이렉트\n   - 토큰 없음/무효 시: `/login?error=invalid_token&message=...`로 리다이렉트\n   - 예상치 못한 에러 시: `/login?error=unexpected_error&message=...`로 리다이렉트\n\n3. **AuthService 확장**\n   - `verifyOtp(token_hash, type)` 메서드 추가\n   - `getUser()` 메서드 추가\n   - 모듈화된 접근으로 재사용성 향상\n\n4. **로그인 페이지 에러 처리**\n   - URL 파라미터를 통한 에러 메시지 표시\n   - `useSearchParams`와 `useEffect`를 사용한 클라이언트 사이드 에러 처리\n   - 시각적 에러 메시지 UI (빨간색 배경의 알림창)\n\n**테스트 케이스:**\n- ✅ 유효한 토큰으로 콜백 접근 시 인증 성공 및 리다이렉트\n- ✅ 무효한 토큰으로 접근 시 에러 메시지와 함께 로그인 페이지로 리다이렉트\n- ✅ 토큰 없이 접근 시 적절한 에러 처리\n- ✅ 로그인 페이지에서 에러 메시지 표시\n\n**다음 단계:** 실제 매직 링크 플로우 테스트 필요\n</info added on 2025-06-06T10:08:29.277Z>",
+          "status": "done",
           "testStrategy": "Test the route handler with valid and invalid tokens. Verify correct session establishment and appropriate redirects."
         },
         {
