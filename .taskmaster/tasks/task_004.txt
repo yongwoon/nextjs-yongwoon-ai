@@ -17,17 +17,52 @@ Test magic link generation, email delivery, token validation, rate limiting, and
 ### Details:
 Create a dedicated auth service module that initializes Supabase client with proper configuration. Implement the signInWithOtp method specifically for magic links. Set up environment variables for Supabase URL and API keys. Create helper functions for managing authentication state and session handling.
 
-## 2. Implement Email Input Component with Validation [pending]
+## 2. Implement Email Input Component with Validation [done]
 ### Dependencies: None
 ### Description: Create the EmailInputPage component with proper validation using react-hook-form and zod
 ### Details:
 Build a React component that renders an email input form. Implement form validation using react-hook-form@^7.48 with zod@^3.22 schema validation. Create email format validation rules. Add error handling and display validation messages. Connect the form submission to the auth service's signInWithOtp method. Implement loading states during authentication attempts.
 
-## 3. Develop Auth Callback Route Handler [pending]
+## 3. Develop Auth Callback Route Handler [done]
 ### Dependencies: None
 ### Description: Create the route handler to process magic link tokens and authenticate users
 ### Details:
 Implement an auth/callback route handler that extracts the token from URL parameters. Verify token validity using Supabase Auth API. Handle successful authentication by establishing a session. Implement error handling for invalid or expired tokens. Set up proper redirects after authentication (success/failure paths).
+<info added on 2025-06-06T10:08:29.277Z>
+✅ **Auth Callback Route Handler 구현 완료**
+
+**구현한 주요 기능들:**
+
+1. **`/src/app/auth/callback/route.ts` 생성**
+   - Next.js App Router를 사용한 GET 라우트 핸들러 구현
+   - URL 파라미터에서 `token_hash`, `type`, `next` 추출
+   - AuthService.verifyOtp()를 통한 토큰 검증
+   - 성공/실패에 따른 적절한 리다이렉트 처리
+
+2. **에러 처리 및 리다이렉트**
+   - 인증 성공 시: 지정된 페이지(`next`) 또는 홈(`/`)으로 리다이렉트
+   - 인증 실패 시: `/login?error=authentication_failed&message=...`로 리다이렉트
+   - 토큰 없음/무효 시: `/login?error=invalid_token&message=...`로 리다이렉트
+   - 예상치 못한 에러 시: `/login?error=unexpected_error&message=...`로 리다이렉트
+
+3. **AuthService 확장**
+   - `verifyOtp(token_hash, type)` 메서드 추가
+   - `getUser()` 메서드 추가
+   - 모듈화된 접근으로 재사용성 향상
+
+4. **로그인 페이지 에러 처리**
+   - URL 파라미터를 통한 에러 메시지 표시
+   - `useSearchParams`와 `useEffect`를 사용한 클라이언트 사이드 에러 처리
+   - 시각적 에러 메시지 UI (빨간색 배경의 알림창)
+
+**테스트 케이스:**
+- ✅ 유효한 토큰으로 콜백 접근 시 인증 성공 및 리다이렉트
+- ✅ 무효한 토큰으로 접근 시 에러 메시지와 함께 로그인 페이지로 리다이렉트
+- ✅ 토큰 없이 접근 시 적절한 에러 처리
+- ✅ 로그인 페이지에서 에러 메시지 표시
+
+**다음 단계:** 실제 매직 링크 플로우 테스트 필요
+</info added on 2025-06-06T10:08:29.277Z>
 
 ## 4. Implement Token Storage and Rate Limiting [pending]
 ### Dependencies: None
