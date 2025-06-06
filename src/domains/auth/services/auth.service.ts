@@ -67,31 +67,12 @@ export const AuthService = {
         };
       }
 
-      // 2. 토큰 생성 및 저장
-      const tokenResult = await AuthTokenService.generateAndStoreToken({
-        email: options.email,
-        tokenType: "magic_link",
-        userAgent: options.userAgent,
-        ipAddress: options.ipAddress,
-        browserFingerprint: options.browserFingerprint,
-        metadata: options.metadata,
-      } as TokenGenerationOptions);
-
-      if (!tokenResult.success) {
-        return {
-          success: false,
-          error: tokenResult.error || "토큰 생성에 실패했습니다.",
-        };
-      }
-
-      // 3. Supabase를 통한 매직 링크 발송
+      // 2. Supabase를 통한 매직 링크 발송
       const { error } = await supabaseClient.auth.signInWithOtp({
         email: options.email,
         options: {
           emailRedirectTo: options.redirectTo,
-          data: {
-            token_hash: tokenResult.tokenHash,
-          },
+          data: options.metadata,
         },
       });
 
@@ -103,9 +84,27 @@ export const AuthService = {
         };
       }
 
+      // 3. 성공적으로 발송된 후 토큰 생성 및 저장 (추적/로깅용)
+      const tokenResult = await AuthTokenService.generateAndStoreToken({
+        email: options.email,
+        tokenType: "magic_link",
+        userAgent: options.userAgent,
+        ipAddress: options.ipAddress,
+        browserFingerprint: options.browserFingerprint,
+        metadata: options.metadata,
+      } as TokenGenerationOptions);
+
+      // 토큰 저장 실패는 로깅만 하고 사용자에게는 성공으로 응답
+      if (!tokenResult.success) {
+        console.warn(
+          "토큰 저장 실패 (매직링크는 정상 발송됨):",
+          tokenResult.error,
+        );
+      }
+
       return {
         success: true,
-        remainingAttempts: rateLimitCheck.details.email.remainingAttempts - 1,
+        remainingAttempts: rateLimitCheck.details.email.remainingAttempts,
       };
     } catch (error) {
       console.error("매직 링크 발송 중 오류:", error);
