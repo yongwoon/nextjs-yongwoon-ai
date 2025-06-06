@@ -4,9 +4,9 @@ import { AuthService } from "@/domains/auth/services/auth.service";
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import {
-  MagicLinkRequest,
+  MagicLinkRequestValidation as MagicLinkRequest,
   magicLinkRequestSchema,
-} from "@/domains/auth/entities/magicLink";
+} from "@/domains/auth/entities/magic-link.types";
 
 export function useMagicLinkForm() {
   const router = useRouter();
@@ -28,13 +28,13 @@ export function useMagicLinkForm() {
     setStatus("loading");
     setErrorMsg(null);
     try {
-      const { error } = await AuthService.sendBothAuthMethods(
+      const result = await AuthService.sendMagicLink(
         data.email,
         window.location.origin + "/auth/callback",
       );
-      if (error) {
+      if (!result.success) {
         setStatus("error");
-        setErrorMsg(error.message || "인증 방법 발송에 실패했습니다.");
+        setErrorMsg(result.error || "인증 방법 발송에 실패했습니다.");
       } else {
         setStatus("success");
         reset();

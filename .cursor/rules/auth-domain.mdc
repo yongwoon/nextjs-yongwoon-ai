@@ -1,0 +1,156 @@
+---
+description:
+globs:
+alwaysApply: false
+---
+- **Auth 서비스 개발 패턴**
+  - **Supabase Auth와 커스텀 토큰 시스템 분리**
+    - Supabase의 내장 인증 시스템을 우선 사용
+    - 커스텀 토큰은 추적/로깅 목적으로만 사용
+    - 절대 Supabase의 토큰 검증 프로세스를 오버라이드하지 않음
+    ```typescript
+    // ✅ DO: Supabase가 자체 토큰 관리
+    const { error } = await supabaseClient.auth.signInWithOtp({
+      email: options.email,
+      options: {
+        emailRedirectTo: options.redirectTo,
+        data: options.metadata, // 메타데이터만 전달
+      },
+    });
+
+    // 성공 후 커스텀 토큰은 추적용으로만 저장
+    const tokenResult = await AuthTokenService.generateAndStoreToken(...);
+
+    // ❌ DON'T: 커스텀 토큰을 Supabase에 전달
+    const { error } = await supabaseClient.auth.signInWithOtp({
+      email: options.email,
+      options: {
+        data: {
+          token_hash: customTokenHash, // 검증 불일치 발생
+        },
+      },
+    });
+    ```
+
+  - **레이트 리미트 계산 정확성**
+    - 레이트 리미트 서비스의 반환값을 신뢰하고 추가 조작 금지
+    - `remainingAttempts`는 이미 현재 시도를 고려한 값
+    ```typescript
+    // ✅ DO: 레이트 리미트 서비스 값 그대로 사용
+    return {
+      success: true,
+      remainingAttempts: rateLimitCheck.details.email.remainingAttempts,
+    };
+
+    // ❌ DON'T: 중복 차감으로 인한 오프-바이-원 오류
+    return {
+      success: true,
+      remainingAttempts: rateLimitCheck.details.email.remainingAttempts - 1,
+    };
+    ```
+
+  - **에러 처리 및 사용자 경험**
+    - 커스텀 토큰 저장 실패는 사용자 경험을 방해하지 않도록 처리
+    - 내부 추적 시스템 실패와 사용자 기능 실패를 분리
+    ```typescript
+    // ✅ DO: 추적 실패를 로깅만 하고 성공 반환
+    if (!tokenResult.success) {
+      console.warn("토큰 저장 실패 (매직링크는 정상 발송됨):", tokenResult.error);
+    }
+    return { success: true };
+
+    // ❌ DON'T: 추적 실패로 사용자 기능 차단
+    if (!tokenResult.success) {
+      return { success: false, error: tokenResult.error };
+    }
+    ```
+
+- **토큰 서비스 패턴**
+  - **토큰 타입별 명확한 용도 구분**
+    - `magic_link`: Supabase 연동 추적용
+    - `verification_code`: 독립적인 검증 시스템용
+  - **토큰 생명주기 관리**
+    - 자동 만료 시간 설정 (기본 15분)
+    - 일회용 토큰 원칙 (사용 후 즉시 무효화)
+    - 정기적인 만료 토큰 정리
+  - **보안 토큰 생성**
+    ```typescript
+    // ✅ DO: 32바이트 암호화 랜덤 + SHA-256 해시
+    const rawToken = crypto.randomBytes(32).toString('hex');
+    const tokenHash = crypto.createHash('sha256').update(rawToken).digest('hex');
+    ```
+
+- **레이트 리미팅 패턴**
+  - **다층 레이트 리미팅 구현**
+    - 이메일별: 15분 내 최대 3회
+    - IP별: 60분 내 최대 10회
+    - 브라우저별: 30분 내 최대 5회
+  - **슬라이딩 윈도우 방식 사용**
+    - 고정 시간 창 대신 동적 시간 범위로 더 정확한 제한
+  - **사용자 친화적 에러 메시지**
+    ```typescript
+    // ✅ DO: 구체적이고 도움이 되는 메시지
+    return {
+      error: "이메일 발송 한도를 초과했습니다. 15분 후 다시 시도해주세요.",
+      remainingAttempts: 0,
+      resetTime: new Date(Date.now() + 15 * 60 * 1000)
+    };
+    ```
+
+- **인증 플로우 검증**
+  - **매직링크 검증은 Supabase 표준 방식 사용**
+    ```typescript
+    // ✅ DO: Supabase 표준 검증
+    return supabaseClient.auth.verifyOtp({
+      token_hash,
+      type: "magiclink",
+    });
+
+    // ❌ DON'T: 커스텀 토큰과 혼용
+    const customValid = await AuthTokenService.validateAndUseToken(...);
+    const supabaseValid = await supabaseClient.auth.verifyOtp(...);
+    ```
+
+- **모니터링 및 로깅**
+  - **보안 이벤트 추적**
+    - 레이트 리미트 위반 시도 로깅
+    - 의심스러운 IP/이메일 패턴 감지
+    - 토큰 사용 패턴 분석
+  - **성능 메트릭 수집**
+    - 인증 성공/실패율
+    - 평균 응답 시간
+    - 토큰 정리 작업 성능
+
+- **테스트 및 개발**
+  - **개발 환경 전용 테스트 유틸리티 사용**
+    ```typescript
+    // 개발/테스트 환경에서만 노출
+    if (process.env.NODE_ENV === 'development') {
+      globalThis.AuthTestUtils = AuthTestUtils;
+    }
+    ```
+  - **종합적인 플로우 테스트**
+    - 레이트 리미팅 경계 조건 테스트
+    - 토큰 생성-검증-만료 전체 사이클 테스트
+    - 다중 사용자 동시 접근 시나리오 테스트
+
+- **데이터베이스 최적화**
+  - **성능 최적화 인덱스 필수**
+    ```sql
+    -- 필수 인덱스들
+    CREATE INDEX idx_auth_tokens_email_created ON auth_tokens(email, created_at);
+    CREATE INDEX idx_auth_tokens_expires_at ON auth_tokens(expires_at);
+    CREATE INDEX idx_auth_tokens_token_hash ON auth_tokens(token_hash);
+    ```
+  - **정기적인 데이터 정리**
+    - 만료된 토큰 자동 삭제
+    - 오래된 로그 데이터 아카이빙
+    - GDPR 준수를 위한 데이터 보존 정책
+
+---
+
+**Cross-reference:**
+- Supabase 통합 패턴: [supabase.mdc](mdc:.cursor/rules/supabase.mdc)
+- 도메인 아키텍처: [domainLayer-token-storage-rate-limiting.md](mdc:docs/architecture/domainLayer-token-storage-rate-limiting.md)
+- 에러 처리 패턴: [ui-logic-separation.mdc](mdc:.cursor/rules/ui-logic-separation.mdc)
+- 테스트 전략: [dev_workflow.mdc](mdc:.cursor/rules/dev_workflow.mdc)
