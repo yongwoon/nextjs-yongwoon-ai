@@ -4,9 +4,9 @@ import { AuthService } from "@/domains/auth/services/auth.service";
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import {
-  MagicLinkRequest,
+  MagicLinkRequestValidation as MagicLinkRequest,
   magicLinkRequestSchema,
-} from "@/domains/auth/entities/magicLink";
+} from "@/domains/auth/entities/magic-link.types";
 
 export function useMagicLinkForm() {
   const router = useRouter();
