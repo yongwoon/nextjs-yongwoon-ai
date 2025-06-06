@@ -36,7 +36,7 @@ export const AuthCleanupService = {
 
     try {
       const supabase = createSupabaseAdminClient();
-      const now = new Date().toISOString();
+      // const now = new Date().toISOString();
 
       // 1. 만료된 인증 토큰 삭제 (만료된 지 1시간 이상 경과)
       const oneHourAgo = new Date(Date.now() - 60 * 60 * 1000).toISOString();
@@ -58,8 +58,9 @@ export const AuthCleanupService = {
       }
 
       // 2. 오래된 브라우저 세션 정리 (30일 이상 비활성)
-      const thirtyDaysAgo = new Date(Date.now() - 30 * 24 * 60 * 60 * 1000)
-        .toISOString();
+      const thirtyDaysAgo = new Date(
+        Date.now() - 30 * 24 * 60 * 60 * 1000,
+      ).toISOString();
 
       try {
         const { data: oldSessions, error: sessionError } = await supabase
@@ -78,8 +79,9 @@ export const AuthCleanupService = {
       }
 
       // 3. 사용된 검증 코드 정리 (7일 이상 경과)
-      const sevenDaysAgo = new Date(Date.now() - 7 * 24 * 60 * 60 * 1000)
-        .toISOString();
+      const sevenDaysAgo = new Date(
+        Date.now() - 7 * 24 * 60 * 60 * 1000,
+      ).toISOString();
 
       try {
         const { error: codeError } = await supabase
@@ -135,24 +137,26 @@ export const AuthCleanupService = {
 
       // 2. 최근 시도 횟수
       const last1Hour = new Date(now.getTime() - 60 * 60 * 1000).toISOString();
-      const last24Hours = new Date(now.getTime() - 24 * 60 * 60 * 1000)
-        .toISOString();
-      const last7Days = new Date(now.getTime() - 7 * 24 * 60 * 60 * 1000)
-        .toISOString();
+      const last24Hours = new Date(
+        now.getTime() - 24 * 60 * 60 * 1000,
+      ).toISOString();
+      const last7Days = new Date(
+        now.getTime() - 7 * 24 * 60 * 60 * 1000,
+      ).toISOString();
 
       const [hour, day, week] = await Promise.all([
-        supabase.from("auth_tokens").select("id", { count: "exact" }).gte(
-          "created_at",
-          last1Hour,
-        ),
-        supabase.from("auth_tokens").select("id", { count: "exact" }).gte(
-          "created_at",
-          last24Hours,
-        ),
-        supabase.from("auth_tokens").select("id", { count: "exact" }).gte(
-          "created_at",
-          last7Days,
-        ),
+        supabase
+          .from("auth_tokens")
+          .select("id", { count: "exact" })
+          .gte("created_at", last1Hour),
+        supabase
+          .from("auth_tokens")
+          .select("id", { count: "exact" })
+          .gte("created_at", last24Hours),
+        supabase
+          .from("auth_tokens")
+          .select("id", { count: "exact" })
+          .gte("created_at", last7Days),
       ]);
 
       data.recentAttempts = {
@@ -162,8 +166,9 @@ export const AuthCleanupService = {
       };
 
       // 3. 레이트 리미트에 걸린 이메일들 (15분 내 3회 이상)
-      const fifteenMinutesAgo = new Date(now.getTime() - 15 * 60 * 1000)
-        .toISOString();
+      const fifteenMinutesAgo = new Date(
+        now.getTime() - 15 * 60 * 1000,
+      ).toISOString();
 
       const { data: recentTokens } = await supabase
         .from("auth_tokens")
@@ -171,13 +176,16 @@ export const AuthCleanupService = {
         .gte("created_at", fifteenMinutesAgo);
 
       if (recentTokens) {
-        const emailCounts = recentTokens.reduce((acc, token) => {
-          acc[token.email] = (acc[token.email] || 0) + 1;
-          return acc;
-        }, {} as Record<string, number>);
+        const emailCounts = recentTokens.reduce(
+          (acc, token) => {
+            acc[token.email] = (acc[token.email] || 0) + 1;
+            return acc;
+          },
+          {} as Record<string, number>,
+        );
 
-        data.rateLimitedEmails = Object.keys(emailCounts).filter((email) =>
-          emailCounts[email] >= 3
+        data.rateLimitedEmails = Object.keys(emailCounts).filter(
+          (email) => emailCounts[email] >= 3,
         );
       }
 
@@ -190,12 +198,15 @@ export const AuthCleanupService = {
         .not("ip_address", "is", null);
 
       if (ipTokens) {
-        const ipCounts = ipTokens.reduce((acc, token) => {
-          if (token.ip_address) {
-            acc[token.ip_address] = (acc[token.ip_address] || 0) + 1;
-          }
-          return acc;
-        }, {} as Record<string, number>);
+        const ipCounts = ipTokens.reduce(
+          (acc, token) => {
+            if (token.ip_address) {
+              acc[token.ip_address] = (acc[token.ip_address] || 0) + 1;
+            }
+            return acc;
+          },
+          {} as Record<string, number>,
+        );
 
         data.suspiciousActivity.highVolumeIps = Object.keys(ipCounts).filter(
           (ip) => ipCounts[ip] >= 10,
@@ -210,20 +221,22 @@ export const AuthCleanupService = {
         .not("browser_fingerprint", "is", null);
 
       if (fingerprintTokens) {
-        const fingerprintEmails = fingerprintTokens.reduce((acc, token) => {
-          if (token.browser_fingerprint) {
-            if (!acc[token.browser_fingerprint]) {
-              acc[token.browser_fingerprint] = new Set();
+        const fingerprintEmails = fingerprintTokens.reduce(
+          (acc, token) => {
+            if (token.browser_fingerprint) {
+              if (!acc[token.browser_fingerprint]) {
+                acc[token.browser_fingerprint] = new Set();
+              }
+              acc[token.browser_fingerprint].add(token.email);
             }
-            acc[token.browser_fingerprint].add(token.email);
-          }
-          return acc;
-        }, {} as Record<string, Set<string>>);
+            return acc;
+          },
+          {} as Record<string, Set<string>>,
+        );
 
         data.suspiciousActivity.multipleEmailsFromSameFingerprint = Object.keys(
           fingerprintEmails,
-        )
-          .filter((fingerprint) => fingerprintEmails[fingerprint].size >= 3);
+        ).filter((fingerprint) => fingerprintEmails[fingerprint].size >= 3);
       }
     } catch (error) {
       console.error("모니터링 데이터 수집 중 오류:", error);
@@ -267,15 +280,19 @@ export const AuthCleanupService = {
   /**
    * 특정 이메일의 인증 기록 조회 (디버깅용)
    */
-  async getEmailAuthHistory(email: string, limitDays: number = 7): Promise<{
+  async getEmailAuthHistory(
+    email: string,
+    limitDays: number = 7,
+  ): Promise<{
     tokens: any[];
     sessions: any[];
     totalAttempts: number;
   }> {
     try {
       const supabase = createSupabaseAdminClient();
-      const sinceDate = new Date(Date.now() - limitDays * 24 * 60 * 60 * 1000)
-        .toISOString();
+      const sinceDate = new Date(
+        Date.now() - limitDays * 24 * 60 * 60 * 1000,
+      ).toISOString();
 
       const [tokensResult, sessionsResult] = await Promise.all([
         supabase

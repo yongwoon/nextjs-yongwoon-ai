@@ -39,7 +39,7 @@ export const AuthTokenService = {
       const expiresAt = new Date(Date.now() + expiresInMinutes * 60 * 1000);
 
       // 토큰 저장
-      const { data, error } = await supabase
+      const { data: _data, error } = await supabase
         .from("auth_tokens")
         .insert({
           email: options.email,
@@ -176,9 +176,10 @@ export const AuthTokenService = {
   /**
    * 만료된 토큰 정리
    */
-  async cleanupExpiredTokens(): Promise<
-    { success: boolean; deletedCount?: number }
-  > {
+  async cleanupExpiredTokens(): Promise<{
+    success: boolean;
+    deletedCount?: number;
+  }> {
     try {
       const supabase = createSupabaseAdminClient();
       const now = new Date().toISOString();
