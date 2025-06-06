@@ -34,5 +34,14 @@
       "sending": "送信中...",
       "placeholder": "user@email.com"
     }
+  },
+  "emailSentPage": {
+    "title": "メールをご確認ください",
+    "subtitle": "マジックリンクを次のアドレスに送信しました:",
+    "note": "メールを確認してマジックリンクをクリックすると自動的にサインインされます",
+    "resendLink": "リンクを再送信",
+    "resending": "送信中...",
+    "resendTimer": "{seconds}秒後に再送信可能",
+    "changeEmail": "別のメールアドレスを使用"
   }
 }

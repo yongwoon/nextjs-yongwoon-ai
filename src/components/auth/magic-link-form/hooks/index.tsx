@@ -2,12 +2,14 @@ import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { AuthService } from "@/domains/auth/services/auth.service";
 import { useState } from "react";
+import { useRouter } from "next/navigation";
 import {
   MagicLinkRequest,
   magicLinkRequestSchema,
 } from "@/domains/auth/entities/magicLink";
 
 export function useMagicLinkForm() {
+  const router = useRouter();
   const [status, setStatus] = useState<
     "idle" | "loading" | "success" | "error"
   >("idle");
@@ -26,16 +28,18 @@ export function useMagicLinkForm() {
     setStatus("loading");
     setErrorMsg(null);
     try {
-      const { error } = await AuthService.sendMagicLink(
+      const { error } = await AuthService.sendBothAuthMethods(
         data.email,
         window.location.origin + "/auth/callback",
       );
       if (error) {
         setStatus("error");
-        setErrorMsg(error.message || "매직 링크 발송에 실패했습니다.");
+        setErrorMsg(error.message || "인증 방법 발송에 실패했습니다.");
       } else {
         setStatus("success");
         reset();
+        // Email Sent 페이지로 이동
+        router.push(`/auth/email-sent?email=${encodeURIComponent(data.email)}`);
       }
     } catch (e) {
       setStatus("error");
