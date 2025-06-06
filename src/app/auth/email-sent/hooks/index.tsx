@@ -20,7 +20,9 @@ export function useEmailSent(email: string) {
 
   // Magic Link 재발송
   const handleResendLink = async () => {
-    if (resendTimer > 0 || isResending) return;
+    if (resendTimer > 0 || isResending) {
+      return;
+    }
 
     setIsResending(true);
     setError(null);
