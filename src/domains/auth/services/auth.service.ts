@@ -24,4 +24,21 @@ export const AuthService = {
   async signOut() {
     return supabaseClient.auth.signOut();
   },
+
+  /**
+   * 세션 설정 (access_token과 refresh_token으로)
+   */
+  async setSession(access_token: string, refresh_token: string) {
+    return supabaseClient.auth.setSession({
+      access_token,
+      refresh_token,
+    });
+  },
+
+  /**
+   * Authorization code를 세션으로 교환 (PKCE 방식)
+   */
+  async exchangeCodeForSession(code: string) {
+    return supabaseClient.auth.exchangeCodeForSession(code);
+  },
 };

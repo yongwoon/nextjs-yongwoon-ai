@@ -43,12 +43,12 @@ export function createSupabaseServerClient(accessToken?: string) {
     global: {
       headers: accessToken
         ? {
-            Authorization: `Bearer ${accessToken}`,
-            "X-Client-Info": "nextjs-yongwoon-ai-server",
-          }
+          Authorization: `Bearer ${accessToken}`,
+          "X-Client-Info": "nextjs-yongwoon-ai-server",
+        }
         : {
-            "X-Client-Info": "nextjs-yongwoon-ai-server",
-          },
+          "X-Client-Info": "nextjs-yongwoon-ai-server",
+        },
     },
   });
 }
@@ -91,68 +91,6 @@ export type Document = Tables<"documents">;
 export type AuthToken = Tables<"auth_tokens">;
 export type VerificationCode = Tables<"verification_codes">;
 export type BrowserSession = Tables<"browser_sessions">;
-
-// 인증 관련 헬퍼 함수들
-export const auth = {
-  /**
-   * 현재 사용자 세션을 가져옵니다
-   */
-  async getCurrentUser() {
-    const {
-      data: { user },
-      error,
-    } = await supabaseClient.auth.getUser();
-    return { user, error };
-  },
-
-  /**
-   * 현재 사용자 세션을 가져옵니다
-   */
-  async getCurrentSession() {
-    const {
-      data: { session },
-      error,
-    } = await supabaseClient.auth.getSession();
-    return { session, error };
-  },
-
-  /**
-   * 사용자 로그아웃
-   */
-  async signOut() {
-    const { error } = await supabaseClient.auth.signOut();
-    return { error };
-  },
-
-  /**
-   * 이메일로 매직 링크 전송
-   */
-  async signInWithMagicLink(email: string, redirectTo?: string) {
-    const { data, error } = await supabaseClient.auth.signInWithOtp({
-      email,
-      options: {
-        emailRedirectTo: redirectTo,
-      },
-    });
-    return { data, error };
-  },
-
-  /**
-   * OTP 코드로 인증
-   */
-  async verifyOtp(
-    email: string,
-    token: string,
-    type: "magiclink" | "signup" | "invite" | "recovery" = "magiclink",
-  ) {
-    const { data, error } = await supabaseClient.auth.verifyOtp({
-      email,
-      token,
-      type,
-    });
-    return { data, error };
-  },
-};
 
 // 실시간 구독을 위한 헬퍼
 export const realtime = {
@@ -292,10 +230,9 @@ export async function checkDatabaseConnection(): Promise<{
   } catch (error) {
     return {
       success: false,
-      error:
-        error instanceof Error
-          ? error.message
-          : "Unknown database connection error",
+      error: error instanceof Error
+        ? error.message
+        : "Unknown database connection error",
     };
   }
 }

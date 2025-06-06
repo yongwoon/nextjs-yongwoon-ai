@@ -5,10 +5,10 @@ import MagicLinkForm from "@/components/auth/magic-link-form";
 import SocialLogin from "@/components/auth/social-login";
 import OrDivider from "@/components/common/or-divider";
 import DefaultHeader from "@/components/layout/default-hader";
-import { useTranslations } from "next-intl";
+import { useLogin } from "./hooks";
 
 export default function LoginPage() {
-  const t = useTranslations();
+  const { t, errorMessage } = useLogin();
 
   return (
     <div className="min-h-screen flex flex-col bg-background">
@@ -25,6 +25,13 @@ export default function LoginPage() {
             {t("loginPage.subtitle")}
           </p>
 
+          {/* Error Message */}
+          {errorMessage && (
+            <div className="w-full mb-4 p-3 bg-red-50 border border-red-200 rounded-md">
+              <p className="text-sm text-red-600 text-center">{errorMessage}</p>
+            </div>
+          )}
+
           {/* Google Login Button */}
           <SocialLogin />
 
@@ -34,7 +41,7 @@ export default function LoginPage() {
 
           {/* Email Input Form */}
           <div className="w-full mt-2">
-            <MagicLinkForm isLoading={false} />
+            <MagicLinkForm />
           </div>
 
           {/* 약관/정책 안내 */}
