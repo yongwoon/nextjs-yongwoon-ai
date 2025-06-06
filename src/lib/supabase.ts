@@ -43,12 +43,12 @@ export function createSupabaseServerClient(accessToken?: string) {
     global: {
       headers: accessToken
         ? {
-          Authorization: `Bearer ${accessToken}`,
-          "X-Client-Info": "nextjs-yongwoon-ai-server",
-        }
+            Authorization: `Bearer ${accessToken}`,
+            "X-Client-Info": "nextjs-yongwoon-ai-server",
+          }
         : {
-          "X-Client-Info": "nextjs-yongwoon-ai-server",
-        },
+            "X-Client-Info": "nextjs-yongwoon-ai-server",
+          },
     },
   });
 }
@@ -230,9 +230,10 @@ export async function checkDatabaseConnection(): Promise<{
   } catch (error) {
     return {
       success: false,
-      error: error instanceof Error
-        ? error.message
-        : "Unknown database connection error",
+      error:
+        error instanceof Error
+          ? error.message
+          : "Unknown database connection error",
     };
   }
 }
