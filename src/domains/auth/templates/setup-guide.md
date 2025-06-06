@@ -16,13 +16,10 @@
 ### 3. 템플릿 적용
 프로젝트에서 다음 코드를 실행하여 템플릿 설정 정보를 가져옵니다:
 
-```typescript
-import { EmailTemplateService } from '@/domains/auth/templates';
-
-const config = EmailTemplateService.getSupabaseEmailTemplateConfig();
-console.log('Magic Link Subject:', config.magicLink.subject);
-console.log('Magic Link HTML:', config.magicLink.body);
-console.log('Magic Link Text:', config.magicLink.bodyText);
+```bash
+# 템플릿 설정 정보 가져오기
+# app container 내부에서 실행
+npx tsx get-email-templates.ts
 ```
 
 ### 4. Supabase에 템플릿 설정

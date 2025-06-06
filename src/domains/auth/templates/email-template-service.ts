@@ -122,10 +122,11 @@ export class EmailTemplateService {
     // {{ .TokenHash }} - 토큰 해시
     // {{ .SiteURL }} - 사이트 URL
     // {{ .RedirectTo }} - 리다이렉트 URL
+    // {{ .ConfirmationURL }} - Supabase에서 자동 생성하는 완전한 매직 링크 URL (권장)
     // {{ .Data }} - 추가 메타데이터
 
-    const magicLinkUrl =
-      "{{ .SiteURL }}/auth/callback?token_hash={{ .TokenHash }}&type=magiclink&next={{ .RedirectTo }}";
+    // Supabase의 표준 ConfirmationURL 사용 (자동으로 모든 필요한 파라미터 포함)
+    const magicLinkUrl = "{{ .ConfirmationURL }}";
 
     const templateProps: MagicLinkTemplateProps = {
       magicLink: magicLinkUrl,
