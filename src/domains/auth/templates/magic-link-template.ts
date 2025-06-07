@@ -1,21 +1,21 @@
 export interface MagicLinkTemplateProps {
-    magicLink: string;
-    userEmail: string;
-    expirationTime: string;
-    companyName?: string;
-    supportEmail?: string;
+  magicLink: string;
+  userEmail: string;
+  expirationTime: string;
+  companyName?: string;
+  supportEmail?: string;
 }
 
 export const generateMagicLinkEmailHTML = ({
-    magicLink,
-    userEmail,
-    expirationTime,
-    companyName = "Goguryeo",
-    supportEmail = "support@goguryeo.ai",
+  magicLink,
+  userEmail,
+  expirationTime,
+  companyName = "Goguryeo",
+  supportEmail = "support@goguryeo.ai",
 }: MagicLinkTemplateProps): string => {
-    console.log("expirationTime", expirationTime);
+  console.log("expirationTime", expirationTime);
 
-    return `<style>
+  return `<style>
     body {
         margin: 0;
         padding: 0;
@@ -221,13 +221,13 @@ export const generateMagicLinkEmailHTML = ({
 };
 
 export const generateMagicLinkEmailText = ({
-    magicLink,
-    userEmail,
-    expirationTime,
-    companyName = "Goguryeo",
-    supportEmail = "support@goguryeo.ai",
+  magicLink,
+  userEmail,
+  expirationTime,
+  companyName = "Goguryeo",
+  supportEmail = "support@goguryeo.ai",
 }: MagicLinkTemplateProps): string => {
-    return `
+  return `
 ${companyName} Gaemamusa AI - 매직 링크 로그인
 
 안녕하세요!
