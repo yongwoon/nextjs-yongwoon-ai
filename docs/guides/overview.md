@@ -1,5 +1,9 @@
 # Rules 시스템 개요
 
+이 문서는 규칙 시스템 개요입니다.
+- 개발 워크플로우는 [dev-workflow-guide.md](./dev-workflow-guide.md)
+- Task Master Reference는 [taskmaster-guide.md](./taskmaster-guide.md) 참고
+
 이 문서는 프로젝트의 `.cursor/rules` 디렉토리에 정의된 규칙들에 대한 종합적인 설명을 제공합니다.
 
 ## 📖 목차
@@ -21,18 +25,23 @@
 ## 📋 포함된 규칙 파일들
 
 ### 1. [cursor_rules.mdc](../cursor/rules/cursor_rules.mdc)
+
 Cursor IDE에서 사용되는 규칙 파일 작성 표준을 정의합니다.
 
 ### 2. [dev_workflow.mdc](../cursor/rules/dev_workflow.mdc)
+
 Task Master를 중심으로 한 개발 워크플로우 가이드라인을 제공합니다.
 
 ### 3. [taskmaster.mdc](../cursor/rules/taskmaster.mdc)
-Task Master 시스템의 모든 도구와 명령어에 대한 상세한 참조 문서입니다.
+
+Task Master Reference(명령어/도구별 상세 설명)를 제공합니다.
 
 ### 4. [self_improve.mdc](../cursor/rules/self_improve.mdc)
+
 코드베이스 분석을 통한 규칙 자동 개선 프로세스를 설명합니다.
 
 ### 5. GitHub 설정 규칙들
+
 - **[labeler-guide.md](./labeler-guide.md)**: GitHub PR 자동 라벨링 시스템 설정 및 사용법
 - **[CI/CD workflows](../../.github/workflows/)**: 자동화된 테스트, 린트, 빌드 프로세스
 
@@ -45,13 +54,16 @@ Task Master 시스템의 모든 도구와 명령어에 대한 상세한 참조 �
 
 ## 📚 세부 문서들
 
-각 규칙에 대한 자세한 설명은 다음 문서들을 참조하세요:
+각 규칙 및 개발 흐름에 대한 자세한 설명은 다음 문서들을 참조하세요:
 
 - [Cursor Rules 가이드](./cursor-rules-guide.md)
 - [개발 워크플로우 가이드](./dev-workflow-guide.md)
-- [Task Master 사용법](./taskmaster-guide.md)
+  (실제 개발 단계별 실무 흐름)
+- [Task Master Reference](./taskmaster-guide.md)
+  (명령어/도구별 상세 Reference)
 - [자동 개선 프로세스 가이드](./self-improvement-guide.md)
 - [GitHub Labeler 가이드](./labeler-guide.md)
+- [directory-architecture.md](../architecture/directory-architecture.md) — 전체 아키텍처
 
 ## 🚀 시작하기
 

@@ -2,12 +2,23 @@
 
 > 🚀 **컨텍스트 인식 AI 브라우저 어시스턴트 개발 전략**
 
-이 프로젝트는 Merlin AI와 유사한 브라우저 기반 AI 어시스턴트를 구축합니다. 웹페이지 컨텍스트를 이해하고, 다양한 온라인 작업을 AI로 자동화하는 서비스입니다.
+---
+
+## 📚 문서 목적 및 개요
+
+이 문서는 Merlin AI와 유사한 브라우저 기반 AI 어시스턴트 프로젝트의 전체 단계별 개발 전략, 구현 체크리스트, 구조 예시, 코드 인터페이스, 완료 기준 등을 제공합니다.
+
+- 각 단계별 세부 작업 분해 및 관리 방법은 [Task Master Reference](../taskmaster-guide.md)와 [개발 워크플로우 가이드](../dev-workflow-guide.md)를 참고하세요.
+- 프로젝트 구조와 규칙은 [디렉토리 아키텍처](../architecture/directory-architecture.md) 및 [Cursor 규칙 개요](../guides/cursor-rules-guide.md)에서 확인할 수 있습니다.
+
+---
 
 ## 🎯 서비스 비전 및 핵심 가치
 
 ### 🌟 Merlin AI 핵심 기능 분석
+
 **우리가 구현할 주요 기능들:**
+
 - ⚡ **컨텍스트 인식**: 현재 웹페이지 내용을 이해하고 관련 도움 제공
 - 📄 **웹페이지 요약**: 긴 글, 유튜브 영상, PDF 즉석 요약
 - ✍️ **글쓰기 지원**: 이메일, 소셜미디어, 댓글 작성 도움
@@ -16,6 +27,7 @@
 - 🤖 **다중 AI 모델**: GPT, Claude, Gemini 등 동시 지원
 
 ### 💡 우리만의 차별화 포인트
+
 - **한국어 최적화**: 한국 웹사이트와 콘텐츠에 특화
 - **프라이버시 우선**: 로컬 처리 최대화, 데이터 최소 수집
 - **오픈소스 접근**: 투명한 개발과 커뮤니티 기여
@@ -36,10 +48,14 @@
 
 ## 🔬 Phase 0: 기술 검증 및 프로토타입 (1주)
 
+> **세부 작업 분해, 관리, 체크리스트 작성은 [Task Master Reference](../taskmaster-guide.md)와 [개발 워크플로우 가이드](../dev-workflow-guide.md)를 참고하세요.**
+
 ### 🎯 목표: Merlin AI 핵심 기능의 기술적 실현가능성 검증
 
 #### 0.1 브라우저 확장 프로그램 기초 (2일)
+
 **Chrome Extension Manifest V3 기반 구조**
+
 ```
 extension/
 ├── manifest.json          # 확장 프로그램 설정
@@ -51,12 +67,15 @@ extension/
 ```
 
 **기본 기능 검증:**
+
 - [x] 웹페이지 콘텐츠 추출 (텍스트, 메타데이터)
 - [x] 사이드바 패널 표시/숨기기
 - [x] 백그라운드-콘텐츠 스크립트 통신
 
 #### 0.2 웹페이지 컨텍스트 분석 (2일)
+
 **컨텍스트 추출 시스템**
+
 ```typescript
 interface PageContext {
   url: string
@@ -78,13 +97,16 @@ interface PageContext {
 ```
 
 **검증 항목:**
+
 - [x] 다양한 웹사이트 타입 인식 (뉴스, 유튜브, 이메일 등)
 - [x] 한국어 콘텐츠 정확한 추출
 - [x] 동적 DOM 변경 감지
 - [x] 성능 최적화 (메모리 < 50MB)
 
 #### 0.3 AI 모델 통합 (2일)
+
 **다중 AI 모델 클라이언트**
+
 ```typescript
 interface AIProvider {
   name: 'openai' | 'anthropic' | 'google'
@@ -102,19 +124,23 @@ class MultiAIClient {
 ```
 
 **검증 목표:**
+
 - [x] OpenAI, Claude, Gemini API 연동
 - [x] 스트리밍 응답 처리
 - [x] 컨텍스트 기반 프롬프트 생성
 - [x] 응답 시간 < 3초
 
 #### 0.4 성능 및 보안 검증 (1일)
+
 **기술적 제약사항 확인**
+
 - [x] 확장 프로그램 보안 정책 (CSP) 준수
 - [x] API 키 안전한 저장 (chrome.storage.local)
 - [x] 대용량 페이지에서 성능 (100MB+ 페이지)
 - [x] 처리 메모리 사용량 최적화
 
 ### ✅ Phase 0 완료 기준
+
 - [ ] 기본 확장 프로그램 Chrome 웹스토어 업로드 가능
 - [ ] 임의의 웹페이지에서 컨텍스트 추출 100% 동작
 - [ ] 3개 AI 모델 정상 응답 수신
@@ -124,11 +150,14 @@ class MultiAIClient {
 
 ## 🏗️ Phase 1: 기본 브라우저 확장 프로그램 (3주)
 
+> **세부 작업 분해, 관리, 체크리스트 작성은 [Task Master Reference](../taskmaster-guide.md)와 [개발 워크플로우 가이드](../dev-workflow-guide.md)를 참고하세요.**
+
 ### 🎯 목표: 웹페이지 요약과 기본 AI 대화가 가능한 확장 프로그램 완성
 
 #### 1.1 확장 프로그램 핵심 인터페이스 (1주)
 
 **사이드바 패널 UI**
+
 ```
 ┌─ Merlin AI Clone ────────┐
 │ [설정] [모델선택] [히스토리] │
@@ -150,6 +179,7 @@ class MultiAIClient {
 ```
 
 **핵심 구현 사항:**
+
 - React + TypeScript 기반 사이드바 패널
 - 다크/라이트 모드 테마 전환
 - 페이지별 컨텍스트 자동 감지
@@ -157,6 +187,7 @@ class MultiAIClient {
 #### 1.2 페이지 요약 기능 (1주)
 
 **스마트 요약 시스템**
+
 ```typescript
 interface SummaryConfig {
   type: 'quick' | 'detailed' | 'bullet'
@@ -173,6 +204,7 @@ class SmartSummarizer {
 ```
 
 **지원하는 콘텐츠 타입:**
+
 - 📰 뉴스 기사 및 블로그 포스트
 - 📺 YouTube 동영상 (자막 기반)
 - 📄 PDF 문서 (텍스트 추출)
@@ -180,6 +212,7 @@ class SmartSummarizer {
 - 📧 이메일 내용
 
 **요약 품질 기준:**
+
 - 원문 길이 대비 30% 이하로 압축
 - 핵심 정보 유지율 95% 이상
 - 한국어 자연스러움 점수 4.5/5
@@ -188,6 +221,7 @@ class SmartSummarizer {
 #### 1.3 기본 AI 대화 시스템 (1주)
 
 **컨텍스트 인식 대화**
+
 ```typescript
 interface ConversationContext {
   pageUrl: string
@@ -204,18 +238,21 @@ class ContextualChat {
 ```
 
 **빠른 액션 메뉴:**
+
 - 💡 "이 내용을 쉽게 설명해줘"
 - 🎯 "핵심 포인트만 알려줘"
 - ❓ "관련해서 더 알아야 할 것은?"
 - 🔗 "이와 비슷한 다른 자료 찾아줘"
 
 ### ✅ Phase 1 완료 기준
+
 - [ ] Chrome 웹스토어에 확장 프로그램 퍼블리시
 - [ ] 주요 한국 사이트에서 요약 기능 정상 작동
 - [ ] 사용자 설정 저장/복구 기능
 - [ ] 내부 테스터 10명이 일주일간 무장애 사용
 
 ### 📈 Phase 1 성공 지표
+
 - 확장 프로그램 설치 성공률: 95%
 - 페이지 요약 정확도: 80% (테스터 평가)
 - 평균 응답 시간: 3초 이하
@@ -230,6 +267,7 @@ class ContextualChat {
 #### 2.1 고급 컨텍스트 분석 시스템 (1.5주)
 
 **페이지 타입별 전문 분석**
+
 ```typescript
 interface AdvancedPageAnalyzer {
   // 뉴스/블로그 분석
@@ -256,6 +294,7 @@ interface ArticleAnalysis {
 ```
 
 **동적 컨텍스트 업데이트:**
+
 - 스크롤 위치에 따른 컨텍스트 변경 감지
 - 동적 콘텐츠 로딩 감지 (무한 스크롤, AJAX)
 - 사용자 상호작용 패턴 학습
@@ -264,6 +303,7 @@ interface ArticleAnalysis {
 #### 2.2 글쓰기 어시스턴트 (2주)
 
 **텍스트 입력 필드 감지 및 지원**
+
 ```typescript
 class WritingAssistant {
   // 모든 입력 필드에서 AI 지원 활성화
@@ -290,18 +330,21 @@ interface WritingContext {
 **지원 플랫폼 및 기능:**
 
 📧 **이메일 작성 지원**
+
 - Gmail, Outlook, Naver 메일에서 자동 활성화
 - 제목 추천, 본문 구조 제안
 - 수신자별 톤 조절 (상사/동료/고객)
 - 첨부파일 내용 기반 초안 생성
 
 🐦 **소셜미디어 게시글 작성**
+
 - Twitter, LinkedIn, Facebook 지원
 - 플랫폼별 최적 길이 조절
 - 해시태그 자동 추천
 - 이미지와 어울리는 캡션 생성
 
 💬 **댓글 및 리뷰 작성**
+
 - 기사/상품에 대한 의미있는 댓글 제안
 - 건설적 피드백 작성 도움
 - 논리적 반박 또는 동의 표현
@@ -309,6 +352,7 @@ interface WritingContext {
 #### 2.3 스마트 번역 및 언어 지원 (0.5주)
 
 **다국어 지원**
+
 ```typescript
 class SmartTranslator {
   // 페이지 전체 번역
@@ -326,6 +370,7 @@ class SmartTranslator {
 ```
 
 **지원 언어 및 기능:**
+
 - 🇰🇷 한국어 ↔ 🇺🇸 영어 (최고 품질)
 - 🇯🇵 일본어, 🇨🇳 중국어 (간체/번체)
 - 유럽어 (독일어, 프랑스어, 스페인어)
@@ -334,6 +379,7 @@ class SmartTranslator {
 #### 2.4 개인화 및 학습 시스템 (0.5주)
 
 **사용자 선호도 학습**
+
 ```typescript
 interface UserProfile {
   writingStyle: 'formal' | 'casual' | 'academic' | 'creative'
@@ -351,12 +397,14 @@ class PersonalizationEngine {
 ```
 
 ### ✅ Phase 2 완료 기준
+
 - [ ] 주요 웹사이트 10개에서 컨텍스트 분석 100% 정확
 - [ ] 5개 플랫폼에서 글쓰기 지원 완전 동작
 - [ ] 번역 품질 Google 번역 대비 90% 수준
 - [ ] 베타 테스터 50명이 2주간 일일 사용
 
 ### 📈 Phase 2 성공 지표
+
 - 컨텍스트 인식 정확도: 95%
 - 글쓰기 제안 수용률: 70%
 - 번역 만족도: 4.0/5
@@ -371,6 +419,7 @@ class PersonalizationEngine {
 #### 3.1 스마트 검색 결과 향상 (1.5주)
 
 **검색 엔진 AI 통합**
+
 ```typescript
 class SearchEnhancer {
   // 검색 결과에 AI 분석 추가
@@ -397,6 +446,7 @@ interface EnhancedResults {
 ```
 
 **지원 검색 엔진:**
+
 - 🔍 Google 검색 결과 페이지
 - 🔎 Naver 검색 결과
 - 🦆 DuckDuckGo
@@ -404,6 +454,7 @@ interface EnhancedResults {
 - 🛒 쇼핑 검색 (쿠팡, 11번가)
 
 **검색 향상 기능:**
+
 - ⚡ 검색 의도 파악 (정보 검색 vs 쇼핑 vs 네비게이션)
 - 📊 결과 요약 및 비교 분석
 - 🎯 핵심 정보 하이라이팅
@@ -413,6 +464,7 @@ interface EnhancedResults {
 #### 3.2 독립 웹 애플리케이션 개발 (2주)
 
 **웹앱 아키텍처**
+
 ```
 web-app/
 ├── pages/
@@ -435,18 +487,21 @@ web-app/
 **핵심 웹앱 기능:**
 
 🎮 **AI 플레이그라운드**
+
 - 다중 AI 모델 동시 비교
 - 커스텀 프롬프트 테스트
 - 응답 시간 및 품질 비교
 - 결과 저장 및 공유
 
 📁 **파일 처리 허브**
+
 - PDF, Word, PowerPoint 분석
 - 대용량 문서 배치 처리
 - 여러 파일 교차 분석
 - OCR 텍스트 추출
 
 🔗 **URL 기반 분석**
+
 - 웹페이지 URL 입력으로 즉시 분석
 - 여러 페이지 비교 분석
 - 웹사이트 전체 구조 분석
@@ -455,6 +510,7 @@ web-app/
 #### 3.3 고급 파일 처리 시스템 (1주)
 
 **다양한 파일 형식 지원**
+
 ```typescript
 class FileProcessor {
   // 문서 파일 처리
@@ -475,6 +531,7 @@ class FileProcessor {
 ```
 
 **파일 분석 기능:**
+
 - 📄 문서 요약 및 핵심 포인트 추출
 - 🖼️ 이미지 내 텍스트 인식 (OCR)
 - 📊 데이터 패턴 분석 및 인사이트
@@ -484,6 +541,7 @@ class FileProcessor {
 #### 3.4 협업 및 공유 기능 (0.5주)
 
 **팀 작업 지원**
+
 ```typescript
 interface ProjectWorkspace {
   id: string
@@ -503,12 +561,14 @@ class CollaborationTools {
 ```
 
 ### ✅ Phase 3 완료 기준
+
 - [ ] 5개 검색 엔진에서 AI 결과 정상 표시
 - [ ] 웹앱의 모든 핵심 기능 동작
 - [ ] 10가지 파일 형식 처리 지원
 - [ ] 베타 테스터 200명 리크루팅 및 온보딩
 
 ### 📈 Phase 3 성공 지표
+
 - 검색 결과 만족도: 4.5/5
 - 웹앱 일일 활성 사용자: 100명
 - 파일 처리 성공률: 95%
@@ -523,6 +583,7 @@ class CollaborationTools {
 #### 4.1 AI 모델 오케스트레이션 (1주)
 
 **다중 AI 모델 통합 관리**
+
 ```typescript
 interface AIModelConfig {
   provider: 'openai' | 'anthropic' | 'google' | 'cohere' | 'local'
@@ -558,12 +619,14 @@ enum AIStrength {
 ```
 
 **지원 AI 모델 (2024 최신):**
+
 - 🤖 **OpenAI**: GPT-4o, GPT-4o-mini, o1-preview, o1-mini
 - 🧠 **Anthropic**: Claude 3.5 Sonnet, Claude 3 Haiku
 - 🔍 **Google**: Gemini 1.5 Pro, Gemini 1.5 Flash
 - 🌟 **기타**: Cohere Command R+, DeepSeek, Llama 3.1
 
 **스마트 모델 라우팅:**
+
 - 📝 요약 작업 → Claude 3.5 Sonnet (품질 우선)
 - ⚡ 빠른 질문 → GPT-4o-mini (속도 우선)
 - 🧮 분석 작업 → o1-preview (추론 우선)
@@ -572,6 +635,7 @@ enum AIStrength {
 #### 4.2 프로젝트 기반 AI 워크스페이스 (1.5주)
 
 **지능형 프로젝트 관리**
+
 ```typescript
 interface AIProject {
   id: string
@@ -601,18 +665,21 @@ class ProjectManager {
 **프로젝트 타입별 특화 기능:**
 
 📚 **리서치 프로젝트**
+
 - 여러 소스 자동 수집 및 분석
 - 정보 신뢰도 검증
 - 인용 자동 생성
 - 연구 갭 식별
 
 ✍️ **글쓰기 프로젝트**
+
 - 구조 및 아웃라인 제안
 - 스타일 일관성 체크
 - 표절 검사
 - 독자 타겟 최적화
 
 📊 **분석 프로젝트**
+
 - 데이터 패턴 발견
 - 시각화 제안
 - 보고서 자동 생성
@@ -621,6 +688,7 @@ class ProjectManager {
 #### 4.3 고급 브라우저 통합 (0.5주)
 
 **깊은 브라우저 통합**
+
 ```typescript
 class DeepBrowserIntegration {
   // 탭 간 컨텍스트 연결
@@ -638,18 +706,21 @@ class DeepBrowserIntegration {
 ```
 
 **브라우저 생산성 기능:**
+
 - 🔗 관련 탭 자동 그룹핑
 - 📑 읽기 목록 스마트 우선순위
 - 🏷️ 북마크 AI 태깅
 - 📥 다운로드 파일 즉시 분석
 
 ### ✅ Phase 4 완료 기준
+
 - [ ] 6개 이상 AI 모델 동시 지원
 - [ ] 프로젝트 기반 워크스페이스 완전 동작
 - [ ] 브라우저 통합 기능 10가지 이상
 - [ ] 얼리어답터 500명 활성 사용
 
 ### 📈 Phase 4 성공 지표
+
 - AI 모델 응답 품질: 4.7/5
 - 프로젝트 기능 사용률: 60%
 - 고급 기능 만족도: 4.5/5
@@ -664,6 +735,7 @@ class DeepBrowserIntegration {
 #### 5.1 성능 최적화 및 안정성 (1주)
 
 **시스템 최적화**
+
 ```typescript
 class PerformanceOptimizer {
   // 응답 속도 최적화
@@ -681,6 +753,7 @@ class PerformanceOptimizer {
 ```
 
 **목표 성능 지표:**
+
 - ⚡ AI 응답 시간: 평균 1.5초
 - 🧠 메모리 사용량: 최대 150MB
 - 📊 확장 프로그램 로딩: 500ms 이하
@@ -689,6 +762,7 @@ class PerformanceOptimizer {
 #### 5.2 마케팅 및 사용자 획득 (0.5주)
 
 **런칭 전략**
+
 ```typescript
 interface LaunchStrategy {
   // 단계별 사용자 공개
@@ -710,6 +784,7 @@ interface LaunchStrategy {
 ```
 
 **사용자 획득 채널:**
+
 - 🚀 Product Hunt 런칭
 - 📝 기술 블로그 게스트 포스팅
 - 🎥 YouTube 리뷰어 협업
@@ -719,6 +794,7 @@ interface LaunchStrategy {
 #### 5.3 사용자 피드백 시스템 (0.5주)
 
 **사용자 피드백 수집**
+
 ```typescript
 class FeedbackSystem {
   // 사용 중 피드백 수집
@@ -736,18 +812,21 @@ class FeedbackSystem {
 ```
 
 **피드백 분석 및 적용:**
+
 - 📊 사용자 행동 분석
 - 🐛 버그 우선순위 자동 분류
 - 💡 기능 요청 투표 시스템
 - 📈 사용자 만족도 지속 추적
 
 ### ✅ Phase 5 완료 기준
+
 - [ ] Chrome 웹스토어 공식 퍼블리시
 - [ ] 웹사이트 및 랜딩 페이지 완성
 - [ ] 사용자 지원 시스템 구축
 - [ ] 주간 활성 사용자 1,000명 달성
 
 ### 📈 Phase 5 성공 지표
+
 - 확장 프로그램 평점: 4.5/5 이상
 - 주간 활성 사용자: 1,000명
 - 사용자 리텐션 (30일): 40%
@@ -812,11 +891,13 @@ class FeedbackSystem {
 ### 📋 대응 프로세스
 
 **주간 리스크 리뷰**
+
 - 매주 금요일 전체 팀 리스크 점검
 - 신규 리스크 식별 및 우선순위 설정
 - 기존 리스크 상태 업데이트
 
 **기술적 백업 계획**
+
 - AI 모델: OpenAI → Claude → Gemini → 로컬 모델
 - 인프라: Vercel → AWS → Google Cloud
 - 데이터베이스: Supabase → Firebase → 자체 호스팅
@@ -826,21 +907,33 @@ class FeedbackSystem {
 ## 🎯 즉시 실행 계획
 
 ### 이번 주 (Week 1)
+
 1. **기술 검증 시작**: Phase 0 킥오프
 2. **팀 환경 구성**: 개발 환경 표준화
 3. **경쟁 분석**: Merlin AI 심화 분석
 4. **UI/UX 와이어프레임**: 확장 프로그램 디자인
 
 ### 다음 주 (Week 2)
+
 1. **프로토타입 완성**: 기본 확장 프로그램
 2. **AI 모델 통합**: OpenAI API 연동
 3. **컨텍스트 추출**: 웹페이지 분석 시스템
 4. **성능 테스트**: 메모리 및 속도 최적화
 
 ### 1개월 목표
+
 1. **MVP 완성**: Phase 1 완료
 2. **내부 테스팅**: 팀원 및 지인 테스트
 3. **피드백 수집**: 초기 사용자 인터뷰
 4. **Phase 2 계획**: 세부 기능 명세서 작성
 
 이 로드맵은 Merlin AI의 핵심 가치를 제공하면서도 우리만의 차별화된 기능을 통해 경쟁력 있는 서비스를 만들어갈 것입니다! 🚀
+
+---
+
+## 📎 관련 가이드/참고
+
+- [디렉토리 아키텍처](../architecture/directory-architecture.md)
+- [개발 워크플로우 가이드](../dev-workflow-guide.md)
+- [Task Master Reference](../taskmaster-guide.md)
+- [Cursor 규칙 개요](../guides/cursor-rules-guide.md)

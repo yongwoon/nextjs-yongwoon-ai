@@ -1,9 +1,25 @@
 # 인증 Flow
 
+> 이 문서는 Supabase 기반 Magic Link 인증 시스템의 전체 플로우와 보안, UX, 구현 구조를 설명합니다.
+>
+> - [전체 아키텍처](./directory-architecture.md)
+> - [개발 워크플로우 가이드](../guides/dev-workflow-guide.md)
+> - [Task Master Reference](../guides/taskmaster-guide.md)
+> - [규칙 시스템 개요](../rules/overview.md)
+
 ## 개요
 
-이 문서는 yongwoon.ai 에서 사용하는 **Magic Link 기반 통합 인증 시스템**에 대해 설명합니다.
+이 문서는 yongwoon.ai 에서 사용하는 **Supabase 기반 Magic Link 통합 인증 시스템**에 대해 설명합니다.
 모든 사용자 인증(회원가입/로그인)은 Magic Link를 통해 이루어지며, 별도의 비밀번호 설정이나 관리가 필요하지 않습니다.
+
+## 기술 스택
+
+- **인증 서비스**: Supabase Auth
+- **데이터베이스**: Supabase PostgreSQL
+- **토큰 저장**: `auth_tokens` 테이블 (레이트 리미팅용)
+- **프론트엔드**: Next.js 14 (App Router)
+- **백엔드**: Next.js API Routes
+- **보안**: Row Level Security (RLS), 환경변수 분리
 
 ## 통합 인증 Flow (신규/기존 사용자 공통)
 
@@ -12,17 +28,23 @@
 ```text
 [사용자]
    ↓
-이메일 입력
+이메일 입력 (MagicLinkForm)
    ↓
-[SendMagicLink]
+[AuthClientService.sendMagicLink]
    ↓
-발송 완료 페이지
+API Route (/api/auth/magic-link)
+   ↓
+[AuthService.sendMagicLinkWithOptions]
+   ↓
+레이트 리미팅 확인
+   ↓
+Supabase Magic Link 발송
+   ↓
+발송 완료 메시지
    ↓
 이메일 수신
    ↓
-┌─ Magic Link 클릭 ──→ [VerifyToken] ──→ 자동 로그인 완료
-│
-└─ 6자리 코드 입력 ──→ [VerifyOTP] ──→ 로그인 완료
+Magic Link 클릭 ──→ [/auth/callback] ──→ 자동 로그인 완료
    ↓
 홈페이지
 ```
@@ -31,233 +53,225 @@
 
 #### 1. Magic Link 요청
 
-- **Frontend Page**: `EmailInputPage` (기존 signup/login 통합)
+- **Frontend Component**: `MagicLinkForm` (`src/components/auth/magic-link-form/`)
 - **사용자 동작**: 이메일 주소 입력
-- **호출되는 RPC**: `SendMagicLink`
+- **호출되는 서비스**: `AuthClientService.sendMagicLink()`
+- **API 엔드포인트**: `POST /api/auth/magic-link`
 - **처리 과정**:
   - 사용자가 이메일 주소를 입력합니다
-  - Frontend에서 SendMagicLink RPC를 호출합니다
-  - Backend는 이메일이 기존 사용자인지 신규 사용자인지 확인합니다
-  - 보안 토큰을 생성하고 magic link와 6자리 코드가 포함된 이메일을 발송합니다
-  - **Magic Link URL**: `http://localhost:5001/mago.user.v1.AuthService/VerifyToken?token={token}`
-  - **6자리 인증 코드**: 예) `123456`
+  - `MagicLinkForm`에서 `AuthClientService.sendMagicLink()`를 호출합니다
+  - 클라이언트 서비스는 브라우저 fingerprint를 생성하고 API 라우트를 호출합니다
+  - API 라우트에서 `AuthService.sendMagicLinkWithOptions()`를 실행합니다
+  - **레이트 리미팅 확인**: 이메일, IP, 브라우저별 발송 제한 검사
+  - **토큰 생성 및 저장**: `AuthTokenService`를 통해 안전한 토큰 생성
+  - **Supabase Magic Link 발송**: `supabase.auth.signInWithOtp()` 호출
+  - **Magic Link URL**: `http://localhost:3000/auth/callback`
   - Frontend는 이메일 발송 확인 메시지를 표시합니다
-
-#### 1-1. 발송 완료 페이지 이동
-
-- **Frontend Page**: `EmailSentPage`
-- **사용자 동작**: 이메일 발송 후 자동 전환
-- **페이지 구성**:
-  - 이메일 발송 완료 메시지 표시
-  - Magic Link와 코드 입력 두 가지 옵션 안내
-  - 6자리 인증 코드 입력 폼 제공
-  - 이메일 재발송 버튼
-  - 다른 이메일로 시도하기 버튼
-- **처리 과정**:
-  - Magic Link 발송 성공 후 자동으로 EmailSentPage로 이동
-  - 사용자는 이메일을 확인하여 Magic Link를 클릭하거나
-  - 페이지에서 직접 6자리 코드를 입력할 수 있음
 
 #### 2. Magic Link 인증 및 자동 로그인
 
 - **사용자 동작**: 이메일의 magic link 클릭
-- **호출되는 엔드포인트**: `GET http://localhost:5001/mago.user.v1.AuthService/VerifyToken?token={token}`
+- **호출되는 엔드포인트**: `GET /auth/callback?code={code}`
 - **처리 과정**:
   - 사용자가 이메일의 magic link를 클릭합니다
-  - Link는 직접 backend의 VerifyToken 엔드포인트로 GET 요청을 보냅니다
-  - Backend는 토큰을 검증합니다
-  - **신규 사용자인 경우**: 자동으로 계정을 생성합니다
+  - Supabase가 `/auth/callback?code={code}` 형태로 리다이렉트합니다
+  - 콜백 라우트에서 `supabase.auth.exchangeCodeForSession(code)`를 호출합니다
+  - **신규 사용자인 경우**: Supabase가 자동으로 계정을 생성합니다
   - **기존 사용자인 경우**: 기존 계정으로 인증합니다
-  - Backend는 JWT 토큰을 생성하고 반환합니다
-  - 성공 시 frontend로 리디렉션하며 JWT 토큰을 전달합니다
-  - 사용자는 자동으로 로그인 상태가 되어 홈페이지로 이동합니다
+  - 성공 시 사용자를 홈페이지로 리다이렉트합니다
+  - 실패 시 `/auth/error` 페이지로 리다이렉트하며 에러 메시지를 표시합니다
 
-#### 2-1. 6자리 코드를 통한 직접 인증
+#### 3. 에러 처리
 
-- **Frontend Page**: `EmailSentPage`
-- **사용자 동작**: 발송 완료 페이지에서 6자리 코드 입력
-- **호출되는 RPC**: `VerifyOTP`
-- **처리 과정**:
-  - 사용자가 이메일에서 6자리 인증 코드를 확인합니다
-  - 사용자가 `EmailSentPage`에서 6자리 코드를 입력합니다
-  - Frontend는 `VerifyOTP` RPC를 호출합니다 (이메일 주소와 코드 전송)
-  - Backend는 코드를 검증하고 사용자 계정을 확인/생성합니다
-  - **신규 사용자인 경우**: 자동으로 계정을 생성합니다
-  - **기존 사용자인 경우**: 기존 계정으로 인증합니다
-  - Backend는 JWT 토큰을 반환합니다
-  - Frontend는 토큰을 저장하고 사용자를 홈페이지로 리디렉션합니다
-  - 사용자는 자동으로 로그인 상태가 되어 홈페이지로 이동합니다
+- **Frontend Page**: `AuthErrorPage` (`src/app/auth/error/page.tsx`)
+- **처리 상황**:
+  - Magic Link 만료
+  - 잘못된 토큰
+  - 네트워크 오류
+  - Supabase 설정 문제
+- **사용자 경험**:
+  - 명확한 에러 메시지 표시
+  - 새로운 Magic Link 요청 버튼 제공
+  - 로그인 페이지로 돌아가기 옵션
 
-#### 2-2. 코드 재발송 기능
+## 아키텍처 구조
 
-- **Frontend Page**: `EmailSentPage`
-- **사용자 동작**: "코드 재발송" 버튼 클릭
-- **호출되는 RPC**: `ResendOTP`
-- **처리 과정**:
-  - 사용자가 코드를 받지 못했거나 만료된 경우 재발송 요청
-  - Frontend는 `ResendOTP` RPC를 호출합니다
-  - Backend는 새로운 6자리 코드를 생성하고 이메일로 발송합니다
-  - 기존 코드는 무효화되고 새 코드만 유효합니다
-  - 재발송 제한 (예: 1분 간격)을 적용하여 스팸 방지
-  - Frontend는 재발송 완료 메시지를 표시합니다
+### 클라이언트/서버 분리
 
-#### 2-3. 다른 브라우저에서 Magic Link 접근 시 처리
+```text
+┌─────────────────────────────────────────────────────────────┐
+│                    클라이언트 사이드                          │
+├─────────────────────────────────────────────────────────────┤
+│ AuthClientService                                           │
+│ - sendMagicLink()                                          │
+│ - generateBrowserFingerprint()                             │
+│ - API 라우트 호출                                           │
+│                                                            │
+│ 환경변수:                                                   │
+│ - NEXT_PUBLIC_SUPABASE_URL ✅                              │
+│ - NEXT_PUBLIC_SUPABASE_ANON_KEY ✅                         │
+└─────────────────────────────────────────────────────────────┘
+                              │
+                              ▼ fetch('/api/auth/magic-link')
+┌─────────────────────────────────────────────────────────────┐
+│                    서버 사이드                               │
+├─────────────────────────────────────────────────────────────┤
+│ API Routes (/api/auth/*)                                   │
+│ │                                                          │
+│ ├─ AuthService                                             │
+│ │  - sendMagicLinkWithOptions()                           │
+│ │  - 레이트 리미팅 확인                                     │
+│ │                                                          │
+│ ├─ AuthTokenService                                        │
+│ │  - generateAndStoreToken()                              │
+│ │  - validateAndUseToken()                                │
+│ │                                                          │
+│ ├─ RateLimitService                                        │
+│ │  - checkComprehensiveRateLimit()                        │
+│ │  - 이메일/IP/브라우저별 제한                              │
+│ │                                                          │
+│ └─ Supabase Admin Client                                   │
+│    - createSupabaseAdminClient()                          │
+│    - auth_tokens 테이블 접근                               │
+│                                                            │
+│ 환경변수:                                                   │
+│ - SUPABASE_SERVICE_ROLE_KEY ❌ (절대 공개 금지)            │
+└─────────────────────────────────────────────────────────────┘
+```
 
-- **시나리오**: 사용자가 Chrome에서 이메일을 입력했지만, Safari나 시크릿 모드에서 Magic Link를 클릭한 경우
-- **Frontend Page**: `CrossBrowserVerificationPage`
-- **처리 과정**:
-  - 사용자가 다른 브라우저/디바이스에서 Magic Link를 클릭합니다
-  - Backend는 요청의 User-Agent, IP, 세션 정보를 확인합니다
-  - 원래 요청과 다른 브라우저/환경임을 감지합니다
-  - Backend는 토큰을 검증하고 6자리 verification code를 생성합니다
-  - **CrossBrowserVerificationPage**를 표시합니다:
+### 보안 계층
 
-    ```text
-    "다른 브라우저에서 접근하신 것 같습니다"
-    "보안을 위해 아래 코드를 복사하여
-     원래 로그인을 시도한 브라우저에서 입력해주세요"
+1. **환경변수 보안**:
+   - 클라이언트: `NEXT_PUBLIC_*` 키만 사용 (RLS로 보호)
+   - 서버: `SUPABASE_SERVICE_ROLE_KEY` 사용 (관리자 권한)
 
-    [123456] [코드 복사]
+2. **레이트 리미팅**:
+   - 이메일별: 15분에 3회
+   - IP별: 1시간에 10회
+   - 브라우저별: 1시간에 5회
 
-    "원래 브라우저로 돌아가서 코드를 입력하세요"
-    ```
-
-  - 사용자는 코드를 복사하고 원래 브라우저로 돌아갑니다
-  - 원래 브라우저의 `VerificationPage`에서 코드를 입력합니다
-  - Frontend는 `VerifyVerificationCode` RPC를 호출합니다
-  - Backend는 코드를 검증하고 JWT 토큰을 반환합니다
-  - 원래 브라우저에서 로그인이 완료됩니다
+3. **토큰 보안**:
+   - SHA-256 해시로 저장
+   - 15분 자동 만료
+   - 일회용 (사용 후 무효화)
 
 ## 세션 관리
 
-### 토큰 갱신
+### Supabase 세션
 
-- **호출되는 RPC**: `RefreshToken`
-- **처리 과정**:
-  - JWT access 토큰이 만료되면 frontend에서 RefreshToken을 호출합니다
-  - Backend는 refresh 토큰을 검증하고 새 토큰을 발급합니다
+- **세션 저장**: Supabase가 자동으로 브라우저에 세션 쿠키 저장
+- **세션 확인**: `supabase.auth.getSession()`으로 현재 세션 상태 확인
+- **자동 갱신**: Supabase가 토큰 만료 전 자동으로 갱신
+- **세션 지속**: 브라우저 재시작 후에도 세션 유지
 
 ### 로그아웃
 
-- **Frontend Page**: 로그아웃 옵션이 있는 모든 페이지
-- **호출되는 RPC**: `Logout`
-- **처리 과정**:
-  - 사용자가 로그아웃을 클릭합니다
-  - Frontend는 Logout RPC를 호출합니다
-  - Backend는 토큰을 무효화합니다
-  - Frontend는 저장된 토큰을 삭제합니다
-  - 사용자는 이메일 입력 페이지로 리디렉션됩니다
+- **Frontend**: 로그아웃 버튼 클릭
+- **처리**: `supabase.auth.signOut()` 호출
+- **결과**: 세션 쿠키 삭제 및 로그인 페이지로 리다이렉트
 
 ## 특수 상황 처리
 
-### 인증 중단 후 재접속
+### 개발 환경에서의 디버깅
 
-- **시나리오**: 사용자가 Magic Link를 클릭했지만 브라우저를 닫은 경우
-- **처리 과정**:
-  - 사용자가 애플리케이션에 다시 접속할 때
-  - Frontend는 저장소에서 JWT 토큰을 감지합니다
-  - Frontend는 세션 검증을 위해 RefreshToken을 호출합니다
-  - 토큰이 유효하면 사용자를 홈페이지로 리디렉션합니다
-  - 토큰이 무효하면 이메일 입력 페이지로 리디렉션합니다
+- **디버깅 API**: `GET /api/auth/debug` (개발 환경에서만 접근 가능)
+- **기능**:
+  - 데이터베이스 연결 상태 확인
+  - 특정 이메일의 토큰 상태 조회
+  - 레이트 리미팅 상태 확인
+  - 테이블 존재 여부 확인
 
 ### Magic Link 만료
 
 - **시나리오**: 사용자가 만료된 Magic Link를 클릭한 경우
 - **처리 과정**:
-  - Backend는 토큰 만료 오류를 반환합니다
-  - Frontend는 오류 메시지와 함께 새로운 Magic Link 요청을 안내합니다
-  - 사용자는 이메일 입력 페이지로 리디렉션됩니다
+  - Supabase가 만료 오류를 반환합니다
+  - `/auth/error` 페이지로 리다이렉트됩니다
+  - 사용자에게 새로운 Magic Link 요청을 안내합니다
 
-### 크로스 브라우저 보안 검증
+### 데이터베이스 연결 오류
 
-- **시나리오**: 다른 브라우저/디바이스에서 Magic Link 접근 시
-- **보안 검증 요소**:
-  - User-Agent 문자열 비교
-  - IP 주소 확인 (동일 네트워크 내 허용)
-  - 세션 쿠키 존재 여부
-  - 브라우저 fingerprinting (선택적)
-- **처리 방식**:
-  - 의심스러운 접근으로 판단 시 verification code 방식으로 전환
-  - 원래 브라우저에서만 최종 인증 완료 허용
-  - 보안 로그 기록 및 모니터링
+- **개발 환경**: 상세한 에러 메시지와 해결 방법 안내
+- **프로덕션 환경**: 일반적인 오류 메시지만 표시
+- **공통**: 서버 로그에 상세한 에러 정보 기록
 
 ## 보안 고려사항
 
-### 공통 보안 요소
+### Supabase 보안
 
-- JWT 토큰은 안전하게 저장됩니다
-- Access 토큰은 제한된 수명을 가집니다
-- Magic link는 설정된 기간(15분) 후 만료됩니다
-- Magic link는 일회성으로, 사용 후 즉시 무효화됩니다
-- 모든 민감한 통신은 HTTPS를 사용합니다
-- 모든 인증이 필요한 API 요청은 JWT 토큰 검증을 거쳐야 합니다
+- **Row Level Security (RLS)**: 모든 테이블에 적절한 RLS 정책 적용
+- **환경변수 분리**: 클라이언트/서버 키 명확히 구분
+- **API 키 보안**: `SERVICE_ROLE_KEY` 절대 클라이언트 노출 금지
 
 ### Magic Link 보안
 
-- Magic Link 토큰은 일회성이며 제한된 시간(보통 15분) 동안만 유효합니다
-- 토큰은 사용 후 즉시 무효화됩니다
-- 동일한 이메일로 새로운 Magic Link 요청 시 기존 토큰은 무효화됩니다
-- Magic Link는 충분한 엔트로피를 가진 암호학적으로 안전한 토큰을 사용합니다
+- **토큰 생성**: 32바이트 암호화된 랜덤 토큰
+- **토큰 저장**: SHA-256 해시로 데이터베이스에 저장
+- **만료 시간**: 15분 후 자동 만료
+- **일회성**: 사용 후 즉시 무효화
+- **동시 요청**: 새 요청 시 기존 토큰 무효화
 
-### 계정 보안
+### 레이트 리미팅
 
-- 이메일 주소가 계정의 유일한 식별자입니다
-- 이메일 접근 권한이 있는 사용자만 계정에 접근할 수 있습니다
-- 의심스러운 로그인 시도는 로그로 기록됩니다
-- 과도한 Magic Link 요청은 제한됩니다 (Rate Limiting)
+- **다중 계층**: 이메일, IP, 브라우저별 독립적 제한
+- **에러 처리**: DB 오류 시 개발/프로덕션 환경별 적절한 처리
+- **디버깅**: 개발 환경에서 상세한 디버깅 정보 제공
 
-### 크로스 브라우저 보안
+## 구현 파일 구조
 
-- 다른 브라우저에서의 Magic Link 접근을 자동으로 감지합니다
-- Verification code는 6자리 숫자로 구성되며 5분간 유효합니다
-- 원래 브라우저에서만 최종 인증을 완료할 수 있습니다
-- 크로스 브라우저 접근 시도는 보안 로그에 기록됩니다
-- 동일한 토큰으로 여러 번의 크로스 브라우저 접근 시도 시 토큰을 무효화합니다
+```text
+src/
+├── app/
+│   ├── api/auth/
+│   │   ├── magic-link/route.ts      # Magic Link 발송 API
+│   │   └── debug/route.ts           # 디버깅 API (개발용)
+│   ├── auth/
+│   │   ├── callback/route.ts        # Magic Link 콜백 처리
+│   │   └── error/page.tsx           # 인증 에러 페이지
+│   └── login/page.tsx               # 로그인 페이지
+├── components/auth/
+│   └── magic-link-form/
+│       ├── index.tsx                # Magic Link 폼 컴포넌트
+│       └── hooks/index.tsx          # 폼 로직 훅
+├── domains/auth/services/
+│   ├── auth.service.ts              # 서버용 인증 서비스
+│   ├── auth-client.service.ts       # 클라이언트용 인증 서비스
+│   ├── auth-token.service.ts        # 토큰 관리 서비스
+│   ├── rate-limit.service.ts        # 레이트 리미팅 서비스
+│   └── index.ts                     # 서비스 내보내기
+├── utils/supabase/
+│   ├── client.ts                    # 클라이언트용 Supabase
+│   ├── server.ts                    # 서버용 Supabase
+│   └── constants.ts                 # Supabase 설정
+└── lib/
+    └── supabase.ts                  # Supabase 유틸리티
+```
 
-## 토큰 시스템 설명
+## 환경 설정
 
-### 토큰의 종류와 차이점
+### 필수 환경변수
 
-#### 1. Magic Link 토큰
+```bash
+# 클라이언트용 (공개 가능)
+NEXT_PUBLIC_SUPABASE_URL=https://your-project.supabase.co
+NEXT_PUBLIC_SUPABASE_ANON_KEY=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...
 
-- **용도**: 이메일을 통한 일회성 인증에 사용됩니다
-- **저장위치**: 데이터베이스의 `auth_tokens` 테이블에 저장됩니다
-- **생명주기**: 일정 시간(15분) 후 만료되며, 사용 시 즉시 무효화됩니다
-- **특징**: 이메일 링크 또는 인증 코드 형태로 사용자에게 전달됩니다
+# 서버용 (절대 공개 금지)
+SUPABASE_SERVICE_ROLE_KEY=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...
+```
 
-#### 2. JWT 토큰 (JSON Web Token)
+### Supabase 프로젝트 설정
 
-- **용도**: 사용자 인증 상태를 유지하고 API 접근 권한을 부여합니다
-- **저장위치**: 클라이언트 측(브라우저)에 저장되며, 데이터베이스에는 저장되지 않습니다
-- **생명주기**: 설정된 기간(기본 24시간) 동안 유효하며, 갱신 가능합니다
-- **특징**: 사용자 정보와 권한을 포함하는 자체 검증 가능한 토큰입니다
+1. **Authentication > URL Configuration**:
+   - Site URL: `http://localhost:3000` (개발) / `https://yourdomain.com` (프로덕션)
+   - Redirect URLs: `http://localhost:3000/auth/callback` 추가
 
-#### 3. Verification Code
+2. **Database > Tables**:
+   - `auth_tokens` 테이블 생성 (마이그레이션 실행)
 
-- **용도**: 크로스 브라우저 상황에서 원래 브라우저로 인증을 전달하는 데 사용됩니다
-- **저장위치**: 데이터베이스에 임시 저장되며 Magic Link 토큰과 연결됩니다
-- **생명주기**: 5분간 유효하며, 사용 후 즉시 무효화됩니다
-- **특징**: 6자리 숫자로 구성되며, 사용자가 수동으로 입력합니다
-
-### JWT 토큰 검증 프로세스
-
-모든 인증이 필요한 API 요청에서는 클라이언트가 제공한 JWT 토큰을 다음과 같이 검증합니다:
-
-1. **토큰 검증 과정**:
-   - 클라이언트가 Authorization 헤더에 JWT 토큰을 포함하여 요청을 보냅니다
-   - 서버는 토큰의 서명을 검증하여 변조되지 않았는지 확인합니다
-   - 토큰의 만료 시간을 검사하여 유효한지 확인합니다
-   - 토큰에 포함된 사용자 정보를 추출하여 요청 처리에 활용합니다
-
-2. **API 엔드포인트별 권한 검증**:
-   - JWT 토큰에는 사용자 역할 정보(`role`)가 포함되어 있습니다
-   - 각 API 엔드포인트는 필요한 최소 권한 수준을 지정할 수 있습니다
-   - 서버는 요청한 사용자의 역할이 해당 작업에 충분한지 검증합니다
-
-3. **토큰 갱신 및 보안**:
-   - 만료된 토큰은 Refresh 토큰을 통해 갱신할 수 있습니다
-   - JWT 토큰은 서버의 비밀 키로 서명되어 위조를 방지합니다
-   - 민감한 정보는 토큰에 직접 포함하지 않도록 합니다
+3. **Authentication > Settings**:
+   - Enable email confirmations: 비활성화 (Magic Link 사용)
+   - Secure email change: 활성화
 
 ## 사용자 경험 (UX) 고려사항
 
@@ -273,15 +287,46 @@
 - Magic Link 이메일 발송 후 명확한 안내 메시지 제공
 - Magic Link 만료 시 친화적인 오류 메시지와 재요청 옵션 제공
 
+### 에러 처리 UX
+
+- **개발 환경**: 상세한 디버깅 정보와 해결 방법 안내
+- **프로덕션 환경**: 사용자 친화적인 에러 메시지
+- **공통**: 명확한 다음 단계 안내 (재시도, 새 요청 등)
+
 ### 접근성
 
-- 이메일에 접근할 수 없는 상황을 대비한 대체 인증 방법(verification code) 제공
 - 명확하고 이해하기 쉬운 UI/UX 디자인
 - 모바일 환경에서도 원활한 Magic Link 처리
+- 키보드 네비게이션 지원
+- 스크린 리더 호환성
 
-### 크로스 브라우저 사용성
+## 모니터링 및 로깅
 
-- 다른 브라우저에서 Magic Link를 열었을 때 명확한 안내 제공
-- 코드 복사 기능으로 사용자 편의성 향상
-- 원래 브라우저로 돌아가는 과정을 직관적으로 안내
-- 모바일과 데스크톱 간 전환 시에도 원활한 사용자 경험 제공
+### 보안 로깅
+
+- 레이트 리미팅 위반 시도
+- 만료된 토큰 사용 시도
+- 데이터베이스 연결 오류
+- 의심스러운 인증 패턴
+
+### 성능 모니터링
+
+- Magic Link 발송 성공률
+- 인증 완료 시간
+- 데이터베이스 응답 시간
+- API 엔드포인트 응답 시간
+
+### 사용자 분석
+
+- 인증 성공/실패 비율
+- Magic Link 클릭률
+- 사용자 재방문 패턴
+- 디바이스/브라우저별 사용 통계
+
+## 관련 문서
+
+- [Supabase 보안 가이드](../guides/supabase-security-guide.md)
+- [Auth Domain 구현 가이드](./domainLayer-token-storage-rate-limiting.md)
+- [개발 워크플로우 가이드](../guides/dev-workflow-guide.md)
+- [Task Master Reference](../guides/taskmaster-guide.md)
+- [규칙 시스템 개요](../rules/overview.md)

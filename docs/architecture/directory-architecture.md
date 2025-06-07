@@ -4,9 +4,9 @@
 
 이 문서는 프로젝트의 디렉토리 구조, 아키텍처 패턴, 레이어 설계를 설명합니다. 구현 상세는 각 도메인별 문서를 참조하세요.
 
-- **AI 기능 구현**: [`AI_SERVICE_ARCHITECTURE.md`](./AI_SERVICE_ARCHITECTURE.md)
-- **개발 시작하기**: [`GETTING_STARTED.md`](./GETTING_STARTED.md)
-- **구현 계획**: [`IMPLEMENTATION_ROADMAP.md`](./IMPLEMENTATION_ROADMAP.md)
+- **AI 기능 구현**: [`ai-service-architecture.md`](./ai-service-architecture.md)
+- **개발 시작하기**: [`getting-started.md`](./getting-started.md)
+- **구현 계획**: [`implementation-roadmap.md`](../project/implementation-roadmap.md)
 
 ## 🎯 핵심 설계 원칙
 
@@ -52,8 +52,8 @@ nextjs-yongwoon-ai/
 │   │   ├── globals.css
 │   │   ├── layout.tsx
 │   │   └── page.tsx
-│   ├── components/                    # UI 컴포넌트
-│   ├── hooks/                         # React 훅
+│   ├── components/                    # UI 컴포넌트 (실제 코드베이스에서는 src/presentation/components/ 등으로 분리될 수 있음)
+│   ├── hooks/                         # React 훅 (실제 코드베이스에서는 src/presentation/hooks/ 등으로 분리될 수 있음)
 │   ├── providers/                     # Context Provider
 │   ├── styles/                        # 스타일시트
 │   ├── utils/                         # UI 유틸리티
@@ -419,3 +419,9 @@ UserProfileCard.tsx
 4. 모니터링 지표 확인
 
 이 아키텍처는 확장 가능하고 유지보수가 용이한 현대적인 웹 애플리케이션을 구축하기 위한 견고한 기반을 제공합니다.
+
+## 📚 관련 가이드/Reference
+- [개발 워크플로우 가이드](../guides/dev-workflow-guide.md)
+- [Task Master Reference](../guides/taskmaster-guide.md)
+- [규칙 시스템 개요](../rules/overview.md)
+- [자동 개선 프로세스 가이드](../guides/self-improvement-guide.md)

@@ -255,6 +255,14 @@ pnpm run env:check
 - [Pinecone Quickstart](https://docs.pinecone.io/docs/quickstart)
 - [Upstash Redis](https://docs.upstash.com/redis)
 
+## 📚 관련 가이드/Reference
+- [전체 아키텍처](../architecture/directory-architecture.md)
+- [개발 워크플로우 가이드](../guides/dev-workflow-guide.md)
+- [Task Master Reference](../guides/taskmaster-guide.md)
+- [규칙 시스템 개요](../rules/overview.md)
+- [table-design-specification.md](./table-design-specification.md) — DB 테이블 설계
+- [supabase-setup.md](./supabase-setup.md) — Supabase 초기 세팅
+
 이 가이드를 따라 환경 변수를 설정하면 AI 서비스를 위한 완전한 개발 환경을 구축할 수 있습니다.
 
 # 프로젝트 환경 및 설정 가이드

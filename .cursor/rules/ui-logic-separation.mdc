@@ -9,7 +9,7 @@ alwaysApply: false
   - 도메인 특화 로직/컴포넌트는 해당 도메인 폴더 하위에 위치
 
 - **Next.js App Router 페이지는 src/app/ 하위에 위치**
-  - 예시: `src/app/auth/login/page.tsx`
+  - 예시: `src/app/login/page.tsx`
 
 - **예시**
   ```typescript
@@ -18,14 +18,14 @@ alwaysApply: false
   src/presentation/hooks/auth/useSignUpForm.ts
   src/domains/auth/components/SignUpForm.tsx
   src/domains/auth/hooks/useSignUpForm.ts
-  src/app/auth/login/page.tsx
+  src/app/login/page.tsx
   ```
 
   ```typescript
   // ❌ 잘못된 예시
   src/components/SignUpForm.tsx // (presentation/components/로 이동 필요)
   src/authHooks/useSignUpForm.ts // (domains/auth/hooks/로 이동 필요)
-  app/login.tsx // (app/auth/login/page.tsx로 이동 필요)
+  app/login.tsx // (app/login/page.tsx로 이동 필요)
   ```
 
 - **UI/로직 분리 원칙**

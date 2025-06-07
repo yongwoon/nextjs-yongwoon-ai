@@ -3,85 +3,108 @@ description: Guidelines for creating and maintaining Cursor rules to ensure cons
 globs: .cursor/rules/*.mdc
 alwaysApply: true
 ---
+# 📚 Cursor Rule 작성 및 적용 가이드 (최신)
+
+> 이 문서는 프로젝트의 모든 코드/문서/폴더 구조, 네이밍, 규칙 개선, cross-reference 방식의 표준을 정의합니다.
+>
+> - 실제 코드/문서/룰 파일의 최신 구조와 반드시 동기화해야 하며, 구조/패턴 변경 시 즉시 갱신합니다.
+
 ---
-description: 파일 작성 및 디렉토리 구조 규칙 (컴포넌트/훅 분리, index.tsx 사용 등)
-globs: src/**/*, src/**/**/*
-alwaysApply: true
+
+## 1️⃣ 파일/폴더 구조 및 네이밍 규칙
+- **최신 구조는 [file-location.mdc], [directory-architecture.md]와 동기화**
+- **폴더: kebab-case, 역할 명확히, 컬렉션은 복수형**
+- **파일: 역할+타입 (user.entity.ts, password-policy.service.ts 등)**
+- **컴포넌트: PascalCase (LoginForm.tsx)**
+- **도메인/레이어별 위치를 반드시 지킨다**
+- **예시**
+  - 인증 도메인 서비스: `src/domains/auth/services/domain-services/auth.service.ts`
+  - 공통 UI 버튼: `src/presentation/components/ui/Button.tsx`
+  - AI provider 연동: `src/infrastructure/ai-providers/anthropic/client.ts`
+  - 전역 에러: `src/core/errors/app-error.ts`
+- **상세 구조/예시는 [file-location.mdc] 참고**
+
 ---
 
-- **컴포넌트/훅 파일 작성 및 디렉토리 구조 규칙**
-  - **컴포넌트는 반드시 폴더 단위로 분리**
-    - 예: `email-input-form/index.tsx` (컴포넌트)
-    - 관련 훅/로직은 `email-input-form/hooks/index.tsx` 등 하위 폴더에 분리
-  - **index.tsx 패턴 사용**
-    - 폴더 내 대표 컴포넌트는 `index.tsx`로 작성
-    - import 시 경로가 간결해짐: `import { EmailInputForm } from "@/presentation/components/auth/email-input-form";`
-  - **훅/비즈니스 로직 분리**
-    - 컴포넌트 내부에서 사용하는 커스텀 훅/로직은 `hooks/` 폴더에 별도 파일로 작성
-    - 예: `email-input-form/hooks/index.tsx` 또는 `email-input-form/hooks/useEmailInputForm.ts`
-  - **디렉토리 구조 예시**
-    ```
-    src/presentation/components/auth/email-input-form/
-      ├── index.tsx         # 컴포넌트
-      └── hooks/
-          └── index.tsx    # 훅/로직
-    ```
-  - **실제 구현 예시**
-    ```tsx
-    // email-input-form/index.tsx
-    import { useEmailInputForm } from "./hooks";
-    export function EmailInputForm() { /* ... */ }
-    ```
-    ```tsx
-    // email-input-form/hooks/index.tsx
-    export function useEmailInputForm() { /* ... */ }
-    ```
-  - **이 규칙은 모든 presentation/components, domains/components, shared/components에 적용**
+## 2️⃣ 컴포넌트/훅/로직 분리 규칙
+- **컴포넌트는 반드시 폴더 단위로 분리**
+  - 예: `email-input-form/index.tsx` (컴포넌트)
+  - 관련 훅/로직은 `email-input-form/hooks/index.tsx` 등 하위 폴더에 분리
+- **index.tsx 패턴 사용**
+  - 폴더 내 대표 컴포넌트는 `index.tsx`로 작성
+  - import 시 경로가 간결해짐: `import { EmailInputForm } from "@/presentation/components/auth/email-input-form";`
+- **훅/비즈니스 로직 분리**
+  - 컴포넌트 내부에서 사용하는 커스텀 훅/로직은 `hooks/` 폴더에 별도 파일로 작성
+  - 예: `email-input-form/hooks/index.tsx` 또는 `email-input-form/hooks/useEmailInputForm.ts`
+- **이 규칙은 모든 presentation/components, domains/components, shared/components에 적용**
+- **UI/로직 분리 원칙**
+  - UI는 상태/로직을 props로 전달받아 표현만 담당
+  - 로직/훅은 상태 관리, 폼 처리, API 연동 등 담당
+- **상세 예시/금지 패턴은 [ui-logic-separation.mdc] 참고**
 
-- **Required Rule Structure:**
-  ```markdown
-  ---
-  description: Clear, one-line description of what the rule enforces
-  globs: path/to/files/*.ext, other/path/**/*
-  alwaysApply: boolean
-  ---
+---
 
-  - **Main Points in Bold**
-    - Sub-points with details
-    - Examples and explanations
-  ```
+## 3️⃣ 도메인 언어/네이밍 규칙
+- **[ubiquitous-language.mdc]와 동기화, 도메인 용어 일관성 필수**
+- **클래스/인터페이스/함수/변수/상수/파일/폴더명 모두 도메인 용어 사용**
+- **기술적 약어/불명확한 네이밍 금지**
+- **테스트/Mock도 도메인 언어로 작성**
+- **상세 예시/금지 패턴/체크리스트는 [ubiquitous-language.mdc] 참고**
 
-- **File References:**
-  - Use `[filename](mdc:path/to/file)` ([filename](mdc:filename)) to reference files
-  - Example: [prisma.mdc](mdc:.cursor/rules/prisma.mdc) for rule references
-  - Example: [schema.prisma](mdc:prisma/schema.prisma) for code references
+---
 
-- **Code Examples:**
-  - Use language-specific code blocks
+## 4️⃣ 규칙 cross-reference 및 문서화
+- **모든 규칙/문서/코드 예시는 실제 파일/문서 링크로 cross-reference**
+  - `[filename](mdc:path/to/file)` 형식 사용
+  - 예: [prisma.mdc](mdc:.cursor/rules/prisma.mdc), [supabase.mdc](mdc:.cursor/rules/supabase.mdc)
+- **규칙/문서/코드 구조 변경 시 cross-reference 즉시 갱신**
+- **규칙/문서 내 관련 가이드/참고 섹션 필수**
+- **상세 cross-reference 예시는 [dev_workflow.mdc], [taskmaster.mdc], [supabase.mdc] 등 참고**
+
+---
+
+## 5️⃣ 규칙 개선/유지보수 프로세스
+- **규칙 개선 트리거**
+  - 새로운 패턴/반복적 구현/공통 버그/새 라이브러리 등장/코드리뷰 피드백 등
+- **규칙 추가/수정/폐기 기준**
+  - 3개 이상 파일에서 반복, 공통 버그 예방, 리뷰 피드백 반복, 보안/성능 패턴 등장 등
+- **규칙 개선 시 실제 코드/문서 예시, cross-reference, DO/DON'T, 체크리스트 반드시 포함**
+- **규칙 개선/추가/폐기 후 관련 문서/코드/룰 파일 cross-reference 즉시 갱신**
+- **상세 프로세스/예시는 [self_improve.mdc] 참고**
+
+---
+
+## 6️⃣ DO/DON'T, 예시, 체크리스트
+- **모든 규칙은 DO/DON'T, 실제 코드 예시, 금지 패턴, 체크리스트 포함**
+- **예시**
   ```typescript
-  // ✅ DO: Show good examples
-  const goodExample = true;
+  // ✅ DO: 도메인 용어, 폴더 구조, 컴포넌트/훅 분리, index.tsx 패턴
+  src/presentation/components/auth/email-input-form/index.tsx
+  src/presentation/components/auth/email-input-form/hooks/index.tsx
+  import { EmailInputForm } from "@/presentation/components/auth/email-input-form";
 
-  // ❌ DON'T: Show anti-patterns
-  const badExample = false;
+  // ❌ DON'T: 폴더 분리/네이밍/도메인 언어 미준수
+  src/components/SignUpForm.tsx // (presentation/components/로 이동 필요)
+  src/authHooks/useSignUpForm.ts // (domains/auth/hooks/로 이동 필요)
+  const ctx = getContext() // (pageContext 등 도메인 용어 사용)
   ```
+- **체크리스트**
+  - [ ] 폴더/파일 구조, 네이밍, 도메인 언어, cross-reference, 규칙 개선 프로세스 모두 준수
+  - [ ] 실제 코드/문서 예시, DO/DON'T, 체크리스트 포함
+  - [ ] 관련 문서/룰 파일 cross-reference 최신화
 
-- **Rule Content Guidelines:**
-  - Start with high-level overview
-  - Include specific, actionable requirements
-  - Show examples of correct implementation
-  - Reference existing code when possible
-  - Keep rules DRY by referencing other rules
+---
 
-- **Rule Maintenance:**
-  - Update rules when new patterns emerge
-  - Add examples from actual codebase
-  - Remove outdated patterns
-  - Cross-reference related rules
+## 7️⃣ Cross-reference 주요 규칙/문서
+- [file-location.mdc](mdc:.cursor/rules/file-location.mdc)
+- [directory-architecture.md](mdc:docs/architecture/directory-architecture.md)
+- [ubiquitous-language.mdc](mdc:.cursor/rules/ubiquitous-language.mdc)
+- [ui-logic-separation.mdc](mdc:.cursor/rules/ui-logic-separation.mdc)
+- [dev_workflow.mdc](mdc:.cursor/rules/dev_workflow.mdc)
+- [taskmaster.mdc](mdc:.cursor/rules/taskmaster.mdc)
+- [supabase.mdc](mdc:.cursor/rules/supabase.mdc)
+- [self_improve.mdc](mdc:.cursor/rules/self_improve.mdc)
 
-- **Best Practices:**
-  - Use bullet points for clarity
-  - Keep descriptions concise
-  - Include both DO and DON'T examples
-  - Reference actual code over theoretical examples
-  - Use consistent formatting across rules
+---
+
+> **이 문서는 프로젝트의 모든 코드/문서/규칙의 기준점입니다. 구조/패턴/네이밍/규칙 변경 시 반드시 이 문서와 cross-reference를 최신화하세요.**

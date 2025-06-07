@@ -158,3 +158,11 @@ docker-compose build --no-cache
 - [PostgreSQL 문서](https://www.postgresql.org/docs)
 - [Redis 문서](https://redis.io/documentation)
 - [Qdrant 문서](https://qdrant.tech/documentation)
+
+---
+
+## 📚 관련 가이드/Reference
+- [전체 아키텍처](../architecture/directory-architecture.md)
+- [개발 워크플로우 가이드](../guides/dev-workflow-guide.md)
+- [Task Master Reference](../guides/taskmaster-guide.md)
+- [규칙 시스템 개요](../rules/overview.md)

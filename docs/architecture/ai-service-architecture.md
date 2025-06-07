@@ -2,7 +2,7 @@
 
 > 🤖 **AI 기능 구현을 위한 실용적인 개발 가이드**
 
-이 문서는 프로젝트의 AI 기능 구현에 특화된 가이드입니다. 기본 설정은 [`GETTING_STARTED.md`](./GETTING_STARTED.md)를, 전체 아키텍처는 [`DIRECTORY_ARCHITECTURE.md`](./DIRECTORY_ARCHITECTURE.md)를 참조하세요.
+이 문서는 프로젝트의 AI 기능 구현에 특화된 가이드입니다. 기본 설정은 [`getting-started.md`](../setup/getting-started.md)를, 전체 아키텍처는 [`directory-architecture.md`](./directory-architecture.md)를 참조하세요.
 
 ## 🎯 AI 서비스 핵심 기능
 
@@ -1013,3 +1013,11 @@ ENABLE_USAGE_TRACKING=true
 - 데이터베이스 샤딩 전략
 
 이 가이드를 통해 AI 서비스의 핵심 기능들을 체계적으로 구현할 수 있습니다. 각 기능은 독립적으로 개발하고 테스트할 수 있도록 설계되었습니다.
+
+---
+
+## 📚 관련 가이드/Reference
+- [개발 워크플로우 가이드](../guides/dev-workflow-guide.md)
+- [Task Master Reference](../guides/taskmaster-guide.md)
+- [규칙 시스템 개요](../rules/overview.md)
+- [자동 개선 프로세스 가이드](../guides/self-improvement-guide.md)
