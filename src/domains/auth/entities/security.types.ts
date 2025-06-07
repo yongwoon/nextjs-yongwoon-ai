@@ -20,3 +20,8 @@ export interface AuthEvent {
   metadata?: Record<string, any>;
   timestamp: Date;
 }
+
+/**
+ * 브라우저 식별자 (FingerprintJS visitorId)
+ */
+export type BrowserFingerprint = string;
