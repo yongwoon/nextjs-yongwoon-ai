@@ -1,6 +1,6 @@
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { AuthService } from "@/domains/auth/services/auth.service";
+import { AuthClientService } from "@/domains/auth/services";
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import {
@@ -28,7 +28,7 @@ export function useMagicLinkForm() {
     setStatus("loading");
     setErrorMsg(null);
     try {
-      const result = await AuthService.sendMagicLink(
+      const result = await AuthClientService.sendMagicLink(
         data.email,
         window.location.origin + "/auth/callback",
       );

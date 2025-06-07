@@ -106,9 +106,9 @@ cat .env.example
 
 설치가 완료되었다면:
 
-1. **[🏗️ 프로젝트 구조 이해하기](./DIRECTORY_ARCHITECTURE.md)**
-2. **[🤖 AI 기능 설정하기](./AI_SERVICE_ARCHITECTURE.md)**
-3. **[📋 개발 계획 확인하기](./IMPLEMENTATION_ROADMAP.md)**
+1. **[🏗️ 프로젝트 구조 이해하기](../architecture/directory-architecture.md)**
+2. **[🤖 AI 기능 설정하기](../architecture/ai-service-architecture.md)**
+3. **[📋 개발 계획 확인하기](../project/implementation-roadmap.md)**
 
 ## 💡 개발 팁
 
@@ -123,3 +123,11 @@ cat .env.example
 - **💬 질문**: Discussions 탭 활용
 
 이제 개발을 시작할 준비가 완료되었습니다! 🎉
+
+---
+
+## 📚 관련 가이드/Reference
+- [전체 아키텍처](../architecture/directory-architecture.md)
+- [개발 워크플로우 가이드](../guides/dev-workflow-guide.md)
+- [Task Master Reference](../guides/taskmaster-guide.md)
+- [규칙 시스템 개요](../rules/overview.md)

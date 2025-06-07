@@ -112,7 +112,7 @@
       "dependencies": [
         3
       ],
-      "status": "pending",
+      "status": "done",
       "subtasks": [
         {
           "id": 1,
@@ -157,8 +157,8 @@
           "dependencies": [
             4
           ],
-          "details": "Design HTML email templates matching Claude.ai brand styling. Implement dynamic content insertion for magic links and user information. Configure Supabase to use custom email templates. Test email rendering across different email clients. Ensure proper handling of template variables for personalization. Implement both plain text and HTML versions of emails for compatibility.",
-          "status": "pending",
+          "details": "Design HTML email templates matching Claude.ai brand styling. Implement dynamic content insertion for magic links and user information. Configure Supabase to use custom email templates. Test email rendering across different email clients. Ensure proper handling of template variables for personalization. Implement both plain text and HTML versions of emails for compatibility.\n<info added on 2025-06-06T15:46:21.090Z>\n✅ **이메일 템플릿 구현 완료**\n\n**구현한 주요 기능들:**\n\n1. **매직 링크 이메일 템플릿 (`magic-link-template.ts`)**\n   - Claude.ai 브랜딩에 맞는 깔끔하고 모던한 디자인\n   - 그라데이션 헤더 (보라색 → 파란색)\n   - Goguryeo + Gaemamusa AI 브랜딩 적용\n   - 반응형 디자인 (모바일/데스크톱 대응)\n   - HTML과 Plain Text 버전 모두 제공\n   - 보안 안내 섹션 포함 (만료시간, 일회용 링크 등)\n   - 대체 링크 표시 (버튼이 작동하지 않을 경우)\n\n2. **이메일 템플릿 서비스 (`email-template-service.ts`)**\n   - EmailTemplateService 클래스로 중앙화된 관리\n   - 브랜드 설정 커스터마이징 지원\n   - Supabase 이메일 템플릿 설정 자동 생성\n   - 이메일 렌더링 검증 기능\n   - 만료시간 자동 계산 (한국 시간대 기준)\n\n3. **테스트 유틸리티 (`test-utils.ts`)**\n   - 종합적인 템플릿 테스트 도구\n   - 다양한 데이터 케이스 테스트\n   - 이메일 클라이언트 호환성 체크\n   - 브라우저에서 미리보기 기능\n   - 개발자 친화적 전역 함수 제공\n\n4. **개발자 미리보기 페이지 (`/dev/email-template-preview`)**\n   - 실시간 템플릿 미리보기\n   - 동적 데이터 변경 및 테스트\n   - Supabase 설정 가이드 포함\n   - 종합 테스트 결과 표시\n\n5. **설정 가이드 문서 (`setup-guide.md`)**\n   - Supabase Dashboard 설정 방법\n   - 단계별 상세 가이드\n   - 환경별 설정 방법\n   - 배포 체크리스트 포함\n\n**주요 특징:**\n- 📱 반응형 디자인 (모바일 최적화)\n- 🎨 Claude.ai 스타일 브랜딩\n- 🔒 보안 안내 메시지 포함\n- 🌐 다국어 지원 고려 (한국어)\n- ✅ 이메일 클라이언트 호환성 확보\n- 🧪 종합적인 테스트 도구 제공\n\n**다음 단계:** Supabase Dashboard에서 템플릿 설정 필요\n</info added on 2025-06-06T15:46:21.090Z>",
+          "status": "done",
           "testStrategy": "Test email template rendering with various data inputs. Verify emails display correctly across major email clients and that magic links function properly when clicked."
         }
       ]
@@ -173,7 +173,7 @@
       "dependencies": [
         4
       ],
-      "status": "pending",
+      "status": "in-progress",
       "subtasks": []
     },
     {

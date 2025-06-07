@@ -1,8 +1,17 @@
-# Ubiquitous Language Dictionary
+> # 📖 프로젝트 공통 언어/용어 사전 (Ubiquitous Language Dictionary)
 
-> 🌐 **AI 브라우저 어시스턴트 프로젝트의 공통 언어 사전**
+> 이 문서는 AI 브라우저 어시스턴트 프로젝트의 도메인 특화 용어를 정의하여 개발팀, 비즈니스팀, 사용자 간의 원활한 소통과 일관된 개발을 지원합니다.
 
-이 문서는 프로젝트 전반에서 사용되는 도메인 특화 용어들을 정의하여 개발팀, 비즈니스 팀, 사용자 간의 원활한 소통을 지원합니다.
+---
+
+## 📚 관련 가이드/참고
+- [개발 워크플로우 가이드](../dev-workflow-guide.md)
+- [디렉토리 아키텍처](../architecture/directory-architecture.md)
+- [환경 변수/인프라 설정](../setup/environment-setup.md)
+- [규칙 시스템 개요](../guides/overview.md)
+- [Task Master Reference](../taskmaster-guide.md)
+
+---
 
 ## 📋 용어 정의표
 
@@ -89,7 +98,9 @@
 ### 🔒 Security & Privacy
 - **Privacy-First**, **Zero Trust**, **Content Security Policy**
 
-## 📖 용어 사용 가이드라인
+## 📝 용어 사용 가이드라인
+
+- 도메인 용어는 코드, 문서, 커뮤니케이션에서 일관되게 사용해야 하며, [Task Master Reference](../taskmaster-guide.md) 및 [개발 워크플로우 가이드](../dev-workflow-guide.md)에서 실제 적용 예시와 관리 방법을 참고하세요.
 
 ### ✅ 올바른 사용법
 ```typescript
@@ -119,13 +130,10 @@ class Chatbot {  // 'AI Assistant' 또는 'ConversationService' 사용 권장
 
 ## 🔄 용어 진화 및 관리
 
-### 새로운 용어 추가 기준
-1. **비즈니스 가치**: 사용자나 비즈니스에 직접적 영향
-2. **기술적 중요성**: 아키텍처나 구현에 핵심적 역할
-3. **사용 빈도**: 코드, 문서, 대화에서 자주 언급
-4. **명확성**: 기존 용어와 구별되는 명확한 개념
+- 새로운 용어 추가/수정/삭제는 [Task Master Reference](../taskmaster-guide.md)와 [규칙 시스템 개요](../guides/overview.md)에 따라 팀 내 공식 프로세스를 따릅니다.
+- 용어 변경 시, 코드/문서/워크플로우 전반에 일관되게 반영하고, 변경 내역을 팀에 공유하세요.
 
-### 용어 수정 프로세스
+### 용어 추가/수정 프로세스
 1. **제안**: 새로운 용어나 수정 사항 제안
 2. **검토**: 팀 내 논의를 통한 적절성 검토
 3. **승인**: 기술 리드 및 제품 오너 승인

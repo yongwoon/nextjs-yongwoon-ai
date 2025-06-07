@@ -1,6 +1,6 @@
 # Task ID: 4
 # Title: Magic Link Authentication System
-# Status: pending
+# Status: done
 # Dependencies: 3
 # Priority: high
 # Description: Implement unified email-based authentication with magic link functionality
@@ -70,9 +70,59 @@ Implement an auth/callback route handler that extracts the token from URL parame
 ### Details:
 Design and create the auth_tokens table schema in Supabase. Implement token generation with appropriate expiration times. Create functions to store and validate tokens. Implement rate limiting logic to restrict users to maximum 3 email attempts per 15 minutes. Add timestamp tracking for rate limiting enforcement. Create error messages for rate-limited users.
 
-## 5. Create Custom Email Templates [pending]
+## 5. Create Custom Email Templates [done]
 ### Dependencies: 4.4
 ### Description: Design and implement custom email templates for magic link authentication matching Claude.ai styling
 ### Details:
 Design HTML email templates matching Claude.ai brand styling. Implement dynamic content insertion for magic links and user information. Configure Supabase to use custom email templates. Test email rendering across different email clients. Ensure proper handling of template variables for personalization. Implement both plain text and HTML versions of emails for compatibility.
+<info added on 2025-06-06T15:46:21.090Z>
+✅ **이메일 템플릿 구현 완료**
+
+**구현한 주요 기능들:**
+
+1. **매직 링크 이메일 템플릿 (`magic-link-template.ts`)**
+   - Claude.ai 브랜딩에 맞는 깔끔하고 모던한 디자인
+   - 그라데이션 헤더 (보라색 → 파란색)
+   - Goguryeo + Gaemamusa AI 브랜딩 적용
+   - 반응형 디자인 (모바일/데스크톱 대응)
+   - HTML과 Plain Text 버전 모두 제공
+   - 보안 안내 섹션 포함 (만료시간, 일회용 링크 등)
+   - 대체 링크 표시 (버튼이 작동하지 않을 경우)
+
+2. **이메일 템플릿 서비스 (`email-template-service.ts`)**
+   - EmailTemplateService 클래스로 중앙화된 관리
+   - 브랜드 설정 커스터마이징 지원
+   - Supabase 이메일 템플릿 설정 자동 생성
+   - 이메일 렌더링 검증 기능
+   - 만료시간 자동 계산 (한국 시간대 기준)
+
+3. **테스트 유틸리티 (`test-utils.ts`)**
+   - 종합적인 템플릿 테스트 도구
+   - 다양한 데이터 케이스 테스트
+   - 이메일 클라이언트 호환성 체크
+   - 브라우저에서 미리보기 기능
+   - 개발자 친화적 전역 함수 제공
+
+4. **개발자 미리보기 페이지 (`/dev/email-template-preview`)**
+   - 실시간 템플릿 미리보기
+   - 동적 데이터 변경 및 테스트
+   - Supabase 설정 가이드 포함
+   - 종합 테스트 결과 표시
+
+5. **설정 가이드 문서 (`setup-guide.md`)**
+   - Supabase Dashboard 설정 방법
+   - 단계별 상세 가이드
+   - 환경별 설정 방법
+   - 배포 체크리스트 포함
+
+**주요 특징:**
+- 📱 반응형 디자인 (모바일 최적화)
+- 🎨 Claude.ai 스타일 브랜딩
+- 🔒 보안 안내 메시지 포함
+- 🌐 다국어 지원 고려 (한국어)
+- ✅ 이메일 클라이언트 호환성 확보
+- 🧪 종합적인 테스트 도구 제공
+
+**다음 단계:** Supabase Dashboard에서 템플릿 설정 필요
+</info added on 2025-06-06T15:46:21.090Z>
 

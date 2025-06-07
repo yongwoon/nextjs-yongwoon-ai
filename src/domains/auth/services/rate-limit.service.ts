@@ -5,6 +5,14 @@ export interface RateLimitCheck {
   remainingAttempts: number;
   resetTime: Date;
   error?: string;
+  // 디버깅을 위한 추가 정보
+  debugInfo?: {
+    attemptCount: number;
+    maxAttempts: number;
+    windowMinutes: number;
+    errorType?: "database" | "rate_limit" | "unknown";
+    originalError?: string;
+  };
 }
 
 export interface RateLimitOptions {
@@ -38,12 +46,61 @@ export const RateLimitService = {
 
       if (error) {
         console.error("레이트 리미트 확인 실패:", error);
-        return {
-          isAllowed: false,
-          remainingAttempts: 0,
-          resetTime: new Date(Date.now() + windowMinutes * 60 * 1000),
-          error: "레이트 리미트 확인 중 오류가 발생했습니다.",
-        };
+        console.error("Error details:", {
+          code: error.code,
+          message: error.message,
+          details: error.details,
+          hint: error.hint,
+        });
+
+        // 개발 환경에서는 에러를 명확히 표시하되, 개발을 방해하지 않도록 처리
+        const isDevelopment = process.env.NODE_ENV === "development";
+
+        if (isDevelopment) {
+          // 개발 환경: 에러를 명확히 표시하고 개발자가 선택할 수 있도록 함
+          console.warn("🚨 [개발 환경] 데이터베이스 에러 발생!");
+          console.warn("📋 해결 방법:");
+          console.warn("1. Supabase 마이그레이션 실행: npx supabase db reset");
+          console.warn(
+            "2. 환경 변수 확인: SUPABASE_URL, SUPABASE_SERVICE_ROLE_KEY",
+          );
+          console.warn(
+            "3. 테이블 존재 여부 확인: /api/auth/debug?action=connection",
+          );
+          console.warn(
+            "⚠️  현재는 레이트 리미팅을 우회하여 개발을 계속할 수 있습니다.",
+          );
+
+          return {
+            isAllowed: true, // 개발 환경에서는 우회 허용
+            remainingAttempts: maxAttempts,
+            resetTime: new Date(Date.now() + windowMinutes * 60 * 1000),
+            error: `[개발 환경] 데이터베이스 에러: ${error.message}`,
+            debugInfo: {
+              attemptCount: 0,
+              maxAttempts,
+              windowMinutes,
+              errorType: "database",
+              originalError: error.message,
+            },
+          };
+        } else {
+          // 프로덕션 환경: 보안을 위해 차단
+          return {
+            isAllowed: false,
+            remainingAttempts: 0,
+            resetTime: new Date(Date.now() + windowMinutes * 60 * 1000),
+            error:
+              "시스템 오류로 인해 일시적으로 서비스를 이용할 수 없습니다. 잠시 후 다시 시도해주세요.",
+            debugInfo: {
+              attemptCount: 0,
+              maxAttempts,
+              windowMinutes,
+              errorType: "database",
+              originalError: "Database connection error (production)",
+            },
+          };
+        }
       }
 
       const attemptCount = tokens?.length || 0;
@@ -60,20 +117,50 @@ export const RateLimitService = {
         );
       }
 
+      // 디버깅 로그 추가
+      console.log("Rate limit check result:", {
+        email: options.email,
+        attemptCount,
+        maxAttempts,
+        isAllowed,
+        remainingAttempts,
+        resetTime,
+        windowMinutes,
+      });
+
       return {
         isAllowed,
         remainingAttempts,
         resetTime,
+        debugInfo: {
+          attemptCount,
+          maxAttempts,
+          windowMinutes,
+          errorType: isAllowed ? undefined : "rate_limit",
+        },
       };
     } catch (error) {
       console.error("레이트 리미트 확인 중 오류:", error);
+
+      // 예상치 못한 에러의 경우 개발 환경에서는 허용
+      const isDevelopment = process.env.NODE_ENV === "development";
+      const windowMinutes = options.windowMinutes || 15;
+      const maxAttempts = options.maxAttempts || 3;
+
       return {
-        isAllowed: false,
-        remainingAttempts: 0,
-        resetTime: new Date(
-          Date.now() + (options.windowMinutes || 15) * 60 * 1000,
-        ),
-        error: "레이트 리미트 확인 중 오류가 발생했습니다.",
+        isAllowed: isDevelopment,
+        remainingAttempts: isDevelopment ? maxAttempts : 0,
+        resetTime: new Date(Date.now() + windowMinutes * 60 * 1000),
+        error: isDevelopment
+          ? `예상치 못한 에러 (개발 환경에서 허용): ${error}`
+          : "레이트 리미트 확인 중 오류가 발생했습니다.",
+        debugInfo: {
+          attemptCount: 0,
+          maxAttempts,
+          windowMinutes,
+          errorType: "unknown",
+          originalError: String(error),
+        },
       };
     }
   },
@@ -100,11 +187,23 @@ export const RateLimitService = {
 
       if (error) {
         console.error("IP 레이트 리미트 확인 실패:", error);
+
+        const isDevelopment = process.env.NODE_ENV === "development";
+
         return {
-          isAllowed: false,
-          remainingAttempts: 0,
+          isAllowed: isDevelopment,
+          remainingAttempts: isDevelopment ? maxAttempts : 0,
           resetTime: new Date(Date.now() + windowMinutes * 60 * 1000),
-          error: "IP 레이트 리미트 확인 중 오류가 발생했습니다.",
+          error: isDevelopment
+            ? `IP 레이트 리미트 데이터베이스 에러 (개발 환경에서 허용): ${error.message}`
+            : "IP 레이트 리미트 확인 중 오류가 발생했습니다.",
+          debugInfo: {
+            attemptCount: 0,
+            maxAttempts,
+            windowMinutes,
+            errorType: "database",
+            originalError: error.message,
+          },
         };
       }
 
@@ -125,14 +224,32 @@ export const RateLimitService = {
         isAllowed,
         remainingAttempts,
         resetTime,
+        debugInfo: {
+          attemptCount,
+          maxAttempts,
+          windowMinutes,
+          errorType: isAllowed ? undefined : "rate_limit",
+        },
       };
     } catch (error) {
       console.error("IP 레이트 리미트 확인 중 오류:", error);
+
+      const isDevelopment = process.env.NODE_ENV === "development";
+
       return {
-        isAllowed: false,
-        remainingAttempts: 0,
+        isAllowed: isDevelopment,
+        remainingAttempts: isDevelopment ? maxAttempts : 0,
         resetTime: new Date(Date.now() + windowMinutes * 60 * 1000),
-        error: "IP 레이트 리미트 확인 중 오류가 발생했습니다.",
+        error: isDevelopment
+          ? `IP 레이트 리미트 예상치 못한 에러 (개발 환경에서 허용): ${error}`
+          : "IP 레이트 리미트 확인 중 오류가 발생했습니다.",
+        debugInfo: {
+          attemptCount: 0,
+          maxAttempts,
+          windowMinutes,
+          errorType: "unknown",
+          originalError: String(error),
+        },
       };
     }
   },
@@ -159,11 +276,23 @@ export const RateLimitService = {
 
       if (error) {
         console.error("브라우저 세션 레이트 리미트 확인 실패:", error);
+
+        const isDevelopment = process.env.NODE_ENV === "development";
+
         return {
-          isAllowed: false,
-          remainingAttempts: 0,
+          isAllowed: isDevelopment,
+          remainingAttempts: isDevelopment ? maxAttempts : 0,
           resetTime: new Date(Date.now() + windowMinutes * 60 * 1000),
-          error: "브라우저 세션 레이트 리미트 확인 중 오류가 발생했습니다.",
+          error: isDevelopment
+            ? `브라우저 세션 레이트 리미트 데이터베이스 에러 (개발 환경에서 허용): ${error.message}`
+            : "브라우저 세션 레이트 리미트 확인 중 오류가 발생했습니다.",
+          debugInfo: {
+            attemptCount: 0,
+            maxAttempts,
+            windowMinutes,
+            errorType: "database",
+            originalError: error.message,
+          },
         };
       }
 
@@ -184,14 +313,32 @@ export const RateLimitService = {
         isAllowed,
         remainingAttempts,
         resetTime,
+        debugInfo: {
+          attemptCount,
+          maxAttempts,
+          windowMinutes,
+          errorType: isAllowed ? undefined : "rate_limit",
+        },
       };
     } catch (error) {
       console.error("브라우저 세션 레이트 리미트 확인 중 오류:", error);
+
+      const isDevelopment = process.env.NODE_ENV === "development";
+
       return {
-        isAllowed: false,
-        remainingAttempts: 0,
+        isAllowed: isDevelopment,
+        remainingAttempts: isDevelopment ? maxAttempts : 0,
         resetTime: new Date(Date.now() + windowMinutes * 60 * 1000),
-        error: "브라우저 세션 레이트 리미트 확인 중 오류가 발생했습니다.",
+        error: isDevelopment
+          ? `브라우저 세션 레이트 리미트 예상치 못한 에러 (개발 환경에서 허용): ${error}`
+          : "브라우저 세션 레이트 리미트 확인 중 오류가 발생했습니다.",
+        debugInfo: {
+          attemptCount: 0,
+          maxAttempts,
+          windowMinutes,
+          errorType: "unknown",
+          originalError: String(error),
+        },
       };
     }
   },
@@ -269,6 +416,193 @@ export const RateLimitService = {
     } else {
       const hours = Math.ceil(minutesUntilReset / 60);
       return `너무 많은 인증 요청이 있었습니다. ${hours}시간 후에 다시 시도해주세요.`;
+    }
+  },
+
+  /**
+   * 데이터베이스 연결 및 테이블 상태 확인 (디버깅용)
+   */
+  async debugDatabaseConnection(): Promise<{
+    isConnected: boolean;
+    tablesExist: {
+      auth_tokens: boolean;
+      verification_codes: boolean;
+      browser_sessions: boolean;
+    };
+    sampleQuery: {
+      success: boolean;
+      error?: string;
+      count?: number;
+    };
+    error?: string;
+  }> {
+    try {
+      const supabase = createSupabaseAdminClient();
+
+      // 1. 기본 연결 테스트
+      const { data: _connectionTest, error: connectionError } = await supabase
+        .from("auth_tokens")
+        .select("count", { count: "exact" })
+        .limit(0);
+
+      if (connectionError) {
+        return {
+          isConnected: false,
+          tablesExist: {
+            auth_tokens: false,
+            verification_codes: false,
+            browser_sessions: false,
+          },
+          sampleQuery: {
+            success: false,
+            error: connectionError.message,
+          },
+          error: `데이터베이스 연결 실패: ${connectionError.message}`,
+        };
+      }
+
+      // 2. 각 테이블 존재 여부 확인
+      const tableChecks = await Promise.allSettled([
+        supabase
+          .from("auth_tokens")
+          .select("count", { count: "exact" })
+          .limit(0),
+        supabase
+          .from("verification_codes")
+          .select("count", { count: "exact" })
+          .limit(0),
+        supabase
+          .from("browser_sessions")
+          .select("count", { count: "exact" })
+          .limit(0),
+      ]);
+
+      const tablesExist = {
+        auth_tokens: tableChecks[0].status === "fulfilled",
+        verification_codes: tableChecks[1].status === "fulfilled",
+        browser_sessions: tableChecks[2].status === "fulfilled",
+      };
+
+      // 3. 샘플 쿼리 실행
+      const { count, error: queryError } = await supabase
+        .from("auth_tokens")
+        .select("id", { count: "exact" })
+        .limit(1);
+
+      return {
+        isConnected: true,
+        tablesExist,
+        sampleQuery: {
+          success: !queryError,
+          error: queryError?.message,
+          count: count || 0,
+        },
+      };
+    } catch (error) {
+      return {
+        isConnected: false,
+        tablesExist: {
+          auth_tokens: false,
+          verification_codes: false,
+          browser_sessions: false,
+        },
+        sampleQuery: {
+          success: false,
+          error: String(error),
+        },
+        error: `예상치 못한 에러: ${error}`,
+      };
+    }
+  },
+
+  /**
+   * 특정 이메일의 레이트 리미트 상태 상세 조회 (디버깅용)
+   */
+  async debugEmailRateLimit(email: string): Promise<{
+    tokens: Array<{
+      id: string;
+      created_at: string;
+      used_at: string | null;
+      expires_at: string;
+      token_type: string;
+    }>;
+    summary: {
+      total: number;
+      active: number;
+      expired: number;
+      used: number;
+      last15Minutes: number;
+      last1Hour: number;
+      last24Hours: number;
+    };
+    rateLimitStatus: RateLimitCheck;
+  }> {
+    try {
+      const supabase = createSupabaseAdminClient();
+      const now = new Date();
+
+      // 최근 24시간 내 모든 토큰 조회
+      const last24Hours = new Date(now.getTime() - 24 * 60 * 60 * 1000);
+      const { data: tokens, error } = await supabase
+        .from("auth_tokens")
+        .select("id, created_at, used_at, expires_at, token_type")
+        .eq("email", email)
+        .gte("created_at", last24Hours.toISOString())
+        .order("created_at", { ascending: false });
+
+      if (error) {
+        throw new Error(`토큰 조회 실패: ${error.message}`);
+      }
+
+      const tokenList = tokens || [];
+
+      // 통계 계산
+      const last15Minutes = new Date(now.getTime() - 15 * 60 * 1000);
+      const last1Hour = new Date(now.getTime() - 60 * 60 * 1000);
+
+      const summary = {
+        total: tokenList.length,
+        active: tokenList.filter(
+          (t) => !t.used_at && new Date(t.expires_at) > now,
+        ).length,
+        expired: tokenList.filter((t) => new Date(t.expires_at) <= now).length,
+        used: tokenList.filter((t) => t.used_at).length,
+        last15Minutes: tokenList.filter(
+          (t) => new Date(t.created_at) >= last15Minutes,
+        ).length,
+        last1Hour: tokenList.filter((t) => new Date(t.created_at) >= last1Hour)
+          .length,
+        last24Hours: tokenList.length,
+      };
+
+      // 현재 레이트 리미트 상태 확인
+      const rateLimitStatus = await this.checkRateLimit({ email });
+
+      return {
+        tokens: tokenList,
+        summary,
+        rateLimitStatus,
+      };
+    } catch (error) {
+      // 에러 발생 시 빈 결과와 함께 에러 정보 반환
+      const rateLimitStatus = await this.checkRateLimit({ email });
+
+      return {
+        tokens: [],
+        summary: {
+          total: 0,
+          active: 0,
+          expired: 0,
+          used: 0,
+          last15Minutes: 0,
+          last1Hour: 0,
+          last24Hours: 0,
+        },
+        rateLimitStatus: {
+          ...rateLimitStatus,
+          error: `디버깅 조회 실패: ${error}`,
+        },
+      };
     }
   },
 };

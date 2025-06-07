@@ -1,3 +1,9 @@
+> **이 문서는 Prettier 코드 포맷팅/운영 가이드입니다.**
+
+- 개발 워크플로우는 [dev-workflow-guide.md](../guides/dev-workflow-guide.md)
+- Task Master Reference는 [taskmaster-guide.md](../guides/taskmaster-guide.md)
+- 규칙 시스템 개요는 [overview.md](../rules/overview.md) 참고
+
 # Prettier 설정 가이드
 
 ## 개요
@@ -158,3 +164,10 @@ legacy/
 ### 프로젝트별 설정 오버라이드
 
 필요시 `.prettierrc` 파일을 수정하여 프로젝트 요구사항에 맞게 조정할 수 있습니다.
+
+## 📚 관련 가이드/Reference
+
+- [dev-workflow-guide.md](../guides/dev-workflow-guide.md) — 개발 워크플로우
+- [taskmaster-guide.md](../guides/taskmaster-guide.md) — Task Master Reference
+- [overview.md](../rules/overview.md) — 규칙 시스템 개요
+- [directory-architecture.md](../architecture/directory-architecture.md) — 전체 아키텍처
