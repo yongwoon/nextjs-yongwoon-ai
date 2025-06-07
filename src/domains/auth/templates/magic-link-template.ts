@@ -9,7 +9,7 @@ export interface MagicLinkTemplateProps {
 export const generateMagicLinkEmailHTML = ({
   magicLink,
   userEmail,
-  expirationTime,
+  _expirationTime,
   companyName = "Goguryeo",
   supportEmail = "support@goguryeo.ai",
 }: MagicLinkTemplateProps): string => {

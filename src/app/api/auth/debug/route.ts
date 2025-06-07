@@ -16,17 +16,18 @@ export async function GET(request: NextRequest) {
     const action = searchParams.get("action") || "connection";
 
     switch (action) {
-      case "connection":
+      case "connection": {
         // 데이터베이스 연결 상태 확인
-        const connectionStatus = await RateLimitService
-          .debugDatabaseConnection();
+        const connectionStatus =
+          await RateLimitService.debugDatabaseConnection();
         return NextResponse.json({
           action: "database_connection_check",
           timestamp: new Date().toISOString(),
           result: connectionStatus,
         });
+      }
 
-      case "email":
+      case "email": {
         // 특정 이메일의 레이트 리미트 상태 확인
         if (!email) {
           return NextResponse.json(
@@ -42,8 +43,9 @@ export async function GET(request: NextRequest) {
           timestamp: new Date().toISOString(),
           result: emailStatus,
         });
+      }
 
-      case "test":
+      case "test": {
         // 레이트 리미트 테스트
         if (!email) {
           return NextResponse.json(
@@ -64,6 +66,7 @@ export async function GET(request: NextRequest) {
           timestamp: new Date().toISOString(),
           result: testResult,
         });
+      }
 
       default:
         return NextResponse.json(

@@ -95,13 +95,14 @@ export const AuthClientService = {
       let hash = 0;
       for (let i = 0; i < fingerprint.length; i++) {
         const char = fingerprint.charCodeAt(i);
-        hash = ((hash << 5) - hash) + char;
+        hash = (hash << 5) - hash + char;
         hash = hash & hash; // 32bit integer로 변환
       }
 
       return Math.abs(hash).toString(36);
     } catch (error) {
       // fingerprint 생성 실패 시 랜덤 값 반환
+      console.error("브라우저 fingerprint 생성 실패:", error);
       return Math.random().toString(36).substring(2, 15);
     }
   },

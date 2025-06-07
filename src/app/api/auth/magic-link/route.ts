@@ -35,8 +35,8 @@ export async function POST(request: NextRequest) {
     const ipAddress = forwarded?.split(",")[0] || realIp || undefined;
 
     // 브라우저 fingerprint (간단한 버전)
-    const browserFingerprint = request.headers.get("x-browser-fingerprint") ||
-      undefined;
+    const browserFingerprint =
+      request.headers.get("x-browser-fingerprint") || undefined;
 
     // 매직 링크 발송
     const result = await AuthService.sendMagicLinkWithOptions({

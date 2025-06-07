@@ -249,7 +249,8 @@ export default function EmailTemplatePreviewPage() {
                 <li>Authentication → Settings → Email Templates 이동</li>
                 <li>Magic Link 섹션에서 템플릿 편집</li>
                 <li>
-                  위의 "Supabase 설정 출력" 버튼을 클릭하여 콘솔에서 템플릿 복사
+                  위의 &quot;Supabase 설정 출력&quot; 버튼을 클릭하여 콘솔에서
+                  템플릿 복사
                 </li>
                 <li>Subject, HTML Body, Text Body를 각각 붙여넣기</li>
                 <li>저장 후 테스트 이메일 발송으로 확인</li>

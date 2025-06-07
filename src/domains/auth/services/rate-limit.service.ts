@@ -440,7 +440,7 @@ export const RateLimitService = {
       const supabase = createSupabaseAdminClient();
 
       // 1. 기본 연결 테스트
-      const { data: connectionTest, error: connectionError } = await supabase
+      const { data: _connectionTest, error: connectionError } = await supabase
         .from("auth_tokens")
         .select("count", { count: "exact" })
         .limit(0);
@@ -463,12 +463,17 @@ export const RateLimitService = {
 
       // 2. 각 테이블 존재 여부 확인
       const tableChecks = await Promise.allSettled([
-        supabase.from("auth_tokens").select("count", { count: "exact" }).limit(
-          0,
-        ),
-        supabase.from("verification_codes").select("count", { count: "exact" })
+        supabase
+          .from("auth_tokens")
+          .select("count", { count: "exact" })
           .limit(0),
-        supabase.from("browser_sessions").select("count", { count: "exact" })
+        supabase
+          .from("verification_codes")
+          .select("count", { count: "exact" })
+          .limit(0),
+        supabase
+          .from("browser_sessions")
+          .select("count", { count: "exact" })
           .limit(0),
       ]);
 
@@ -557,17 +562,16 @@ export const RateLimitService = {
 
       const summary = {
         total: tokenList.length,
-        active: tokenList.filter((t) =>
-          !t.used_at && new Date(t.expires_at) > now
+        active: tokenList.filter(
+          (t) => !t.used_at && new Date(t.expires_at) > now,
         ).length,
         expired: tokenList.filter((t) => new Date(t.expires_at) <= now).length,
         used: tokenList.filter((t) => t.used_at).length,
-        last15Minutes: tokenList.filter((t) =>
-          new Date(t.created_at) >= last15Minutes
+        last15Minutes: tokenList.filter(
+          (t) => new Date(t.created_at) >= last15Minutes,
         ).length,
-        last1Hour: tokenList.filter((t) =>
-          new Date(t.created_at) >= last1Hour
-        ).length,
+        last1Hour: tokenList.filter((t) => new Date(t.created_at) >= last1Hour)
+          .length,
         last24Hours: tokenList.length,
       };
 

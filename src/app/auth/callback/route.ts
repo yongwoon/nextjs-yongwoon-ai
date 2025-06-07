@@ -31,21 +31,17 @@ export async function GET(request: NextRequest) {
         console.error("인증 코드 교환 실패:", error);
         // 인증 실패 - 에러 페이지로 리다이렉트
         return NextResponse.redirect(
-          `${origin}/auth/error?message=${
-            encodeURIComponent(
-              "인증에 실패했습니다. 다시 시도해주세요.",
-            )
-          }`,
+          `${origin}/auth/error?message=${encodeURIComponent(
+            "인증에 실패했습니다. 다시 시도해주세요.",
+          )}`,
         );
       }
     } catch (error) {
       console.error("콜백 처리 중 오류:", error);
       return NextResponse.redirect(
-        `${origin}/auth/error?message=${
-          encodeURIComponent(
-            "인증 처리 중 오류가 발생했습니다.",
-          )
-        }`,
+        `${origin}/auth/error?message=${encodeURIComponent(
+          "인증 처리 중 오류가 발생했습니다.",
+        )}`,
       );
     }
   }
