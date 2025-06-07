@@ -54,9 +54,49 @@ export const AuthService = {
       );
 
       if (!rateLimitCheck.isAllowed) {
-        const errorMessage = RateLimitService.generateRateLimitMessage(
+        // 디버깅 정보 로그
+        console.log("Rate limit triggered:", {
+          email: options.email,
+          limitedBy: rateLimitCheck.limitedBy,
+          details: rateLimitCheck.details,
+        });
+
+        // 개발 환경에서는 더 자세한 에러 메시지 제공
+        const isDevelopment = process.env.NODE_ENV === "development";
+        let errorMessage = RateLimitService.generateRateLimitMessage(
           rateLimitCheck.details.email,
         );
+
+        // 개발 환경에서 디버깅 정보 추가
+        if (isDevelopment && rateLimitCheck.details.email.debugInfo) {
+          const debug = rateLimitCheck.details.email.debugInfo;
+
+          if (debug.errorType === "database") {
+            // DB 에러인 경우 명확한 안내 메시지
+            errorMessage =
+              `🚨 [개발 환경] 데이터베이스 연결 오류가 발생했습니다!\n\n`;
+            errorMessage += `📋 해결 방법:\n`;
+            errorMessage +=
+              `1. Supabase 마이그레이션 실행: npx supabase db reset\n`;
+            errorMessage +=
+              `2. 환경 변수 확인: SUPABASE_URL, SUPABASE_SERVICE_ROLE_KEY\n`;
+            errorMessage +=
+              `3. 테이블 존재 여부 확인: /api/auth/debug?action=connection\n\n`;
+            errorMessage +=
+              `⚠️ 현재는 개발을 위해 레이트 리미팅을 우회했지만, 실제 DB 문제를 해결해야 합니다.\n\n`;
+            errorMessage += `원본 에러: ${debug.originalError}`;
+          } else {
+            // 일반적인 레이트 리미트인 경우
+            errorMessage += `\n\n[개발 환경 디버깅 정보]\n`;
+            errorMessage += `- 에러 타입: ${debug.errorType}\n`;
+            errorMessage +=
+              `- 시도 횟수: ${debug.attemptCount}/${debug.maxAttempts}\n`;
+            errorMessage += `- 시간 윈도우: ${debug.windowMinutes}분\n`;
+            if (debug.originalError) {
+              errorMessage += `- 원본 에러: ${debug.originalError}\n`;
+            }
+          }
+        }
 
         return {
           success: false,

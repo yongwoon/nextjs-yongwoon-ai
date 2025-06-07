@@ -1,5 +1,6 @@
 // Auth services exports
 export { AuthService } from "./auth.service";
+export { AuthClientService } from "./auth-client.service";
 export { AuthTokenService } from "./auth-token.service";
 export { RateLimitService } from "./rate-limit.service";
 export { AuthCleanupService } from "./auth-cleanup.service";
